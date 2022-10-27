@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AlphaVantageDemo {
-  public static void main(String[] args) {
+  Map<String, Double> getShareDetails(String tickerSymbol, String timestamp) {
     //the API key needed to use this web service.
     //Please get your own free API key here: https://www.alphavantage.co/
     //Please look at documentation here: https://www.alphavantage.co/documentation/
     String apiKey = "NAO61MQDSY9EPTN";
-    String stockSymbol = "GOOG"; //ticker symbol for Google
+    String stockSymbol = tickerSymbol; //ticker symbol for Google
     URL url = null;
 
     try {
@@ -24,7 +26,7 @@ public class AlphaVantageDemo {
        */
       url = new URL("https://www.alphavantage"
               + ".co/query?function=TIME_SERIES_DAILY"
-              + "&outputsize=full"
+              + "&outputsize=compact"
               + "&symbol"
               + "=" + stockSymbol + "&apikey=" + apiKey + "&datatype=csv");
     } catch (MalformedURLException e) {
@@ -46,15 +48,35 @@ public class AlphaVantageDemo {
       This is printed below.
        */
       in = url.openStream();
-      int b;
+      int b = in.read();
+      while (b != 10) {
+        b = in.read();
+      }
 
-      while ((b = in.read()) != -1) {
-        output.append((char) b);
+      while (b != -1) {
+        b = in.read();
+        if(b == 10) {
+          String date = output.toString().split(",")[0];
+          if(timestamp.equals(date)) {
+            break;
+          } else {
+            output = new StringBuilder();
+          }
+        } else {
+          output.append((char) b);
+        }
       }
     } catch (IOException e) {
       throw new IllegalArgumentException("No price data found for " + stockSymbol);
     }
-    System.out.println("Return value: ");
-    System.out.println(output.toString());
+
+    Map<String, Double> shareDetails = new HashMap<>();
+    String[] details = output.toString().split(",");
+    String[] keys = {"timestamp", "open", "high", "low", "close", "volume"};
+
+    for(int i = 1; i<details.length; i++) {
+      shareDetails.put(keys[i], Double.parseDouble(details[i]));
+    }
+    return shareDetails;
   }
 }
