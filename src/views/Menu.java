@@ -2,6 +2,7 @@ package views;
 
 public class Menu implements MainMenu {
 
+
   public void printMainMenu() {
     System.out.print("\n1. Create Portfolio.\n" +
             "2. See portfolio composition.\n" +
