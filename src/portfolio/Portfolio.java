@@ -13,6 +13,6 @@ public interface Portfolio {
 
   Map<String, Double> getPortfolioComposition();
 
-  void savePortfolio();
+  void savePortfolio() throws IOException;
 
 }

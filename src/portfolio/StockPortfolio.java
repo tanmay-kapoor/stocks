@@ -1,5 +1,6 @@
 package portfolio;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class StockPortfolio implements Portfolio {
         throw new IllegalArgumentException("Number of shares cannot be less than 1. Please enter a valid quantity.");
       }
       stocks.put(tickerSymbol, quantity);
-    } catch(RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
     }
   }
@@ -58,7 +59,19 @@ public class StockPortfolio implements Portfolio {
   }
 
   @Override
-  public void savePortfolio() {
+  public void savePortfolio() throws IOException {
+    try {
+      FileWriter csvWriter = new FileWriter("portfolio.csv");
 
+      csvWriter.append("username,share,quantity\n");
+
+      for (String share : stocks.keySet()) {
+        csvWriter.append(username).append(",").append(share).append(",").append(String.valueOf(stocks.get(share))).append("\n");
+      }
+      csvWriter.flush();
+      csvWriter.close();
+    } catch (IOException e) {
+      throw e;
+    }
   }
 }

@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -15,7 +18,7 @@ public class MainController {
     menu = new Menu();
   }
 
-  void handleMainMenuChoice() {
+  void handleMainMenuChoice() throws IOException {
     char choice;
 
     do {
@@ -35,7 +38,7 @@ public class MainController {
             menu.printCreatePortfolioMenu();
             try {
               shouldExit = this.handleCreatePortfolioChoice();
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | IOException e) {
               System.out.println("\n" + e.getMessage());
               shouldExit = false;
             }
@@ -43,6 +46,13 @@ public class MainController {
           break;
 
         case '2':
+          BufferedReader csvReader = new BufferedReader(new FileReader("portfolio.csv"));
+          String row;
+          while ((row = csvReader.readLine()) != null) {
+//            String[] data = row.split(",");
+            System.out.println(row);
+          }
+          csvReader.close();
           break;
 
         case '3':
@@ -54,7 +64,7 @@ public class MainController {
     } while (choice == '1' || choice == '2' || choice == '3');
   }
 
-  boolean handleCreatePortfolioChoice() {
+  boolean handleCreatePortfolioChoice() throws IOException {
     char choice = sc.next().charAt(0);
 
     if (choice == '1') {
@@ -70,12 +80,13 @@ public class MainController {
         System.out.println("\n" + e.getMessage());
       }
     } else {
+      portfolio.savePortfolio();
       return true;
     }
     return false;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     MainController mc = new MainController();
     mc.handleMainMenuChoice();
   }
