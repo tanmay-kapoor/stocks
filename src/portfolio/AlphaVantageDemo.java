@@ -49,6 +49,9 @@ public class AlphaVantageDemo {
        */
       in = url.openStream();
       int b = in.read();
+      if((char)b == '{') {
+        throw new IllegalArgumentException("This ticker is not associated with a company.");
+      }
       while (b != 10) {
         b = in.read();
       }

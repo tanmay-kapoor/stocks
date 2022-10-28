@@ -7,11 +7,13 @@ import java.util.Map;
 public class StockPortfolio implements Portfolio {
 
   private final String username;
+  private final String name;
   private Map<String, Double> stocks;
   private final AlphaVantageDemo api;
 
-  public StockPortfolio() {
+  public StockPortfolio(String name) {
     username = "idk";
+    this.name = name;
     stocks = new HashMap<>();
     api = new AlphaVantageDemo();
   }
@@ -19,14 +21,18 @@ public class StockPortfolio implements Portfolio {
   @Override
   public void addShare(String tickerSymbol, double quantity) throws IOException, IllegalArgumentException {
     if (stocks.containsKey(tickerSymbol)) {
-      throw new IOException("This stock already exists in your portfolio.");
+      throw new IOException("This stock already exists in your portfolio. Please enter a new ticker.");
     }
 
-    if (quantity < 1) {
-      throw new IllegalArgumentException("Number of shares cannot be less than 1.");
+    try {
+      api.getShareDetails(tickerSymbol, "2022-10-26");
+      if (quantity < 1) {
+        throw new IllegalArgumentException("Number of shares cannot be less than 1. Please enter a valid quantity.");
+      }
+      stocks.put(tickerSymbol, quantity);
+    } catch(IllegalArgumentException e) {
+      throw new IllegalArgumentException("This ticker symbol is not associated with any company. Please enter a valid ticker.");
     }
-
-    stocks.put(tickerSymbol, quantity);
   }
 
   @Override
