@@ -2,6 +2,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import api.AlphaVantageDemo;
 import portfolio.Portfolio;
 import portfolio.StockPortfolio;
 
@@ -11,7 +12,7 @@ public class StockPortfolioTest {
 
   @Test
   public void testGetValue() {
-    Portfolio portfolio = new StockPortfolio("idk", "random");
+    Portfolio portfolio = new StockPortfolio("idk", "random", new AlphaVantageDemo());
 
     try {
       portfolio.addShare("GOOG", 1);

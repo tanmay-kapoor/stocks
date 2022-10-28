@@ -4,6 +4,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+import api.AlphaVantageDemo;
+import api.ShareApi;
 import portfolio.Portfolio;
 import portfolio.StockPortfolio;
 import views.Menu;
@@ -31,8 +33,11 @@ public class MainController {
           System.out.print("\nEnter portfolio name : ");
           String portfolioName = sc.nextLine();
           String username = "idk";
+          ShareApi api = new AlphaVantageDemo();
+
           // check if this portfolio for this user exists or not
-          portfolio = new StockPortfolio(username, portfolioName);
+
+          portfolio = new StockPortfolio(username, portfolioName, api);
           boolean shouldExit;
           do {
             menu.printCreatePortfolioMenu();
@@ -46,10 +51,15 @@ public class MainController {
           break;
 
         case '2':
-          BufferedReader csvReader = new BufferedReader(new FileReader("portfolio.csv"));
+          System.out.print("Enter portfolio name : ");
+          portfolioName = sc.nextLine();
+          System.out.println();
+
+          // check whether it exists in portfolio names file.
+
+          BufferedReader csvReader = new BufferedReader(new FileReader(String.format("%s.csv", portfolioName)));
           String row;
           while ((row = csvReader.readLine()) != null) {
-//            String[] data = row.split(",");
             System.out.println(row);
           }
           csvReader.close();
@@ -76,7 +86,7 @@ public class MainController {
         portfolio.addShare(tickerSymbol, quantity);
         System.out.println("\nSuccess!");
         return false;
-      } catch (IOException | IllegalArgumentException e) {
+      } catch (Exception e) {
         System.out.println("\n" + e.getMessage());
       }
     } else {
