@@ -26,9 +26,10 @@ public class MainController {
       switch (choice) {
         case 1:
           System.out.print("\nEnter portfolio name : ");
-          String name = sc.nextLine();
+          String portfolioName = sc.nextLine();
+          String username = "idk";
           // check if this portfolio for this user exists or not
-          portfolio = new StockPortfolio(name);
+          portfolio = new StockPortfolio(username, portfolioName);
           do {
             menu.printCreatePortfolioMenu();
           } while (!this.handleCreatePortfolioChoice());

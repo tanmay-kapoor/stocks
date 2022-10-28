@@ -36,6 +36,7 @@ public class AlphaVantageDemo {
 
     InputStream in = null;
     StringBuilder output = new StringBuilder();
+    String[] keys;
 
     try {
       /*
@@ -48,13 +49,19 @@ public class AlphaVantageDemo {
       This is printed below.
        */
       in = url.openStream();
+
       int b = in.read();
       if((char)b == '{') {
         throw new IllegalArgumentException("This ticker is not associated with a company.");
       }
+
       while (b != 10) {
+        output.append((char)b);
         b = in.read();
       }
+
+      keys = output.toString().split(",");
+      output = new StringBuilder();
 
       while (b != -1) {
         b = in.read();
@@ -75,7 +82,6 @@ public class AlphaVantageDemo {
 
     Map<String, Double> shareDetails = new HashMap<>();
     String[] details = output.toString().split(",");
-    String[] keys = {"timestamp", "open", "high", "low", "close", "volume"};
 
     for(int i = 1; i<details.length; i++) {
       shareDetails.put(keys[i], Double.parseDouble(details[i]));
