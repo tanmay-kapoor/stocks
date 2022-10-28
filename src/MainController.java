@@ -16,67 +16,63 @@ public class MainController {
   }
 
   void handleMainMenuChoice() {
-    int choice;
+    char choice;
 
     do {
       menu.printMainMenu();
-      choice = sc.nextInt();
+      choice = sc.next().charAt(0);
       sc.nextLine();
 
       switch (choice) {
-        case 1:
+        case '1':
           System.out.print("\nEnter portfolio name : ");
           String portfolioName = sc.nextLine();
           String username = "idk";
           // check if this portfolio for this user exists or not
           portfolio = new StockPortfolio(username, portfolioName);
+          boolean shouldExit;
           do {
             menu.printCreatePortfolioMenu();
-          } while (!this.handleCreatePortfolioChoice());
+            try {
+              shouldExit = this.handleCreatePortfolioChoice();
+            } catch (IllegalArgumentException e) {
+              System.out.println("\n" + e.getMessage());
+              shouldExit = false;
+            }
+          } while (!shouldExit);
           break;
 
-        case 2:
+        case '2':
           break;
 
-        case 3:
-          break;
-
-        case 4:
+        case '3':
           break;
 
         default:
-          throw new IllegalArgumentException("Invalid choice. Please choose again");
+          break;
       }
-    } while (choice != 4);
+    } while (choice == '1' || choice == '2' || choice == '3');
   }
 
   boolean handleCreatePortfolioChoice() {
-    int choice = sc.nextInt();
-    boolean shouldExit = false;
+    char choice = sc.next().charAt(0);
 
-    switch (choice) {
-      case 1:
-        System.out.print("\nEnter ticker symbol of the company you would like to add to this portfolio : ");
-        String tickerSymbol = sc.next();
-        System.out.print("Enter the number of shares you would like to add : ");
-        int quantity = sc.nextInt();
-        try {
-          portfolio.addShare(tickerSymbol, quantity);
-          System.out.println("\nSuccess!");
-          break;
-        } catch (IOException | IllegalArgumentException e) {
-          System.out.println("\n" + e.getMessage());
-        }
-        break;
-
-      case 2:
-        shouldExit = true;
-        break;
-
-      default:
-        throw new IllegalArgumentException("Invalid choice. Please choose again");
+    if (choice == '1') {
+      System.out.print("\nEnter ticker symbol of the company you would like to add to this portfolio : ");
+      String tickerSymbol = sc.next();
+      System.out.print("Enter the number of shares you would like to add : ");
+      int quantity = sc.nextInt();
+      try {
+        portfolio.addShare(tickerSymbol, quantity);
+        System.out.println("\nSuccess!");
+        return false;
+      } catch (IOException | IllegalArgumentException e) {
+        System.out.println("\n" + e.getMessage());
+      }
+    } else {
+      return true;
     }
-    return shouldExit;
+    return false;
   }
 
   public static void main(String[] args) {
