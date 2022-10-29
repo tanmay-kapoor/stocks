@@ -12,12 +12,12 @@ public class StockPortfolioTest {
 
   @Test
   public void testGetValue() {
-    Portfolio portfolio = new StockPortfolio("idk", "random", new AlphaVantageDemo());
+    Portfolio portfolio = new StockPortfolio( "random", new AlphaVantageDemo());
 
     try {
       portfolio.addShare("GOOG", 1);
       portfolio.addShare("MSFT", 2);
-    } catch(IOException | IllegalArgumentException e) {
+    } catch(IllegalArgumentException e) {
       fail(e.getMessage());
     }
 

@@ -1,6 +1,5 @@
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -14,10 +13,17 @@ public class MainController {
   private final Scanner sc;
   private final Menu menu;
   private Portfolio portfolio;
+  private final ShareApi api;
+
+  private final File path;
+  private File[] allPortfolios;
 
   public MainController() {
     sc = new Scanner(System.in);
     menu = new Menu();
+    api = new AlphaVantageDemo();
+    path = new File(System.getProperty("user.dir") + "/src/files/");
+    allPortfolios = path.listFiles();
   }
 
   void handleMainMenuChoice() throws IOException {
@@ -30,39 +36,53 @@ public class MainController {
 
       switch (choice) {
         case '1':
-          System.out.print("\nEnter portfolio name : ");
-          String portfolioName = sc.nextLine();
-          String username = "idk";
-          ShareApi api = new AlphaVantageDemo();
-
-          // check if this portfolio for this user exists or not
-
-          portfolio = new StockPortfolio(username, portfolioName, api);
-          boolean shouldExit;
+          boolean shouldContinue = true;
+          String portfolioName;
           do {
-            menu.printCreatePortfolioMenu();
             try {
-              shouldExit = this.handleCreatePortfolioChoice();
-            } catch (IllegalArgumentException | IOException e) {
+              System.out.print("\nEnter portfolio name : ");
+              portfolioName = sc.nextLine();
+
+              // check if this portfolio for this user exists or not
+              for (File file : allPortfolios) {
+                if (file.getName().equals(portfolioName + ".csv")) {
+                  throw new IllegalArgumentException("This portfolio already exists, please use a unique name.");
+                }
+              }
+              shouldContinue = false;
+
+              portfolio = new StockPortfolio(portfolioName, api);
+              boolean shouldExit;
+              do {
+                menu.printCreatePortfolioMenu();
+                try {
+                  shouldExit = this.handleCreatePortfolioChoice();
+                } catch (IllegalArgumentException | IOException e) {
+                  System.out.println("\n" + e.getMessage());
+                  shouldExit = false;
+                }
+              } while (!shouldExit);
+            } catch (IllegalArgumentException e) {
               System.out.println("\n" + e.getMessage());
-              shouldExit = false;
             }
-          } while (!shouldExit);
+          } while(shouldContinue);
           break;
 
         case '2':
-          System.out.print("Enter portfolio name : ");
-          portfolioName = sc.nextLine();
-          System.out.println();
+          shouldContinue = true;
 
-          // check whether it exists in portfolio names file.
+          do {
+            System.out.print("Enter portfolio name : ");
+            portfolioName = sc.nextLine();
+            portfolio = new StockPortfolio("idk", new AlphaVantageDemo());
 
-          BufferedReader csvReader = new BufferedReader(new FileReader(String.format("%s.csv", portfolioName)));
-          String row;
-          while ((row = csvReader.readLine()) != null) {
-            System.out.println(row);
-          }
-          csvReader.close();
+            try {
+              portfolio.getPortfolioComposition(portfolioName);
+              shouldContinue = false;
+            } catch (FileNotFoundException e) {
+              System.out.println(e.getMessage() + "\n");
+            }
+          } while (shouldContinue);
           break;
 
         case '3':
@@ -74,23 +94,31 @@ public class MainController {
     } while (choice == '1' || choice == '2' || choice == '3');
   }
 
-  boolean handleCreatePortfolioChoice() throws IOException {
+  boolean handleCreatePortfolioChoice() throws RuntimeException, IOException {
     char choice = sc.next().charAt(0);
 
     if (choice == '1') {
       System.out.print("\nEnter ticker symbol of the company you would like to add to this portfolio : ");
       String tickerSymbol = sc.next();
-      System.out.print("Enter the number of shares you would like to add : ");
-      int quantity = sc.nextInt();
+
       try {
+        api.getShareDetails(tickerSymbol, "2022-10-26");
+
+        System.out.print("Enter the number of shares you would like to add : ");
+        int quantity = sc.nextInt();
+
+        if (quantity < 1) {
+          throw new IllegalArgumentException("Number of shares cannot be less than 1. Please enter a valid quantity.");
+        }
         portfolio.addShare(tickerSymbol, quantity);
         System.out.println("\nSuccess!");
         return false;
-      } catch (Exception e) {
+      } catch (RuntimeException e) {
         System.out.println("\n" + e.getMessage());
       }
     } else {
       portfolio.savePortfolio();
+      allPortfolios = path.listFiles();
       return true;
     }
     return false;
