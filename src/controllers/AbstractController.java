@@ -111,7 +111,7 @@ abstract class AbstractController implements Controller {
     commonStuff(Function.GetValue);
   }
 
-  public void commonStuff(Function function) throws IOException {
+  private void commonStuff(Function function) throws IOException {
     if (allPortfolios.size() == 0) {
       menu.printMessage("\nNo existing portfolios.");
     } else {
@@ -177,7 +177,10 @@ abstract class AbstractController implements Controller {
     }
   }
 
-  private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio, String portfolioName) throws RuntimeException, IOException {
+  private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
+                                              String portfolioName)
+          throws RuntimeException, IOException {
+
     if (choice == '1') {
       displayAddStockStuff(portfolio);
     } else {
