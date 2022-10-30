@@ -1,32 +1,33 @@
 package controllers;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
-import models.portfolio.StockPortfolio;
 import views.Menu;
 
 abstract class AbstractController implements Controller {
   private final Menu menu;
-  private Portfolio portfolio;
-  private String portfolioName;
-  private final ShareApi api;
+  protected final ShareApi api;
+  protected final String path;
   private final List<String> allPortfolios;
   private final Map<String, Portfolio> allPortfolioObjects;
 
-  protected AbstractController(Menu menu, ShareApi api, String folder) throws IOException, ClassNotFoundException {
+  protected abstract Portfolio createPortfolio(String portfolioName);
+
+  protected abstract Portfolio createPortfolio(String portfolioName, Map<String, Double> stocks);
+
+  protected AbstractController(Menu menu, ShareApi api, String folder) {
     this.menu = menu;
     this.api = api;
 
-    String path = String.format(System.getProperty("user.dir") + "/src/files/%s/", folder);
+    this.path = String.format(System.getProperty("user.dir") + "/src/files/%s/", folder);
     File directory = new File(path);
     File[] files = directory.listFiles();
 
@@ -40,12 +41,6 @@ abstract class AbstractController implements Controller {
         name = name.substring(0, name.lastIndexOf("."));
         if (extension.equals("csv")) {
           allPortfolios.add(name);
-        } else {
-          FileInputStream fi = new FileInputStream(file);
-          ObjectInputStream oi = new ObjectInputStream(fi);
-          allPortfolioObjects.put(name, (Portfolio) oi.readObject());
-          oi.close();
-          fi.close();
         }
       }
     }
@@ -74,7 +69,7 @@ abstract class AbstractController implements Controller {
         default:
           break;
       }
-    } while (choice == '1' || choice == '2' || choice == '3');
+    } while (choice >= '1' && choice <= '3');
   }
 
   private void handleCreatePortfolioChoice() {
@@ -82,21 +77,21 @@ abstract class AbstractController implements Controller {
 
     do {
       try {
-        this.portfolioName = menu.getPortfolioName();
+        String portfolioName = menu.getPortfolioName();
 
         for (String existingPortfolio : allPortfolios) {
-          if (this.portfolioName.equalsIgnoreCase(existingPortfolio)) {
+          if (portfolioName.equalsIgnoreCase(existingPortfolio)) {
             throw new IllegalArgumentException("This portfolio already exists, " +
                     "please use a unique name.");
           }
         }
         shouldContinue = false;
-        portfolio = new StockPortfolio(this.portfolioName, api);
+        Portfolio portfolio = createPortfolio(portfolioName);
         boolean shouldExit;
         do {
           char option = menu.getCreatePortfolioChoice();
           try {
-            shouldExit = this.handleCreatePortfolioOption(option);
+            shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
           } catch (IllegalArgumentException | IOException e) {
             menu.printMessage("\n" + e.getMessage());
             shouldExit = false;
@@ -127,44 +122,69 @@ abstract class AbstractController implements Controller {
       menu.printMessage(portfolioNames.toString());
       String name = menu.getPortfolioName();
 
-      for (String pName : allPortfolioObjects.keySet()) {
-        if (name.equalsIgnoreCase(pName)) {
-          Portfolio p = allPortfolioObjects.get(pName);
-          switch (function) {
-            case Composition:
-              menu.printMessage(p.getComposition());
-              break;
-
-            case GetValue:
-              String date = menu.getDateForCheckValue();
-              String value;
-              if (date.equals("today")) {
-                value = String.valueOf(p.getValue());
-              } else {
-                value = String.valueOf(p.getValue(date));
-              }
-              menu.printMessage(value);
-              break;
-
-            default:
-              throw new IllegalArgumentException("Illegal value");
+      Portfolio p = null;
+      if (allPortfolioObjects.containsKey(name) || allPortfolioObjects.containsKey(name.toLowerCase()) || allPortfolioObjects.containsKey(name.toUpperCase())) {
+        p = allPortfolioObjects.get(name);
+      } else {
+        for (String pName : allPortfolios) {
+          if (name.equalsIgnoreCase(pName)) {
+            Scanner csvReader = new Scanner(new File(String.format("%s%s.csv", this.path, pName)));
+            Map<String, Double> stocks = new HashMap<>();
+            csvReader.nextLine();
+            while (csvReader.hasNext()) {
+              String[] vals = csvReader.nextLine().split(",");
+              stocks.put(vals[0], Double.parseDouble(vals[1]));
+            }
+            p = createPortfolio(pName, stocks);
+            allPortfolioObjects.put(pName, p);
+            break;
           }
-          return;
         }
       }
 
-      menu.printMessage(String.format("\n\"%s\" named portfolio does not exist.", name));
+      if (p != null) {
+        switch (function) {
+          case Composition:
+            menu.printMessage(p.getComposition());
+            break;
+
+          case GetValue:
+            boolean shouldContinue;
+            do {
+              shouldContinue = false;
+              String date = menu.getDateForCheckValue();
+              try {
+                String value;
+                if (date.equals("today")) {
+                  value = String.valueOf(p.getValue());
+                } else {
+                  value = String.valueOf(p.getValue(date));
+                }
+                menu.printMessage("\n" + value);
+              } catch (NullPointerException e) {
+                shouldContinue = true;
+                menu.printMessage("\nNo data available for this date.");
+              }
+            } while (shouldContinue);
+            break;
+
+          default:
+            throw new IllegalArgumentException("Illegal value");
+        }
+      } else {
+        menu.printMessage(String.format("\n\"%s\" named portfolio does not exist.", name));
+      }
     }
   }
 
-  private boolean handleCreatePortfolioOption(char choice) throws RuntimeException, IOException {
+  private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio, String portfolioName) throws RuntimeException, IOException {
     if (choice == '1') {
       displayAddStockStuff(portfolio);
     } else {
       try {
         portfolio.savePortfolio();
-        allPortfolios.add(this.portfolioName);
-        allPortfolioObjects.put(this.portfolioName, this.portfolio);
+        allPortfolios.add(portfolioName);
+        allPortfolioObjects.put(portfolioName, portfolio);
         return true;
       } catch (RuntimeException e) {
         menu.printMessage("\n" + e.getMessage());
