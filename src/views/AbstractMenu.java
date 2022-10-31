@@ -1,16 +1,21 @@
 package views;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 abstract class AbstractMenu implements Menu {
+  protected final Readable in;
+  protected final Appendable out;
   protected final Scanner sc;
 
-  protected AbstractMenu() {
-    sc = new Scanner(System.in);
+  protected AbstractMenu(Readable in, Appendable out) {
+    this.in = in;
+    this.out = out;
+    sc = new Scanner(this.in);
   }
 
   @Override
-  public char getMainMenuChoice() {
+  public char getMainMenuChoice() throws IOException {
     this.print("\n1. Create Portfolio.\n" +
             "2. See portfolio composition.\n" +
             "3. Check portfolio value.\n" +
@@ -22,18 +27,18 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public String getPortfolioName() {
+  public String getPortfolioName() throws IOException {
     this.print("\nEnter portfolio name : ");
     return sc.nextLine();
   }
 
   @Override
-  public void printMessage(String msg) {
+  public void printMessage(String msg) throws IOException {
     this.print(msg + "\n");
   }
 
   @Override
-  public char getCreatePortfolioChoice() {
+  public char getCreatePortfolioChoice() throws IOException {
     this.print("\n1. Add a share to your portfolio.\n" +
             "Press any other key to exit.\n" +
             "\nEnter your choice : ");
@@ -43,7 +48,7 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public String getTickerSymbol() {
+  public String getTickerSymbol() throws IOException {
     this.print("\nEnter ticker symbol of the company you would like to add to this portfolio : ");
     String portfolioName = sc.next();
     sc.nextLine();
@@ -51,7 +56,7 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public double getQuantity() {
+  public double getQuantity() throws IOException {
     this.print("Enter the number of shares you would like to add : ");
     double quantity = sc.nextDouble();
     sc.nextLine();
@@ -59,7 +64,7 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public String getDateForCheckValue() {
+  public String getDateForCheckValue() throws IOException {
     String date = "today";
     char choice;
     do {
@@ -83,7 +88,7 @@ abstract class AbstractMenu implements Menu {
     return date;
   }
 
-  private void print(String msg) {
-    System.out.print(msg);
+  private void print(String msg) throws IOException {
+    this.out.append(msg);
   }
 }

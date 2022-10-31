@@ -72,7 +72,7 @@ abstract class AbstractController implements Controller {
     } while (choice >= '1' && choice <= '3');
   }
 
-  private void handleCreatePortfolioChoice() {
+  private void handleCreatePortfolioChoice() throws IOException {
     boolean shouldContinue = true;
 
     do {
@@ -196,7 +196,7 @@ abstract class AbstractController implements Controller {
     return false;
   }
 
-  private void displayAddStockStuff(Portfolio portfolio) {
+  private void displayAddStockStuff(Portfolio portfolio) throws IOException {
     String tickerSymbol = menu.getTickerSymbol();
 
     try {
