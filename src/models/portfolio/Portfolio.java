@@ -44,15 +44,13 @@ public interface Portfolio {
    * Shows the distribution of the shares and their quantity in a portfolio.
    *
    * @return quantity of shares next to their ticker symbols.
-   * @throws IOException
    */
-  String getComposition() throws IOException;
+  String getComposition();
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.
    *
    * @return true if the portfolio is saved successfully, false if not saved.
-   * @throws IOException
    */
   boolean savePortfolio() throws IOException;
 

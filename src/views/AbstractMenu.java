@@ -1,6 +1,7 @@
 package views;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 /**
@@ -8,18 +9,18 @@ import java.util.Scanner;
  * menu classes.
  */
 abstract class AbstractMenu implements Menu {
-  protected final Readable in;
-  protected final Appendable out;
+  protected final InputStream in;
+  protected final PrintStream out;
   protected final Scanner sc;
 
-  protected AbstractMenu(Readable in, Appendable out) {
+  protected AbstractMenu(InputStream in, PrintStream out) {
     this.in = in;
     this.out = out;
     sc = new Scanner(this.in);
   }
 
   @Override
-  public char getMainMenuChoice() throws IOException {
+  public char getMainMenuChoice() {
     this.print("\n1. Create Portfolio.\n" +
             "2. See portfolio composition.\n" +
             "3. Check portfolio value.\n" +
@@ -29,25 +30,25 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public String getPortfolioName() throws IOException {
+  public String getPortfolioName() {
     this.print("\nEnter portfolio name : ");
     return sc.nextLine();
   }
 
   @Override
-  public void printMessage(String msg) throws IOException {
+  public void printMessage(String msg) {
     this.print(msg + "\n");
   }
 
   @Override
-  public char getCreatePortfolioThroughWhichMethod() throws IOException {
+  public char getCreatePortfolioThroughWhichMethod() {
     this.print("\nCreate portfolio through :\n1. Interface\n2. File upload" +
             "\nPress any other key to go back.\n\nEnter your choice : ");
     return getCharVal();
   }
 
   @Override
-  public char getAddToPortfolioChoice() throws IOException {
+  public char getAddToPortfolioChoice() {
     this.print("\n1. Add a share to your portfolio.\n" +
             "Press any other key to go back.\n" +
             "\nEnter your choice : ");
@@ -55,19 +56,19 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public String getFilePath() throws IOException {
+  public String getFilePath() {
     this.print("\nEnter the path of csv file for portfolio : ");
     return sc.nextLine();
   }
 
   @Override
-  public String getTickerSymbol() throws IOException {
+  public String getTickerSymbol() {
     this.print("\nEnter ticker symbol of the company you would like to add to this portfolio : ");
     return getWordVal();
   }
 
   @Override
-  public double getQuantity() throws IOException {
+  public double getQuantity() {
     this.print("Enter the number of shares you would like to add : ");
     double quantity = sc.nextDouble();
     sc.nextLine();
@@ -75,19 +76,19 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public char getDateChoice() throws IOException {
+  public char getDateChoice() {
     this.print("\nCheck value for\n1. Today\n2. Custom date\nPress any other key to go back.\n\nEnter choice : ");
     return getCharVal();
   }
 
   @Override
-  public String getDateForValue() throws IOException {
+  public String getDateForValue() {
     this.print("\nEnter date in YYYY-MM-DD format : ");
     return getWordVal();
   }
 
-  private void print(String msg) throws IOException {
-    this.out.append(msg);
+  private void print(String msg) {
+    this.out.print(msg);
   }
 
   private char getCharVal() {

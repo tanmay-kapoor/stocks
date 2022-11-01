@@ -1,6 +1,3 @@
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import controllers.Controller;
 import controllers.StockController;
 import models.api.AlphaVantageDemo;
@@ -12,9 +9,9 @@ import views.StockMenu;
  * This is where the1
  */
 public class ProgramRunner {
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
 
-    Menu menu = new StockMenu(new InputStreamReader(System.in), System.out);
+    Menu menu = new StockMenu(System.in, System.out);
     ShareApi api = new AlphaVantageDemo();
     String folder = "stocks";
 

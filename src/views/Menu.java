@@ -14,7 +14,7 @@ public interface Menu {
    * @return option chosen by the user.
    * @throws IOException
    */
-  char getMainMenuChoice() throws IOException;
+  char getMainMenuChoice();
 
   /**
    * Gets the name of teh portfolio from the client.
@@ -22,7 +22,7 @@ public interface Menu {
    * @return the name of the portfolio in string format.
    * @throws IOException
    */
-  String getPortfolioName() throws IOException;
+  String getPortfolioName();
 
   /**
    * Prints the message to be displayed to the client.
@@ -30,7 +30,7 @@ public interface Menu {
    * @param msg message to be displayed.
    * @throws IOException
    */
-  void printMessage(String msg) throws IOException;
+  void printMessage(String msg);
 
   /**
    * Provides the choices that the user gets after choosing to create a portfolio.
@@ -38,11 +38,11 @@ public interface Menu {
    * @return choice entered by the user.
    * @throws IOException
    */
-  char getCreatePortfolioThroughWhichMethod() throws IOException;
+  char getCreatePortfolioThroughWhichMethod();
 
-  char getAddToPortfolioChoice() throws IOException;
+  char getAddToPortfolioChoice();
 
-  String getFilePath() throws IOException;
+  String getFilePath();
 
   /**
    * Asks the user for the ticker symbol.
@@ -50,7 +50,7 @@ public interface Menu {
    * @return the ticker symbol chosen by the user.
    * @throws IOException
    */
-  String getTickerSymbol() throws IOException;
+  String getTickerSymbol();
 
   /**
    * Gives the quantity of the shares.
@@ -58,7 +58,7 @@ public interface Menu {
    * @return double representing the quantity.
    * @throws IOException
    */
-  double getQuantity() throws IOException;
+  double getQuantity();
 
   /**
    * Provides user the options for the date that they would like to choose. They may their
@@ -67,7 +67,7 @@ public interface Menu {
    * @return the choice entered by the user.
    * @throws IOException
    */
-  char getDateChoice() throws IOException;
+  char getDateChoice();
 
   /**
    * Prints the menu for user that states the format in which they are supposed to enter the date.
@@ -75,5 +75,5 @@ public interface Menu {
    * @return the date in string format.
    * @throws IOException
    */
-  String getDateForValue() throws IOException;
+  String getDateForValue();
 }

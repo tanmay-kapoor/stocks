@@ -54,7 +54,7 @@ abstract class AbstractController implements Controller {
   }
 
   @Override
-  public void go() throws IOException {
+  public void go() {
     char choice;
 
     do {
@@ -76,7 +76,7 @@ abstract class AbstractController implements Controller {
     } while (choice >= '1' && choice <= '3');
   }
 
-  private void handleCreatePortfolioChoice() throws IOException {
+  private void handleCreatePortfolioChoice() {
     char c;
     c = menu.getCreatePortfolioThroughWhichMethod();
     switch (c) {
@@ -90,7 +90,7 @@ abstract class AbstractController implements Controller {
     }
   }
 
-  private void handleCreatePortfolioThroughInterface() throws IOException {
+  private void handleCreatePortfolioThroughInterface() {
     boolean shouldContinue;
 
     do {
@@ -110,7 +110,7 @@ abstract class AbstractController implements Controller {
           char option = menu.getAddToPortfolioChoice();
           try {
             shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
-          } catch (IllegalArgumentException | IOException e) {
+          } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
             shouldExit = false;
           }
@@ -119,7 +119,7 @@ abstract class AbstractController implements Controller {
     } while (shouldContinue);
   }
 
-  private void handleCreatePortfolioThroughUpload() throws IOException {
+  private void handleCreatePortfolioThroughUpload() {
     boolean shouldContinue;
     do {
       shouldContinue = true;
@@ -141,7 +141,7 @@ abstract class AbstractController implements Controller {
             menu.printMessage(String.format("\n\"%s\" named portfolio already exists." +
                     " Please rename your file and try again!", fileName));
           } else {
-            Portfolio portfolio = getStocksFromCsv(file);
+            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file);
             savePortfolio(portfolioName, portfolio);
             shouldContinue = false;
           }
@@ -154,21 +154,15 @@ abstract class AbstractController implements Controller {
     } while (shouldContinue);
   }
 
-  private Portfolio getStocksFromCsv(File file) throws FileNotFoundException {
-    String fileName = file.getName();
-    String pName = fileName.substring(0, fileName.lastIndexOf("."));
-    return createPortfolioFromCsv(pName, file);
-  }
-
-  private void handleExistingPortfoliosOption() throws IOException {
+  private void handleExistingPortfoliosOption() {
     commonStuff(Function.Composition);
   }
 
-  private void handlePortfolioValueOption() throws IOException {
+  private void handlePortfolioValueOption() {
     commonStuff(Function.GetValue);
   }
 
-  private void commonStuff(Function function) throws IOException {
+  private void commonStuff(Function function) {
     if (allPortfolios.size() == 0) {
       menu.printMessage("\nNo existing portfolios.");
     } else {
@@ -186,8 +180,12 @@ abstract class AbstractController implements Controller {
         portfolio = allPortfolioObjects.get(name);
       } else {
         if(allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
-          portfolio = createPortfolioFromCsv(name, new File(String.format("%s%s.csv", this.path, name)));
-          allPortfolioObjects.put(name, portfolio);
+          try {
+            portfolio = createPortfolioFromCsv(name, new File(String.format("%s%s.csv", this.path, name)));
+            allPortfolioObjects.put(name, portfolio);
+          } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+          }
         }
       }
 
@@ -242,8 +240,7 @@ abstract class AbstractController implements Controller {
   }
 
   private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
-                                              String portfolioName)
-          throws RuntimeException, IOException {
+                                              String portfolioName) {
 
     if (choice == '1') {
       displayAddStockStuff(portfolio);
@@ -258,8 +255,13 @@ abstract class AbstractController implements Controller {
     return false;
   }
 
-  private void savePortfolio(String portfolioName, Portfolio portfolio) throws IOException {
-    boolean saved = portfolio.savePortfolio();
+  private void savePortfolio(String portfolioName, Portfolio portfolio) {
+    boolean saved;
+    try {
+      saved = portfolio.savePortfolio();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     if (saved) {
       menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
       allPortfolios.add(portfolioName);
@@ -267,7 +269,7 @@ abstract class AbstractController implements Controller {
     }
   }
 
-  private void displayAddStockStuff(Portfolio portfolio) throws IOException {
+  private void displayAddStockStuff(Portfolio portfolio) {
     String tickerSymbol = menu.getTickerSymbol();
 
     try {
