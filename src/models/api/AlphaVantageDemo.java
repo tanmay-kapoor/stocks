@@ -9,9 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * An API by Alpha Vantage that is used to get necessary data points about stocks which are
+ * registered on the NASDAQ. It is primarily used to fetch stock's OHCL and its traded
+ * volume on a particular date.
+ */
 public class AlphaVantageDemo implements ShareApi {
   private final String apiKey;
 
+  /**
+   * The API key that is going to be used by the API.
+   */
   public AlphaVantageDemo() {
     this.apiKey = "NAO61MQDSY9EPTN";
   }
@@ -54,17 +62,17 @@ public class AlphaVantageDemo implements ShareApi {
       boolean found = false;
       for (String line : lines) {
         String[] vals = line.split(",");
-        if(!vals[0].equals("timestamp")) {
+        if (!vals[0].equals("timestamp")) {
           record = line;
           LocalDate rowDate = LocalDate.parse(vals[0]);
           int diff = rowDate.compareTo(dateAsked);
-          if(diff <= 0) {
+          if (diff <= 0) {
             found = true;
             break;
           }
         }
       }
-      if(!found) {
+      if (!found) {
         throw new IllegalArgumentException("No price data found for " + dateAsked.toString());
       }
     } catch (IOException e) {
