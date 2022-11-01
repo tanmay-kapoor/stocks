@@ -3,6 +3,10 @@ package views;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * An Abstract class that will be used for providing views that will be common to other
+ * menu classes.
+ */
 abstract class AbstractMenu implements Menu {
   protected final Readable in;
   protected final Appendable out;
