@@ -23,13 +23,14 @@ public class StockPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
-  public StockPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Map<String, Object>> stocks, ShareApi api) {
+  public StockPortfolio(String portfolioName, LocalDate dateCreated,
+                        Map<String, Map<String, Object>> stocks, ShareApi api) {
     this(portfolioName, dateCreated, api);
     this.stocks = stocks;
   }
 
   @Override
-  public void addShare(String tickerSymbol, double quantity) throws RuntimeException {
+  public void addShare(String tickerSymbol, double quantity) {
     tickerSymbol = tickerSymbol.toUpperCase();
 
     Map<String, Object> details;
@@ -52,14 +53,15 @@ public class StockPortfolio implements Portfolio {
   @Override
   public double getValue(LocalDate date) throws RuntimeException {
     if (date.compareTo(dateCreated) < 0) {
-      throw new IllegalArgumentException(String.format("Cannot get value for date that is before " +
-              "the portfolio's creation date. (%s)", dateCreated));
+      throw new IllegalArgumentException(String.format("Cannot get value for " +
+              "date that is before the portfolio's creation date. (%s)", dateCreated));
     }
 
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-      totalValue = totalValue + (shareDetails.get("close") * (double) stocks.get(tickerSymbol).get("quantity"));
+      totalValue = totalValue + (shareDetails.get("close") *
+              (double) stocks.get(tickerSymbol).get("quantity"));
     }
 
     return totalValue;
@@ -82,9 +84,10 @@ public class StockPortfolio implements Portfolio {
   }
 
   @Override
-  public void savePortfolio() throws RuntimeException, IOException {
+  public boolean savePortfolio() throws IOException {
     if (stocks.size() == 0) {
-      throw new RuntimeException("You must add at least 1 share to save a portfolio!");
+      System.out.println(stocks.size() );
+      return false;
     }
 
     String fileName = String.format(path, portfolioName, "csv");
@@ -103,5 +106,6 @@ public class StockPortfolio implements Portfolio {
 
     csvWriter.flush();
     csvWriter.close();
+    return true;
   }
 }

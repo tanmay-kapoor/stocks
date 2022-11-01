@@ -217,9 +217,13 @@ abstract class AbstractController implements Controller {
       displayAddStockStuff(portfolio);
     } else {
       try {
-        portfolio.savePortfolio();
-        allPortfolios.add(portfolioName);
-        allPortfolioObjects.put(portfolioName, portfolio);
+        boolean saved = portfolio.savePortfolio();
+
+        if(saved) {
+          allPortfolios.add(portfolioName);
+          allPortfolioObjects.put(portfolioName, portfolio);
+        }
+
         return true;
       } catch (RuntimeException e) {
         menu.printMessage("\n" + e.getMessage());

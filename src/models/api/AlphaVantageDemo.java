@@ -35,7 +35,7 @@ public class AlphaVantageDemo implements ShareApi {
               + "&symbol"
               + "=" + tickerSymbol + "&apikey=" + apiKey + "&datatype=csv");
     } catch (MalformedURLException e) {
-      throw new RuntimeException("the alphavantage API has either changed or "
+      throw new RuntimeException("the AlphaVantage API has either changed or "
               + "no longer works");
     }
 
