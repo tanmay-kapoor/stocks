@@ -6,11 +6,12 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import models.Details;
 import models.api.ShareApi;
 
 public class StockPortfolio implements Portfolio {
   private final String portfolioName;
-  private Map<String, Map<String, Object>> stocks;
+  private Map<String, Details> stocks;
   private final LocalDate dateCreated;
   private final ShareApi api;
   private final String path;
@@ -24,7 +25,7 @@ public class StockPortfolio implements Portfolio {
   }
 
   public StockPortfolio(String portfolioName, LocalDate dateCreated,
-                        Map<String, Map<String, Object>> stocks, ShareApi api) {
+                        Map<String, Details> stocks, ShareApi api) {
     this(portfolioName, dateCreated, api);
     this.stocks = stocks;
   }
@@ -33,14 +34,12 @@ public class StockPortfolio implements Portfolio {
   public void addShare(String tickerSymbol, double quantity) {
     tickerSymbol = tickerSymbol.toUpperCase();
 
-    Map<String, Object> details;
+    Details details;
     if (stocks.containsKey(tickerSymbol)) {
       details = stocks.get(tickerSymbol);
-      details.put("quantity", (double) details.get("quantity") + quantity);
+      details = new Details(details.getQuantity() + quantity, details.getDateCreated());
     } else {
-      details = new HashMap<>();
-      details.put("quantity", quantity);
-      details.put("dateCreated", LocalDate.now());
+      details = new Details(quantity, LocalDate.now());
     }
     stocks.put(tickerSymbol, details);
   }
@@ -60,8 +59,7 @@ public class StockPortfolio implements Portfolio {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-      totalValue = totalValue + (shareDetails.get("close") *
-              (double) stocks.get(tickerSymbol).get("quantity"));
+      totalValue += (shareDetails.get("close") * stocks.get(tickerSymbol).getQuantity());
     }
 
     return totalValue;
@@ -71,14 +69,14 @@ public class StockPortfolio implements Portfolio {
   public String getComposition() {
     StringBuilder composition = new StringBuilder("\nshare,quantity,dateCreated");
     for (String share : this.stocks.keySet()) {
-      Map<String, Object> details = stocks.get(share);
+      Details details = stocks.get(share);
       composition
               .append("\n")
               .append(share)
               .append(",")
-              .append(details.get("quantity"))
+              .append(details.getQuantity())
               .append(",")
-              .append(details.get("dateCreated"));
+              .append(details.getDateCreated().toString());
     }
     return composition.toString();
   }
@@ -86,7 +84,6 @@ public class StockPortfolio implements Portfolio {
   @Override
   public boolean savePortfolio() throws IOException {
     if (stocks.size() == 0) {
-      System.out.println(stocks.size() );
       return false;
     }
 
@@ -94,13 +91,13 @@ public class StockPortfolio implements Portfolio {
     FileWriter csvWriter = new FileWriter(fileName);
     csvWriter.append("share,quantity,dateCreated\n");
     for (String share : stocks.keySet()) {
-      Map<String, Object> details = stocks.get(share);
+      Details details = stocks.get(share);
       csvWriter.
               append(share).
               append(",")
-              .append(String.valueOf(details.get("quantity")))
+              .append(String.valueOf(details.getQuantity()))
               .append(",")
-              .append(details.get("dateCreated").toString())
+              .append(details.getDateCreated().toString())
               .append("\n");
     }
 

@@ -38,7 +38,11 @@ public interface Menu {
    * @return choice entered by the user.
    * @throws IOException
    */
-  char getCreatePortfolioChoice() throws IOException;
+  char getCreatePortfolioThroughWhichMethod() throws IOException;
+
+  char getAddToPortfolioChoice() throws IOException;
+
+  String getFilePath() throws IOException;
 
   /**
    * Asks the user for the ticker symbol.
@@ -57,7 +61,7 @@ public interface Menu {
   double getQuantity() throws IOException;
 
   /**
-   * Provides user the options for the date that they would like to choose. They may thier
+   * Provides user the options for the date that they would like to choose. They may their
    * choose to opt for today's date or a custom date.
    *
    * @return the choice entered by the user.
@@ -66,7 +70,7 @@ public interface Menu {
   char getDateChoice() throws IOException;
 
   /**
-   * Prints the menu for user that states the format in which they are suppose to enter the date.
+   * Prints the menu for user that states the format in which they are supposed to enter the date.
    *
    * @return the date in string format.
    * @throws IOException

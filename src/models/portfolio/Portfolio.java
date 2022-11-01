@@ -14,7 +14,7 @@ public interface Portfolio {
    * @param tickerSymbol ticker of the share to be added to the portfolio. Example-AAPL for
    *                     Apple, NFLX for Netflix.
    * @param quantity     amount of the share to be added to the portfolio. Example - 2 if the
-   *                     client want to add two share to thier portfolio.
+   *                     client want to add two share to their portfolio.
    */
   void addShare(String tickerSymbol, double quantity);
 
@@ -43,7 +43,7 @@ public interface Portfolio {
   /**
    * Shows the distribution of the shares and their quantity in a portfolio.
    *
-   * @return quantitiy of shares next to their ticker symbols.
+   * @return quantity of shares next to their ticker symbols.
    * @throws IOException
    */
   String getComposition() throws IOException;

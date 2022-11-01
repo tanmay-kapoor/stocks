@@ -1,7 +1,10 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import models.Details;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import views.Menu;
@@ -23,7 +27,8 @@ abstract class AbstractController implements Controller {
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated);
 
-  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Map<String, Object>> stocks);
+  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated,
+                                               Map<String, Details> stocks);
 
   protected AbstractController(Menu menu, ShareApi api, String folder) {
     this.menu = menu;
@@ -67,31 +72,42 @@ abstract class AbstractController implements Controller {
         case '3':
           handlePortfolioValueOption();
           break;
-
-        default:
-          break;
       }
     } while (choice >= '1' && choice <= '3');
   }
 
   private void handleCreatePortfolioChoice() throws IOException {
-    boolean shouldContinue = true;
+    char c;
+    c = menu.getCreatePortfolioThroughWhichMethod();
+    switch (c) {
+      case '1':
+        handleCreatePortfolioThroughInterface();
+        break;
+
+      case '2':
+        handleCreatePortfolioThroughUpload();
+        break;
+    }
+  }
+
+  private void handleCreatePortfolioThroughInterface() throws IOException {
+    boolean shouldContinue;
 
     do {
-      try {
-        String portfolioName = menu.getPortfolioName();
+      shouldContinue = false;
+      String portfolioName = menu.getPortfolioName();
 
-        for (String existingPortfolio : allPortfolios) {
-          if (portfolioName.equalsIgnoreCase(existingPortfolio)) {
-            throw new IllegalArgumentException("This portfolio already exists, " +
-                    "please use a unique name.");
-          }
-        }
-        shouldContinue = false;
+      if(allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
+        shouldContinue = true;
+        menu.printMessage(String.format("\nPortfolio \"%s\" already exists. " +
+                "Please use a unique name.", portfolioName));
+      }
+
+      if (!shouldContinue) {
         Portfolio portfolio = createPortfolio(portfolioName, LocalDate.now());
         boolean shouldExit;
         do {
-          char option = menu.getCreatePortfolioChoice();
+          char option = menu.getAddToPortfolioChoice();
           try {
             shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
           } catch (IllegalArgumentException | IOException e) {
@@ -99,10 +115,49 @@ abstract class AbstractController implements Controller {
             shouldExit = false;
           }
         } while (!shouldExit);
-      } catch (IllegalArgumentException e) {
-        menu.printMessage("\n" + e.getMessage());
       }
     } while (shouldContinue);
+  }
+
+  private void handleCreatePortfolioThroughUpload() throws IOException {
+    boolean shouldContinue;
+    do {
+      shouldContinue = true;
+
+      String filePath = menu.getFilePath();
+      try {
+        Paths.get(filePath);
+        File file = new File(filePath);
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf(".");
+        if (dotIndex == -1) {
+          menu.printMessage("\nExtension should be included with the file name.");
+        } else {
+          String portfolioName = fileName.substring(0, dotIndex);
+          String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+          if (!extension.equals("csv")) {
+            menu.printMessage("\nFile should be of csv extension.");
+          } else if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
+            menu.printMessage(String.format("\n\"%s\" named portfolio already exists." +
+                    " Please rename your file and try again!", fileName));
+          } else {
+            shouldContinue = false;
+            Portfolio portfolio = getStocksFromCsv(file);
+            savePortfolio(portfolioName, portfolio);
+          }
+        }
+      } catch (InvalidPathException e) {
+        menu.printMessage("\nInvalid file path.\n");
+      } catch (NullPointerException e) {
+        menu.printMessage("\nFile not found.\n");
+      }
+    } while (shouldContinue);
+  }
+
+  private Portfolio getStocksFromCsv(File file) throws FileNotFoundException {
+    String fileName = file.getName();
+    String pName = fileName.substring(0, fileName.lastIndexOf("."));
+    return createPortfolioFromCsv(pName, file);
   }
 
   private void handleExistingPortfoliosOption() throws IOException {
@@ -124,43 +179,22 @@ abstract class AbstractController implements Controller {
       menu.printMessage(portfolioNames.toString());
       String name = menu.getPortfolioName();
 
-      Portfolio p = null;
-      if (allPortfolioObjects.containsKey(name) || allPortfolioObjects.containsKey(name.toLowerCase()) || allPortfolioObjects.containsKey(name.toUpperCase())) {
-        p = allPortfolioObjects.get(name);
+      Portfolio portfolio = null;
+      if (allPortfolioObjects.containsKey(name)
+              || allPortfolioObjects.containsKey(name.toLowerCase())
+              || allPortfolioObjects.containsKey(name.toUpperCase())) {
+        portfolio = allPortfolioObjects.get(name);
       } else {
-        for (String pName : allPortfolios) {
-          if (name.equalsIgnoreCase(pName)) {
-            Scanner csvReader = new Scanner(new File(String.format("%s%s.csv", this.path, pName)));
-            Map<String, Map<String, Object>> stocks = new HashMap<>();
-            String[] keys = csvReader.nextLine().split(",");
-
-            boolean isFirstRecord = true;
-            LocalDate dateCreated = LocalDate.now();
-
-            while (csvReader.hasNext()) {
-              String[] vals = csvReader.nextLine().split(",");
-              Map<String, Object> details = new HashMap<>();
-              details.put(keys[1], Double.parseDouble(vals[1]));
-              details.put(keys[2], LocalDate.parse(vals[2]));
-
-              stocks.put(vals[0], details);
-
-              if (isFirstRecord) {
-                dateCreated = LocalDate.parse(vals[2]);
-                isFirstRecord = false;
-              }
-            }
-            p = createPortfolio(pName, dateCreated, stocks);
-            allPortfolioObjects.put(pName, p);
-            break;
-          }
+        if(allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
+          portfolio = createPortfolioFromCsv(name, new File(String.format("%s%s.csv", this.path, name)));
+          allPortfolioObjects.put(name, portfolio);
         }
       }
 
-      if (p != null) {
+      if (portfolio != null) {
         switch (function) {
           case Composition:
-            menu.printMessage(p.getComposition());
+            menu.printMessage(portfolio.getComposition());
             break;
 
           case GetValue:
@@ -169,26 +203,25 @@ abstract class AbstractController implements Controller {
               shouldContinue = false;
 
               char choice;
-              do {
                 choice = menu.getDateChoice();
-                String date = "";
-                String val = "";
+                String date;
+                String val;
                 try {
                   switch (choice) {
                     case '1':
                       date = LocalDate.now().toString();
-                      val = String.valueOf(p.getValue());
+                      val = String.valueOf(portfolio.getValue());
+                      menu.printMessage(String.format("\nValue of portfolio on %s = %s",
+                              date, val));
                       break;
 
                     case '2':
                       date = menu.getDateForValue();
-                      val = String.valueOf(p.getValue(LocalDate.parse(date)));
+                      val = String.valueOf(portfolio.getValue(LocalDate.parse(date)));
+                      menu.printMessage(String.format("\nValue of portfolio on %s = %s",
+                              date, val));
                       break;
-
-                    default:
-                      menu.printMessage("\nInvalid choice");
                   }
-                  menu.printMessage(String.format("\nValue of portfolio on %s = %s", date, val));
                 } catch (DateTimeParseException e) {
                   shouldContinue = true;
                   menu.printMessage("\nInvalid date format");
@@ -196,7 +229,6 @@ abstract class AbstractController implements Controller {
                   shouldContinue = true;
                   menu.printMessage("\n" + e.getMessage());
                 }
-              } while (choice != '1' && choice != '2');
             } while (shouldContinue);
             break;
 
@@ -217,19 +249,22 @@ abstract class AbstractController implements Controller {
       displayAddStockStuff(portfolio);
     } else {
       try {
-        boolean saved = portfolio.savePortfolio();
-
-        if(saved) {
-          allPortfolios.add(portfolioName);
-          allPortfolioObjects.put(portfolioName, portfolio);
-        }
-
+        savePortfolio(portfolioName, portfolio);
         return true;
       } catch (RuntimeException e) {
         menu.printMessage("\n" + e.getMessage());
       }
     }
     return false;
+  }
+
+  private void savePortfolio(String portfolioName, Portfolio portfolio) throws IOException {
+    boolean saved = portfolio.savePortfolio();
+    if (saved) {
+      menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
+      allPortfolios.add(portfolioName);
+      allPortfolioObjects.put(portfolioName, portfolio);
+    }
   }
 
   private void displayAddStockStuff(Portfolio portfolio) throws IOException {
@@ -258,5 +293,29 @@ abstract class AbstractController implements Controller {
     } catch (RuntimeException e) {
       menu.printMessage("\n" + e.getMessage());
     }
+  }
+
+  private Portfolio createPortfolioFromCsv(String pName, File file) throws FileNotFoundException {
+    Scanner csvReader = new Scanner(file);
+    csvReader.nextLine();
+
+    Map<String, Details> stocks = new HashMap<>();
+    boolean isFirstRecord = true;
+    LocalDate dateCreated = LocalDate.now();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      double quantity = Double.parseDouble(vals[1]);
+      LocalDate dateCreatedForRecord = LocalDate.parse(vals[2]);
+      Details details = new Details(quantity, dateCreatedForRecord);
+      stocks.put(vals[0], details);
+
+      if (isFirstRecord) {
+        dateCreated = LocalDate.parse(vals[2]);
+        isFirstRecord = false;
+      }
+    }
+    csvReader.close();
+    return createPortfolio(pName, dateCreated, stocks);
   }
 }

@@ -40,11 +40,24 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public char getCreatePortfolioChoice() throws IOException {
+  public char getCreatePortfolioThroughWhichMethod() throws IOException {
+    this.print("\nCreate portfolio through :\n1. Interface\n2. File upload" +
+            "\nPress any other key to go back.\n\nEnter your choice : ");
+    return getCharVal();
+  }
+
+  @Override
+  public char getAddToPortfolioChoice() throws IOException {
     this.print("\n1. Add a share to your portfolio.\n" +
-            "Press any other key to exit.\n" +
+            "Press any other key to go back.\n" +
             "\nEnter your choice : ");
     return getCharVal();
+  }
+
+  @Override
+  public String getFilePath() throws IOException {
+    this.print("\nEnter the path of csv file for portfolio : ");
+    return sc.nextLine();
   }
 
   @Override
@@ -63,7 +76,7 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public char getDateChoice() throws IOException {
-    this.print("\nCheck value for\n1. Today\n2. Custom date\nEnter choice : ");
+    this.print("\nCheck value for\n1. Today\n2. Custom date\nPress any other key to go back.\n\nEnter choice : ");
     return getCharVal();
   }
 
