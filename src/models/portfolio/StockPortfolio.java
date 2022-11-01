@@ -10,7 +10,7 @@ import models.api.ShareApi;
 
 public class StockPortfolio implements Portfolio {
   private final String portfolioName;
-  private Map<String, Double> stocks;
+  private Map<String, Map<String, Object>> stocks;
   private final LocalDate dateCreated;
   private final ShareApi api;
   private final String path;
@@ -23,7 +23,7 @@ public class StockPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
-  public StockPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Double> stocks, ShareApi api) {
+  public StockPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Map<String, Object>> stocks, ShareApi api) {
     this(portfolioName, dateCreated, api);
     this.stocks = stocks;
   }
@@ -32,11 +32,16 @@ public class StockPortfolio implements Portfolio {
   public void addShare(String tickerSymbol, double quantity) throws RuntimeException {
     tickerSymbol = tickerSymbol.toUpperCase();
 
+    Map<String, Object> details;
     if (stocks.containsKey(tickerSymbol)) {
-      stocks.put(tickerSymbol, stocks.get(tickerSymbol) + quantity);
+      details = stocks.get(tickerSymbol);
+      details.put("quantity", (double) details.get("quantity") + quantity);
     } else {
-      stocks.put(tickerSymbol, quantity);
+      details = new HashMap<>();
+      details.put("quantity", quantity);
+      details.put("dateCreated", LocalDate.now());
     }
+    stocks.put(tickerSymbol, details);
   }
 
   @Override
@@ -54,7 +59,7 @@ public class StockPortfolio implements Portfolio {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-      totalValue = totalValue + (shareDetails.get("close") * stocks.get(tickerSymbol));
+      totalValue = totalValue + (shareDetails.get("close") * (double) stocks.get(tickerSymbol).get("quantity"));
     }
 
     return totalValue;
@@ -62,9 +67,16 @@ public class StockPortfolio implements Portfolio {
 
   @Override
   public String getComposition() {
-    StringBuilder composition = new StringBuilder("\nshare,quantity");
+    StringBuilder composition = new StringBuilder("\nshare,quantity,dateCreated");
     for (String share : this.stocks.keySet()) {
-      composition.append("\n").append(share).append(",").append(stocks.get(share));
+      Map<String, Object> details = stocks.get(share);
+      composition
+              .append("\n")
+              .append(share)
+              .append(",")
+              .append(details.get("quantity"))
+              .append(",")
+              .append(details.get("dateCreated"));
     }
     return composition.toString();
   }
@@ -77,9 +89,16 @@ public class StockPortfolio implements Portfolio {
 
     String fileName = String.format(path, portfolioName, "csv");
     FileWriter csvWriter = new FileWriter(fileName);
-    csvWriter.append("share,quantity\n");
+    csvWriter.append("share,quantity,dateCreated\n");
     for (String share : stocks.keySet()) {
-      csvWriter.append(share).append(",").append(String.valueOf(stocks.get(share))).append("\n");
+      Map<String, Object> details = stocks.get(share);
+      csvWriter.
+              append(share).
+              append(",")
+              .append(String.valueOf(details.get("quantity")))
+              .append(",")
+              .append(details.get("dateCreated").toString())
+              .append("\n");
     }
 
     csvWriter.flush();

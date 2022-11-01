@@ -23,7 +23,7 @@ abstract class AbstractController implements Controller {
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated);
 
-  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Double> stocks);
+  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Map<String, Object>> stocks);
 
   protected AbstractController(Menu menu, ShareApi api, String folder) {
     this.menu = menu;
@@ -131,13 +131,26 @@ abstract class AbstractController implements Controller {
         for (String pName : allPortfolios) {
           if (name.equalsIgnoreCase(pName)) {
             Scanner csvReader = new Scanner(new File(String.format("%s%s.csv", this.path, pName)));
-            Map<String, Double> stocks = new HashMap<>();
-            csvReader.nextLine();
+            Map<String, Map<String, Object>> stocks = new HashMap<>();
+            String[] keys = csvReader.nextLine().split(",");
+
+            boolean isFirstRecord = true;
+            LocalDate dateCreated = LocalDate.now();
+
             while (csvReader.hasNext()) {
               String[] vals = csvReader.nextLine().split(",");
-              stocks.put(vals[0], Double.parseDouble(vals[1]));
+              Map<String, Object> details = new HashMap<>();
+              details.put(keys[1], Double.parseDouble(vals[1]));
+              details.put(keys[2], LocalDate.parse(vals[2]));
+
+              stocks.put(vals[0], details);
+
+              if (isFirstRecord) {
+                dateCreated = LocalDate.parse(vals[2]);
+                isFirstRecord = false;
+              }
             }
-            p = createPortfolio(pName, LocalDate.now(), stocks);
+            p = createPortfolio(pName, dateCreated, stocks);
             allPortfolioObjects.put(pName, p);
             break;
           }
