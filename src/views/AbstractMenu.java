@@ -21,9 +21,7 @@ abstract class AbstractMenu implements Menu {
             "3. Check portfolio value.\n" +
             "Press any other key to exit.\n" +
             "\nEnter your choice : ");
-    char choice = sc.next().charAt(0);
-    sc.nextLine();
-    return choice;
+    return getCharVal();
   }
 
   @Override
@@ -42,17 +40,13 @@ abstract class AbstractMenu implements Menu {
     this.print("\n1. Add a share to your portfolio.\n" +
             "Press any other key to exit.\n" +
             "\nEnter your choice : ");
-    char choice = sc.next().charAt(0);
-    sc.nextLine();
-    return choice;
+    return getCharVal();
   }
 
   @Override
   public String getTickerSymbol() throws IOException {
     this.print("\nEnter ticker symbol of the company you would like to add to this portfolio : ");
-    String portfolioName = sc.next();
-    sc.nextLine();
-    return portfolioName;
+    return getWordVal();
   }
 
   @Override
@@ -64,31 +58,30 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public String getDateForCheckValue() throws IOException {
-    String date = "today";
-    char choice;
-    do {
-      this.print("\nCheck value for\n1. Today\n2. Custom date\nEnter choice : ");
-      choice = sc.next().charAt(0);
-      sc.nextLine();
-      switch (choice) {
-        case '1':
-          break;
+  public char getDateChoice() throws IOException {
+    this.print("\nCheck value for\n1. Today\n2. Custom date\nEnter choice : ");
+    return getCharVal();
+  }
 
-        case '2':
-          this.print("\nEnter date in YYYY-MM-DD format : ");
-          date = sc.next();
-          sc.nextLine();
-          break;
-
-        default:
-          this.print("\nInvalid choice. Choose again\n");
-      }
-    } while (choice != '1' && choice != '2');
-    return date;
+  @Override
+  public String getDateForValue() throws IOException {
+    this.print("\nEnter date in YYYY-MM-DD format : ");
+    return getWordVal();
   }
 
   private void print(String msg) throws IOException {
     this.out.append(msg);
+  }
+
+  private char getCharVal() {
+    char val = sc.next().charAt(0);
+    sc.nextLine();
+    return val;
+  }
+
+  private String getWordVal() {
+    String val = sc.next();
+    sc.nextLine();
+    return val;
   }
 }

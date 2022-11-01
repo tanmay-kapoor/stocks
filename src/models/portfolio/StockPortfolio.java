@@ -2,29 +2,29 @@ package models.portfolio;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 import models.api.ShareApi;
 
-public class StockPortfolio implements Portfolio, Serializable {
-  private static final long serialVersionUID = 6529685098267757690L;
-
+public class StockPortfolio implements Portfolio {
   private final String portfolioName;
   private Map<String, Double> stocks;
+  private final LocalDate dateCreated;
   private final ShareApi api;
   private final String path;
 
-  public StockPortfolio(String portfolioName, ShareApi api) {
+  public StockPortfolio(String portfolioName, LocalDate dateCreated, ShareApi api) {
     this.portfolioName = portfolioName;
+    this.dateCreated = dateCreated;
     this.api = api;
     path = System.getProperty("user.dir") + "/src/files/stocks/%s.%s";
     this.stocks = new HashMap<>();
   }
 
-  public StockPortfolio(String portfolioName, Map<String, Double> stocks, ShareApi api) {
-    this(portfolioName, api);
+  public StockPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Double> stocks, ShareApi api) {
+    this(portfolioName, dateCreated, api);
     this.stocks = stocks;
   }
 
@@ -41,13 +41,17 @@ public class StockPortfolio implements Portfolio, Serializable {
 
   @Override
   public double getValue() {
-    return getValue(java.time.LocalDate.now().toString());
+    return getValue(LocalDate.now());
   }
 
   @Override
-  public double getValue(String date) throws NullPointerException {
-    double totalValue = 0.0;
+  public double getValue(LocalDate date) throws RuntimeException {
+    if (date.compareTo(dateCreated) < 0) {
+      throw new IllegalArgumentException(String.format("Cannot get value for date that is before " +
+              "the portfolio's creation date. (%s)", dateCreated));
+    }
 
+    double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
       totalValue = totalValue + (shareDetails.get("close") * stocks.get(tickerSymbol));

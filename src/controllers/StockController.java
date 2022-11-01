@@ -1,5 +1,6 @@
 package controllers;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import models.api.ShareApi;
@@ -12,12 +13,12 @@ public class StockController extends AbstractController {
     super(menu, api, folder);
   }
 
-  protected Portfolio createPortfolio(String portfolioName) {
-    return new StockPortfolio(portfolioName, api);
+  protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated) {
+    return new StockPortfolio(portfolioName, dateCreated, api);
   }
 
-  protected Portfolio createPortfolio(String portfolioName, Map<String, Double> stocks) {
-    return new StockPortfolio(portfolioName, stocks, api);
+  protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Double> stocks) {
+    return new StockPortfolio(portfolioName, dateCreated, stocks, api);
   }
 }
 

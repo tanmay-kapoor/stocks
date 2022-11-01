@@ -15,5 +15,7 @@ public interface Menu {
 
   double getQuantity() throws IOException;
 
-  String getDateForCheckValue() throws IOException;
+  char getDateChoice() throws IOException;
+
+  String getDateForValue() throws IOException;
 }

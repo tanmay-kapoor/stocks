@@ -2,6 +2,8 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +21,9 @@ abstract class AbstractController implements Controller {
   private final List<String> allPortfolios;
   private final Map<String, Portfolio> allPortfolioObjects;
 
-  protected abstract Portfolio createPortfolio(String portfolioName);
+  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated);
 
-  protected abstract Portfolio createPortfolio(String portfolioName, Map<String, Double> stocks);
+  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Double> stocks);
 
   protected AbstractController(Menu menu, ShareApi api, String folder) {
     this.menu = menu;
@@ -86,7 +88,7 @@ abstract class AbstractController implements Controller {
           }
         }
         shouldContinue = false;
-        Portfolio portfolio = createPortfolio(portfolioName);
+        Portfolio portfolio = createPortfolio(portfolioName, LocalDate.now());
         boolean shouldExit;
         do {
           char option = menu.getCreatePortfolioChoice();
@@ -135,7 +137,7 @@ abstract class AbstractController implements Controller {
               String[] vals = csvReader.nextLine().split(",");
               stocks.put(vals[0], Double.parseDouble(vals[1]));
             }
-            p = createPortfolio(pName, stocks);
+            p = createPortfolio(pName, LocalDate.now(), stocks);
             allPortfolioObjects.put(pName, p);
             break;
           }
@@ -152,19 +154,36 @@ abstract class AbstractController implements Controller {
             boolean shouldContinue;
             do {
               shouldContinue = false;
-              String date = menu.getDateForCheckValue();
-              try {
-                String value;
-                if (date.equals("today")) {
-                  value = String.valueOf(p.getValue());
-                } else {
-                  value = String.valueOf(p.getValue(date));
+
+              char choice;
+              do {
+                choice = menu.getDateChoice();
+                String date = "";
+                String val = "";
+                try {
+                  switch (choice) {
+                    case '1':
+                      date = LocalDate.now().toString();
+                      val = String.valueOf(p.getValue());
+                      break;
+
+                    case '2':
+                      date = menu.getDateForValue();
+                      val = String.valueOf(p.getValue(LocalDate.parse(date)));
+                      break;
+
+                    default:
+                      menu.printMessage("\nInvalid choice");
+                  }
+                  menu.printMessage(String.format("\nValue of portfolio on %s = %s", date, val));
+                } catch (DateTimeParseException e) {
+                  shouldContinue = true;
+                  menu.printMessage("\nInvalid date format");
+                } catch (RuntimeException e) {
+                  shouldContinue = true;
+                  menu.printMessage("\n" + e.getMessage());
                 }
-                menu.printMessage("\n" + value);
-              } catch (NullPointerException e) {
-                shouldContinue = true;
-                menu.printMessage("\nNo data available for this date.");
-              }
+              } while (choice != '1' && choice != '2');
             } while (shouldContinue);
             break;
 
@@ -200,7 +219,7 @@ abstract class AbstractController implements Controller {
     String tickerSymbol = menu.getTickerSymbol();
 
     try {
-      api.getShareDetails(tickerSymbol, "2022-10-26");
+      api.getShareDetails(tickerSymbol, LocalDate.now());
       double quantity = 0.0;
 
       boolean shouldExit;

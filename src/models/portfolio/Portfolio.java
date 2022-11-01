@@ -1,14 +1,14 @@
 package models.portfolio;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 public interface Portfolio {
-
   void addShare(String tickerSymbol, double quantity) throws RuntimeException;
 
   double getValue();
 
-  double getValue(String date);
+  double getValue(LocalDate date);
 
   String getComposition() throws IOException;
 
