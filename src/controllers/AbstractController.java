@@ -131,25 +131,25 @@ abstract class AbstractController implements Controller {
         String fileName = file.getName();
         int dotIndex = fileName.lastIndexOf(".");
         if (dotIndex == -1) {
-          menu.printMessage("\nExtension should be included with the file name.");
+          menu.printMessage("\nInvalid file. Please use a csv file");
         } else {
           String portfolioName = fileName.substring(0, dotIndex);
           String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
           if (!extension.equals("csv")) {
-            menu.printMessage("\nFile should be of csv extension.");
+            menu.printMessage("\nInvalid file. Please use a csv file.");
           } else if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
             menu.printMessage(String.format("\n\"%s\" named portfolio already exists." +
                     " Please rename your file and try again!", fileName));
           } else {
-            shouldContinue = false;
             Portfolio portfolio = getStocksFromCsv(file);
             savePortfolio(portfolioName, portfolio);
+            shouldContinue = false;
           }
         }
       } catch (InvalidPathException e) {
-        menu.printMessage("\nInvalid file path.\n");
-      } catch (NullPointerException e) {
-        menu.printMessage("\nFile not found.\n");
+        menu.printMessage("\nInvalid file path.");
+      } catch (FileNotFoundException | NullPointerException e) {
+        menu.printMessage("\nFile not found. Please enter file with proper path.");
       }
     } while (shouldContinue);
   }
