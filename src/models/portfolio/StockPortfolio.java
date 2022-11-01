@@ -9,6 +9,10 @@ import java.util.Map;
 import models.Details;
 import models.api.ShareApi;
 
+/**
+ * A class that is an extension of <code>Portfolio</code> class. This class specifically
+ * deals with the portfolio that store shares in the form of stocks listed in the NASDAQ.
+ */
 public class StockPortfolio implements Portfolio {
   private final String portfolioName;
   private Map<String, Details> stocks;
@@ -16,6 +20,14 @@ public class StockPortfolio implements Portfolio {
   private final ShareApi api;
   private final String path;
 
+  /**
+   * Constructor for the class that initializes the name of the portfolio,
+   * date it was created and the API that it is supposed to use for the fetching relevant data.
+   *
+   * @param portfolioName name of the portfolio.
+   * @param dateCreated   creation date of the portfolio.
+   * @param api           API is meant to be used.
+   */
   public StockPortfolio(String portfolioName, LocalDate dateCreated, ShareApi api) {
     this.portfolioName = portfolioName;
     this.dateCreated = dateCreated;
@@ -24,6 +36,16 @@ public class StockPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
+  /**
+   * Constructor for the class that initializes the name of the portfolio,
+   * date it was created, the map that stores the details of the stocks fetched from the csv
+   * and the API that it is supposed to use for the fetching relevant data.
+   *
+   * @param portfolioName name of the portfolio.
+   * @param dateCreated   creation date of the portfolio.
+   * @param stocks        details of the stocks in the portfolio.
+   * @param api           API is meant to be used.
+   */
   public StockPortfolio(String portfolioName, LocalDate dateCreated,
                         Map<String, Details> stocks, ShareApi api) {
     this(portfolioName, dateCreated, api);

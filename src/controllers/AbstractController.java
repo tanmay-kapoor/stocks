@@ -18,6 +18,10 @@ import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import views.Menu;
 
+/**
+ * An abstract controller that implements methods that are supposed to be common between
+ * two or more types of controllers across the program.
+ */
 abstract class AbstractController implements Controller {
   private final Menu menu;
   protected final ShareApi api;
