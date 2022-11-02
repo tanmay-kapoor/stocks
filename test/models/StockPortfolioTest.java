@@ -43,7 +43,7 @@ public class StockPortfolioTest {
     try {
       portfolio = new StockPortfolio(portfolioName,
               LocalDate.parse("2022-10-63"),
-              this.path,
+              this.directory,
               new StockApi());
       fail("Program should've failed while parsing invalid data.");
     } catch (DateTimeParseException e) {
