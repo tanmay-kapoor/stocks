@@ -10,12 +10,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * A class that checks if a ticker symbol is supported by our program. If yes, then fetch the
+ * necessary data as per the users request.
+ */
 public class StockApi implements ShareApi {
 
   private final String path;
   private final Map<String, Double> shareDetails;
   private final List<String> supportedStocks;
 
+  /**
+   * Constructor for the class that initializes the list of stocks supported by out program
+   * and a hashmap that stores the details of the user requested stocks.
+   */
   public StockApi() {
     this.shareDetails = new HashMap<>();
     supportedStocks = new ArrayList<>();

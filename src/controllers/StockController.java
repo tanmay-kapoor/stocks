@@ -9,6 +9,10 @@ import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolio;
 import views.Menu;
 
+/**
+ * The stockController implements methods that are meant to be executed while working
+ * specifically for stock data.
+ */
 public class StockController extends AbstractController {
   public StockController(Menu menu, ShareApi api, String folder) {
     super(menu, api, folder);
