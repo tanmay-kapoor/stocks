@@ -38,7 +38,7 @@ abstract class AbstractController implements Controller {
     this.menu = menu;
     this.api = api;
 
-    this.path = String.format(System.getProperty("user.dir") + "/src/files/%s/", folder);
+    this.path = String.format("%s/src/files/%s/", System.getProperty("user.dir"), folder);
     File directory = new File(path);
     File[] files = directory.listFiles();
 

@@ -75,16 +75,16 @@ public class AlphaVantage implements ShareApi {
       if (!found) {
         throw new IllegalArgumentException("No price data found for " + dateAsked.toString());
       }
+
+      Map<String, Double> shareDetails = new HashMap<>();
+      String[] details = record.split(",");
+
+      for (int i = 1; i < details.length; i++) {
+        shareDetails.put(keys[i], Double.parseDouble(details[i]));
+      }
+      return shareDetails;
     } catch (IOException e) {
       throw new IllegalArgumentException("No price data found for " + tickerSymbol);
     }
-
-    Map<String, Double> shareDetails = new HashMap<>();
-    String[] details = record.split(",");
-
-    for (int i = 1; i < details.length; i++) {
-      shareDetails.put(keys[i], Double.parseDouble(details[i]));
-    }
-    return shareDetails;
   }
 }

@@ -1,7 +1,7 @@
 import controllers.Controller;
 import controllers.StockController;
-import models.api.AlphaVantage;
 import models.api.ShareApi;
+import models.api.StockApi;
 import views.Menu;
 import views.StockMenu;
 
@@ -12,7 +12,7 @@ public class ProgramRunner {
   public static void main(String[] args) {
 
     Menu menu = new StockMenu(System.in, System.out);
-    ShareApi api = new AlphaVantage();
+    ShareApi api = new StockApi();
     String folder = "stocks";
 
     Controller controller = new StockController(menu, api, folder);

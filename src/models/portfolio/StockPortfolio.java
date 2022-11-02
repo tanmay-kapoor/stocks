@@ -73,11 +73,6 @@ public class StockPortfolio implements Portfolio {
 
   @Override
   public double getValue(LocalDate date) throws RuntimeException {
-    if (date.compareTo(dateCreated) < 0) {
-      throw new IllegalArgumentException(String.format("Cannot get value for " +
-              "date that is before the portfolio's creation date. (%s)", dateCreated));
-    }
-
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
