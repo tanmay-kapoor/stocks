@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import models.Details;
 import models.api.StockApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolio;
@@ -31,11 +32,11 @@ public class StockPortfolioTest {
   private Portfolio portfolio;
   String portfolioName;
   LocalDate now;
-  private String path;
+  private String directory;
 
   @Before
   public void setUp() {
-    path = System.getProperty("user.dir") + "/test/";
+    directory = System.getProperty("user.dir") + "/test/";
     portfolioName = "test";
     now = LocalDate.now();
 
@@ -48,7 +49,7 @@ public class StockPortfolioTest {
     } catch (DateTimeParseException e) {
       portfolio = new StockPortfolio(portfolioName,
               LocalDate.parse("2022-10-01"),
-              this.path,
+              this.directory,
               new StockApi());
     }
   }
@@ -194,7 +195,7 @@ public class StockPortfolioTest {
     boolean saved = portfolio.savePortfolio();
     assertTrue(saved);
 
-    File file = new File(this.path + this.portfolioName + ".csv");
+    File file = new File(this.directory + this.portfolioName + ".csv");
     try {
       Scanner csvReader = new Scanner(file);
       String line = csvReader.nextLine();
@@ -218,14 +219,14 @@ public class StockPortfolioTest {
     portfolio.savePortfolio();
 
     try {
-      Files.createDirectories(Paths.get(this.path));
-      File file = new File(this.path + this.portfolioName + ".csv");
-      Scanner csvReader = new Scanner(file);
-      String firstLine = csvReader.nextLine();
-      assertNotEquals("idk,something,random", firstLine);
-      if (!file.delete()) {
-        fail("Could not delete csv but should be able to.");
-      }
+      Files.createDirectories(Paths.get(this.directory));
+      File file = new File(this.directory + this.portfolioName + ".csv");
+        Scanner csvReader = new Scanner(file);
+        String firstLine = csvReader.nextLine();
+        assertNotEquals("idk,something,random", firstLine);
+        if(!file.delete()) {
+          fail("Could not delete csv but should be able to.");
+        }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
