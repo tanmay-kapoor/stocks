@@ -6,10 +6,13 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+/**
+ * A test class to check all the methods implemented in the Details class.
+ */
 public class DetailsTest {
-
   private Details details;
 
   @Before

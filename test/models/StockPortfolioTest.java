@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import models.Details;
 import models.api.StockApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolio;
@@ -27,6 +26,9 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+/**
+ * A test method that is used to test the methods implemented in the StocksPortfolio class.
+ */
 public class StockPortfolioTest {
 
   private Portfolio portfolio;
@@ -95,15 +97,17 @@ public class StockPortfolioTest {
 
   @Test
   public void addShareInvalid() {
+    assertEquals(new HashMap<>(), portfolio.getComposition());
+
     try {
       portfolio.addShare("GoOg", -55);
     } catch (IllegalArgumentException e1) {
       try {
         portfolio.addShare("amzn", 0);
-      } catch(IllegalArgumentException e2) {
+      } catch (IllegalArgumentException e2) {
         try {
           portfolio.addShare("NFLX", -5.3);
-        } catch(IllegalArgumentException e3) {
+        } catch (IllegalArgumentException e3) {
           //passes
         }
       }
@@ -221,12 +225,12 @@ public class StockPortfolioTest {
     try {
       Files.createDirectories(Paths.get(this.directory));
       File file = new File(this.directory + this.portfolioName + ".csv");
-        Scanner csvReader = new Scanner(file);
-        String firstLine = csvReader.nextLine();
-        assertNotEquals("idk,something,random", firstLine);
-        if(!file.delete()) {
-          fail("Could not delete csv but should be able to.");
-        }
+      Scanner csvReader = new Scanner(file);
+      String firstLine = csvReader.nextLine();
+      assertNotEquals("idk,something,random", firstLine);
+      if (!file.delete()) {
+        fail("Could not delete csv but should be able to.");
+      }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
