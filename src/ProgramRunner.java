@@ -13,9 +13,9 @@ public class ProgramRunner {
 
     Menu menu = new StockMenu(System.in, System.out);
     ShareApi api = new StockApi();
-    String folder = "stocks";
+    String path = System.getProperty("user.dir") + "/src/files/stocks/";
 
-    Controller controller = new StockController(menu, api, folder);
+    Controller controller = new StockController(menu, api, path);
     controller.go();
   }
 }

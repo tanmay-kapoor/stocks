@@ -14,19 +14,13 @@ import views.Menu;
  * specifically for stock data.
  */
 public class StockController extends AbstractController {
-  public StockController(Menu menu, ShareApi api, String folder) {
-    super(menu, api, folder);
+  public StockController(Menu menu, ShareApi api, String path) {
+    super(menu, api, path);
   }
 
   protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated) {
-    return new StockPortfolio(portfolioName, dateCreated, api);
-  }
-
-  protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated, Map<String, Details> stocks) {
-    return new StockPortfolio(portfolioName, dateCreated, stocks, api);
+    return new StockPortfolio(portfolioName, dateCreated, path, api);
   }
 }
-
-
 
 

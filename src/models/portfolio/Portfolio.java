@@ -2,6 +2,9 @@ package models.portfolio;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Map;
+
+import models.Details;
 
 /**
  * An interface that states the methods that are expected from any kind of portfolio (e.g. stock
@@ -45,13 +48,13 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  String getComposition();
+  Map<String, Details> getComposition();
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.
    *
    * @return true if the portfolio is saved successfully, false if not saved.
    */
-  boolean savePortfolio() throws IOException;
+  boolean savePortfolio();
 
 }

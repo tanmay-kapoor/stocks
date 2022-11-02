@@ -2,6 +2,8 @@ package models.portfolio;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,34 +30,21 @@ public class StockPortfolio implements Portfolio {
    * @param dateCreated   creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  public StockPortfolio(String portfolioName, LocalDate dateCreated, ShareApi api) {
+  public StockPortfolio(String portfolioName, LocalDate dateCreated, String path, ShareApi api) {
     this.portfolioName = portfolioName;
     this.dateCreated = dateCreated;
     this.api = api;
-    path = System.getProperty("user.dir") + "/src/files/stocks/%s.%s";
+    this.path = path;
     this.stocks = new HashMap<>();
-  }
-
-  /**
-   * Constructor for the class that initializes the name of the portfolio,
-   * date it was created, the map that stores the details of the stocks fetched from the csv
-   * and the API that it is supposed to use for the fetching relevant data.
-   *
-   * @param portfolioName name of the portfolio.
-   * @param dateCreated   creation date of the portfolio.
-   * @param stocks        details of the stocks in the portfolio.
-   * @param api           API is meant to be used.
-   */
-  public StockPortfolio(String portfolioName, LocalDate dateCreated,
-                        Map<String, Details> stocks, ShareApi api) {
-    this(portfolioName, dateCreated, api);
-    this.stocks = stocks;
   }
 
   @Override
   public void addShare(String tickerSymbol, double quantity) {
-    tickerSymbol = tickerSymbol.toUpperCase();
+    if (quantity < 0.0) {
+      throw new IllegalArgumentException("Quantity should be grater than 0.");
+    }
 
+    tickerSymbol = tickerSymbol.toUpperCase();
     Details details;
     if (stocks.containsKey(tickerSymbol)) {
       details = stocks.get(tickerSymbol);
@@ -83,43 +72,37 @@ public class StockPortfolio implements Portfolio {
   }
 
   @Override
-  public String getComposition() {
-    StringBuilder composition = new StringBuilder("\nshare,quantity,dateCreated");
-    for (String share : this.stocks.keySet()) {
-      Details details = stocks.get(share);
-      composition
-              .append("\n")
-              .append(share)
-              .append(",")
-              .append(details.getQuantity())
-              .append(",")
-              .append(details.getDateCreated().toString());
-    }
-    return composition.toString();
+  public Map<String, Details> getComposition() {
+    return new HashMap<>(stocks);
   }
 
   @Override
-  public boolean savePortfolio() throws IOException {
+  public boolean savePortfolio() {
     if (stocks.size() == 0) {
       return false;
     }
 
-    String fileName = String.format(path, portfolioName, "csv");
-    FileWriter csvWriter = new FileWriter(fileName);
-    csvWriter.append("share,quantity,dateCreated\n");
-    for (String share : stocks.keySet()) {
-      Details details = stocks.get(share);
-      csvWriter.
-              append(share).
-              append(",")
-              .append(String.valueOf(details.getQuantity()))
-              .append(",")
-              .append(details.getDateCreated().toString())
-              .append("\n");
-    }
+    try {
+      Files.createDirectories(Paths.get(this.path));
+      String fileName = String.format(path + "%s.csv", portfolioName);
+      FileWriter csvWriter = new FileWriter(fileName);
+      csvWriter.append("share,quantity,dateCreated\n");
+      for (String share : stocks.keySet()) {
+        Details details = stocks.get(share);
+        csvWriter.
+                append(share).
+                append(",")
+                .append(String.valueOf(details.getQuantity()))
+                .append(",")
+                .append(details.getDateCreated().toString())
+                .append("\n");
+      }
 
-    csvWriter.flush();
-    csvWriter.close();
-    return true;
+      csvWriter.flush();
+      csvWriter.close();
+      return true;
+    } catch (IOException e) {
+      throw new RuntimeException("Something went wrong!");
+    }
   }
 }

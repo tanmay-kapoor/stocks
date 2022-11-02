@@ -2,6 +2,9 @@ package models.api;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +60,7 @@ public class StockApi implements ShareApi {
     }
 
     try {
+      Files.createDirectories(Paths.get(this.path));
       Scanner csvReader = new Scanner(new File(String.format("%s%s.csv", this.path, supportedTicker)));
       String[] keys = csvReader.nextLine().split(",");
 
@@ -81,7 +85,7 @@ public class StockApi implements ShareApi {
         shareDetails.put(keys[i], Double.parseDouble(details[i]));
       }
       return shareDetails;
-    } catch(FileNotFoundException e) {
+    } catch(IOException e) {
       throw new IllegalArgumentException("File not found");
     }
   }
