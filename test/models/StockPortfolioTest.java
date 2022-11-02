@@ -32,17 +32,17 @@ public class StockPortfolioTest {
   private Portfolio portfolio;
   String portfolioName;
   LocalDate now;
-  private String path;
+  private String directory;
 
   @Before
   public void setUp() {
-    path = System.getProperty("user.dir") + "/test/files/stocks/";
+    directory = System.getProperty("user.dir") + "/test/files/stocks/";
     portfolioName = "test";
     now = LocalDate.now();
 
     portfolio = new StockPortfolio(portfolioName,
             LocalDate.parse("2022-10-01"),
-            this.path,
+            this.directory,
             new StockApi());
   }
 
@@ -176,7 +176,7 @@ public class StockPortfolioTest {
     boolean saved = portfolio.savePortfolio();
     assertTrue(saved);
 
-    File file = new File(this.path + this.portfolioName + ".csv");
+    File file = new File(this.directory + this.portfolioName + ".csv");
     try {
       Scanner csvReader = new Scanner(file);
       String line = csvReader.nextLine();
@@ -200,8 +200,8 @@ public class StockPortfolioTest {
     portfolio.savePortfolio();
 
     try {
-      Files.createDirectories(Paths.get(this.path));
-      File file = new File(this.path + this.portfolioName + ".csv");
+      Files.createDirectories(Paths.get(this.directory));
+      File file = new File(this.directory + this.portfolioName + ".csv");
         Scanner csvReader = new Scanner(file);
         String firstLine = csvReader.nextLine();
         assertNotEquals("idk,something,random", firstLine);

@@ -12,10 +12,11 @@ public class ProgramRunner {
   public static void main(String[] args) {
 
     Menu menu = new StockMenu(System.in, System.out);
+    String src = System.getProperty("user.dir") + "/src/";
+    String portfoliosPath = src + "files/stocks/";
     ShareApi api = new StockApi();
-    String path = System.getProperty("user.dir") + "/src/files/stocks/";
 
-    Controller controller = new StockController(menu, api, path);
+    Controller controller = new StockController(menu, api, portfoliosPath);
     controller.go();
   }
 }
