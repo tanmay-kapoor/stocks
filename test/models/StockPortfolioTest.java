@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import models.Details;
 import models.api.StockApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolio;
@@ -36,14 +35,27 @@ public class StockPortfolioTest {
 
   @Before
   public void setUp() {
-    path = System.getProperty("user.dir") + "/test/files/stocks/";
+    path = System.getProperty("user.dir") + "/test/";
     portfolioName = "test";
     now = LocalDate.now();
 
-    portfolio = new StockPortfolio(portfolioName,
-            LocalDate.parse("2022-10-01"),
-            this.path,
-            new StockApi());
+    try {
+      portfolio = new StockPortfolio(portfolioName,
+              LocalDate.parse("2022-10-63"),
+              this.path,
+              new StockApi());
+      fail("Program should've failed while parsing invalid data.");
+    } catch (DateTimeParseException e) {
+      portfolio = new StockPortfolio(portfolioName,
+              LocalDate.parse("2022-10-01"),
+              this.path,
+              new StockApi());
+    }
+  }
+
+  @Test
+  public void checkPortfolioEmptyAtStart() {
+    assertEquals(new HashMap<>(), portfolio.getComposition());
   }
 
   @Test
@@ -82,12 +94,18 @@ public class StockPortfolioTest {
 
   @Test
   public void addShareInvalid() {
-    assertEquals(new HashMap<>(), portfolio.getComposition());
     try {
       portfolio.addShare("GoOg", -55);
-      fail("Negative values should fail");
-    } catch (IllegalArgumentException e2) {
-      // passes
+    } catch (IllegalArgumentException e1) {
+      try {
+        portfolio.addShare("amzn", 0);
+      } catch(IllegalArgumentException e2) {
+        try {
+          portfolio.addShare("NFLX", -5.3);
+        } catch(IllegalArgumentException e3) {
+          //passes
+        }
+      }
     }
   }
 
@@ -202,18 +220,19 @@ public class StockPortfolioTest {
     try {
       Files.createDirectories(Paths.get(this.path));
       File file = new File(this.path + this.portfolioName + ".csv");
-        Scanner csvReader = new Scanner(file);
-        String firstLine = csvReader.nextLine();
-        assertNotEquals("idk,something,random", firstLine);
-        if(!file.delete()) {
-          fail("Could not delete csv but should be able to.");
-        }
+      Scanner csvReader = new Scanner(file);
+      String firstLine = csvReader.nextLine();
+      assertNotEquals("idk,something,random", firstLine);
+      if (!file.delete()) {
+        fail("Could not delete csv but should be able to.");
+      }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void checkHashMapEquality(Map<String, Details> expected, Map<String, Details> shareDetails) {
+  private void checkHashMapEquality(Map<String, Details> expected,
+                                    Map<String, Details> shareDetails) {
     for (String ticker : shareDetails.keySet()) {
       Details expectedDetails = expected.get(ticker);
       Details currDetails = shareDetails.get(ticker);
