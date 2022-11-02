@@ -16,8 +16,8 @@ public class RetailInvestor implements User {
    * A constructor for the <code>RetailInvestor</code> object that initializes its role
    * and username in the system.
    *
-   * @param username
-   * @param role
+   * @param username the username chosen by the user.
+   * @param role the role of the user.
    */
   public RetailInvestor(String username, Role role) {
     this.username = username;

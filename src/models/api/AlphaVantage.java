@@ -14,13 +14,13 @@ import java.util.Scanner;
  * registered on the NASDAQ. It is primarily used to fetch stock's OHCL and its traded
  * volume on a particular date.
  */
-public class AlphaVantageDemo implements ShareApi {
+public class AlphaVantage implements ShareApi {
   private final String apiKey;
 
   /**
    * The API key that is going to be used by the API.
    */
-  public AlphaVantageDemo() {
+  public AlphaVantage() {
     this.apiKey = "NAO61MQDSY9EPTN";
   }
 
