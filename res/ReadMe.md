@@ -24,3 +24,42 @@
 - After a portfolio has been created by the user, it is automatically saved in a csv format in
   `files/stock` directory.
 
+
+
+| Corporation                      | Ticker |
+|----------------------------------|--------|
+| Apple                            | AAPL   |
+| Amazon                           | AMZN   |
+| Bank of America Corp.            | BAC    |
+| Berkshire Hathaway Inc. Class B  | BRK.B  |
+| Best Buy Co. Inc.                | BBY    |
+| Boston Properties Inc.           | BXP    |
+| Chevron Corporation              | CVX    |
+| Coca-Cola Company                | KO     |
+| Copart Inc.                      | CPRT   |
+| Costco Wholesale Corporation     | COST   |
+| Domino's Pizza Inc.              | DPZ    |
+| Ebay                             | EBAY   |
+| Expedia Group Inc.               | EXPE   |
+| Federal Realty Investment Trust  | FRT    |
+| Google                           | GOOG   |
+| Hasbro Inc.                      | HAS    |
+| Hershey Company                  | HSY    |
+| Home Depot Inc.                  | HD     |
+| HP Inc.                          | HPQ    |
+| Johnson & Johnson                | JNJ    |
+| JPMorgan Chase & Co.             | JPM    |
+| Kellogg Company                  | K      |
+| Meta                             | META   |
+| MGM Resorts International        | MGM    |
+| Monster Beverage Corporation     | MNST   |
+| Microsoft                        | MSFT   |
+| Motorola Solutions Inc.          | MSI    |
+| Netflix                          | NFLX   |
+| Nvidia                           | NVDA   |
+| PepsiCo Inc.                     | PEP    |
+| Pfizer Inc.                      | PEF    |
+| Procter & Gamble Company         | PG     |
+| Ralph Lauren Corporation Class A | RL     |
+| Ulta Beauty Inc.                 | ULTA   |
+| Visa Inc. Class A                | V      |
