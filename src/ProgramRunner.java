@@ -22,7 +22,7 @@ public class ProgramRunner {
     String portfoliosPath = src + "files/stocks/";
     ShareApi api = new StockApi();
 
-    Controller controller = new StockController(menu, api, path);
+    Controller controller = new StockController(menu, api, portfoliosPath);
     controller.start();
   }
 }
