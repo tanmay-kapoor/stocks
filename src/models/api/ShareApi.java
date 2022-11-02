@@ -9,12 +9,13 @@ import java.util.Map;
  */
 public interface ShareApi {
   /**
-   * This method returns the price of the share on a particular date asked by the client.
+   * This method gives the price of the share on a particular date asked by the client.
    *
    * @param tickerSymbol a symbol to uniquely identify a share in the market.
    * @param dateAsked    date on which the client is requesting the value of the share.
-   * @return a map object whose key is the ticker symbol of the share in the portfolio
-   * and the value is the price of that share on the date requested by the client.
+   * @return             a map object whose key is the ticker symbol of the share in the portfolio
+   *                     and the value is the price of that share on the date requested by
+   *                     the client.
    */
   Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked);
 }

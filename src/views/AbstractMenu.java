@@ -21,11 +21,11 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public char getMainMenuChoice() {
-    this.print("\n1. Create Portfolio.\n" +
-            "2. See portfolio composition.\n" +
-            "3. Check portfolio value.\n" +
-            "Press any other key to exit.\n" +
-            "\nEnter your choice : ");
+    this.print("\n1. Create Portfolio.\n"
+            + "2. See portfolio composition.\n"
+            + "3. Check portfolio value.\n"
+            + "Press any other key to exit.\n"
+            + "\nEnter your choice : ");
     return getCharVal();
   }
 
@@ -42,16 +42,16 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public char getCreatePortfolioThroughWhichMethod() {
-    this.print("\nCreate portfolio through :\n1. Interface\n2. File upload" +
-            "\nPress any other key to go back.\n\nEnter your choice : ");
+    this.print("\nCreate portfolio through :\n1. Interface\n2. File upload"
+            + "\nPress any other key to go back.\n\nEnter your choice : ");
     return getCharVal();
   }
 
   @Override
   public char getAddToPortfolioChoice() {
-    this.print("\n1. Add a share to your portfolio.\n" +
-            "Press any other key to go back.\n" +
-            "\nEnter your choice : ");
+    this.print("\n1. Add a share to your portfolio.\n"
+            + "Press any other key to go back.\n"
+            + "\nEnter your choice : ");
     return getCharVal();
   }
 
@@ -77,7 +77,11 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public char getDateChoice() {
-    this.print("\nCheck value for\n1. Today\n2. Custom date\nPress any other key to go back.\n\nEnter choice : ");
+    this.print("\nCheck value for\n"
+            + "1. Today\n"
+            + "2. Custom date\n"
+            + "Press any other key to go back.\n\n"
+            + "Enter choice : ");
     return getCharVal();
   }
 

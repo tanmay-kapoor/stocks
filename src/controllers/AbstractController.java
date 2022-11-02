@@ -59,7 +59,7 @@ abstract class AbstractController implements Controller {
   }
 
   @Override
-  public void go() {
+  public void start() {
     char choice;
 
     do {
@@ -77,8 +77,12 @@ abstract class AbstractController implements Controller {
         case '3':
           handlePortfolioValueOption();
           break;
+
+        default:
+          break;
       }
-    } while (choice >= '1' && choice <= '3');
+    }
+    while (choice >= '1' && choice <= '3');
   }
 
   private void handleCreatePortfolioChoice() {
@@ -92,6 +96,9 @@ abstract class AbstractController implements Controller {
       case '2':
         handleCreatePortfolioThroughUpload();
         break;
+
+      default:
+        break;
     }
   }
 
@@ -104,8 +111,8 @@ abstract class AbstractController implements Controller {
 
       if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
         shouldContinue = true;
-        menu.printMessage(String.format("\nPortfolio \"%s\" already exists. Portfolio names are " +
-                "case insensitive! Please use a unique name.", portfolioName));
+        menu.printMessage(String.format("\nPortfolio \"%s\" already exists. Portfolio names are "
+                + "case insensitive! Please use a unique name.", portfolioName));
       }
 
       if (!shouldContinue) {
@@ -119,9 +126,11 @@ abstract class AbstractController implements Controller {
             menu.printMessage("\n" + e.getMessage());
             shouldExit = false;
           }
-        } while (!shouldExit);
+        }
+        while (!shouldExit);
       }
-    } while (shouldContinue);
+    }
+    while (shouldContinue);
   }
 
   private void handleCreatePortfolioThroughUpload() {
@@ -143,8 +152,9 @@ abstract class AbstractController implements Controller {
           if (!extension.equals("csv")) {
             menu.printMessage("\nInvalid file. Please use a csv file.");
           } else if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
-            menu.printMessage(String.format("\n\"%s\" named portfolio already exists. Portfolio names are case insensitive!" +
-                    " Please rename your file and try again!", portfolioName));
+            menu.printMessage(String.format("\n\"%s\" named portfolio already exists. "
+                    + "Portfolio names are case insensitive! Please rename your file "
+                    + "and try again!", portfolioName));
           } else {
             Portfolio portfolio = createPortfolioFromCsv(portfolioName, file);
             savePortfolio(portfolioName, portfolio);
@@ -156,7 +166,8 @@ abstract class AbstractController implements Controller {
       } catch (FileNotFoundException | NullPointerException e) {
         menu.printMessage("\nFile not found. Please enter file with proper path.");
       }
-    } while (shouldContinue);
+    }
+    while (shouldContinue);
   }
 
   private void handleExistingPortfoliosOption() {
@@ -186,7 +197,8 @@ abstract class AbstractController implements Controller {
       } else {
         if (allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
           try {
-            portfolio = createPortfolioFromCsv(name, new File(String.format("%s%s.csv", this.path, name)));
+            portfolio = createPortfolioFromCsv(name,
+                    new File(String.format("%s%s.csv", this.path, name)));
             allPortfolioObjects.put(name, portfolio);
           } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -236,6 +248,9 @@ abstract class AbstractController implements Controller {
                     menu.printMessage(String.format("\nValue of portfolio on %s = %s",
                             date, val));
                     break;
+
+                  default:
+                    break;
                 }
               } catch (DateTimeParseException e) {
                 shouldContinue = true;
@@ -244,7 +259,8 @@ abstract class AbstractController implements Controller {
                 shouldContinue = true;
                 menu.printMessage("\n" + e.getMessage());
               }
-            } while (shouldContinue);
+            }
+            while (shouldContinue);
             break;
 
           default:
@@ -297,7 +313,8 @@ abstract class AbstractController implements Controller {
           shouldExit = false;
           menu.printMessage("\nNumber of shares must be an integer.\n");
         }
-      } while (!shouldExit);
+      }
+      while (!shouldExit);
 
       portfolio.addShare(tickerSymbol, quantity);
       menu.printMessage("\nSuccess!");
