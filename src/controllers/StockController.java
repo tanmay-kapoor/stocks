@@ -1,9 +1,7 @@
 package controllers;
 
 import java.time.LocalDate;
-import java.util.Map;
 
-import models.Details;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolio;

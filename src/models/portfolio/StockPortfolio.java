@@ -18,7 +18,6 @@ import models.api.ShareApi;
 public class StockPortfolio implements Portfolio {
   private final String portfolioName;
   private Map<String, Details> stocks;
-  private final LocalDate dateCreated;
   private final ShareApi api;
   private final String path;
 
@@ -32,7 +31,6 @@ public class StockPortfolio implements Portfolio {
    */
   public StockPortfolio(String portfolioName, LocalDate dateCreated, String path, ShareApi api) {
     this.portfolioName = portfolioName;
-    this.dateCreated = dateCreated;
     this.api = api;
     this.path = path;
     this.stocks = new HashMap<>();
@@ -89,9 +87,8 @@ public class StockPortfolio implements Portfolio {
       csvWriter.append("share,quantity,dateCreated\n");
       for (String share : stocks.keySet()) {
         Details details = stocks.get(share);
-        csvWriter.
-                append(share).
-                append(",")
+        csvWriter.append(share)
+                .append(",")
                 .append(String.valueOf(details.getQuantity()))
                 .append(",")
                 .append(details.getDateCreated().toString())

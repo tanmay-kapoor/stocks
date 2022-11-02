@@ -12,5 +12,5 @@ public interface Controller {
    * A method that starts the program. It produces all the necessary views that are
    * meant for the client and accepts necessary inputs for further operations.
    */
-  void go();
+  void start();
 }

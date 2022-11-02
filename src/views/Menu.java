@@ -1,7 +1,5 @@
 package views;
 
-import java.io.IOException;
-
 /**
  * An interface that states the methods to be implemented by any class that extends the
  * <code>Menu</code> class. The methods listed below shows the functions that are going

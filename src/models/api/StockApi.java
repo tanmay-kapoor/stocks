@@ -1,7 +1,6 @@
 package models.api;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -61,31 +60,32 @@ public class StockApi implements ShareApi {
 
     try {
       Files.createDirectories(Paths.get(this.path));
-      Scanner csvReader = new Scanner(new File(String.format("%s%s.csv", this.path, supportedTicker)));
+      Scanner csvReader = new Scanner(new File(String.format("%s%s.csv",
+              this.path, supportedTicker)));
       String[] keys = csvReader.nextLine().split(",");
 
       String record = null;
-      while(csvReader.hasNext()) {
+      while (csvReader.hasNext()) {
         String line = csvReader.nextLine();
         String[] vals = line.split(",");
         LocalDate rowDate = LocalDate.parse(vals[0]);
         int diff = rowDate.compareTo(dateAsked);
-        if(diff <= 0) {
+        if (diff <= 0) {
           record = line;
           break;
         }
       }
 
-      if(record == null) {
+      if (record == null) {
         throw new RuntimeException("No price data found for " + dateAsked.toString());
       }
 
       String[] details = record.split(",");
-      for(int i = 1; i<keys.length; i++) {
+      for (int i = 1; i < keys.length; i++) {
         shareDetails.put(keys[i], Double.parseDouble(details[i]));
       }
       return shareDetails;
-    } catch(IOException e) {
+    } catch (IOException e) {
       throw new IllegalArgumentException("File not found");
     }
   }
