@@ -198,15 +198,15 @@ abstract class AbstractController implements Controller {
         switch (function) {
           case Composition:
             Map<String, Details> shareDetails = portfolio.getComposition();
-            StringBuilder composition = new StringBuilder("\nshare,quantity,dateCreated");
+            StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tdateCreated");
             for (String share : shareDetails.keySet()) {
               Details details = shareDetails.get(share);
               composition
                       .append("\n")
                       .append(share)
-                      .append(",")
+                      .append("\t\t")
                       .append(details.getQuantity())
-                      .append(",")
+                      .append("\t\t\t")
                       .append(details.getDateCreated().toString());
             }
             menu.printMessage(composition.toString());
