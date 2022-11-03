@@ -155,7 +155,6 @@ public class StockControllerTest {
             + "Date created : 2022-10-31\n"
             + "Inside addShare. Symbol : MSFT Quantity : 10000.0\n"
             + "Inside getComposition";
-    System.out.println(log);
     assertEquals(expected, log.toString());
   }
   @Test
