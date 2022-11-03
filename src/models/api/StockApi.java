@@ -30,7 +30,6 @@ public class StockApi implements ShareApi {
     this.shareDetails = new HashMap<>();
     supportedStocks = new ArrayList<>();
 
-//    this.path = System.getProperty("user.dir") + "../src/models/api/supported_stocks/";
     this.path = "../src/models/api/supported_stocks/";
 
     File dir = new File(path);
