@@ -30,8 +30,8 @@ import static org.junit.Assert.fail;
 public class StockPortfolioTest {
 
   private Portfolio portfolio;
-  String portfolioName;
-  LocalDate now;
+  private String portfolioName;
+  private LocalDate now;
   private String directory;
 
   @Before
