@@ -290,7 +290,25 @@ abstract class AbstractController implements Controller {
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    return "";
+    Map<String, Details> shareDetails = portfolio.getComposition();
+    StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
+
+    long totalShare = 0;
+    for (String share : shareDetails.keySet()) {
+      Details details = shareDetails.get(share);
+      totalShare += details.getQuantity();
+    }
+
+    for (String share : shareDetails.keySet()) {
+      Details details = shareDetails.get(share);
+      composition
+              .append("\n")
+              .append(share)
+              .append("\t\t")
+              .append((String.format("%.02f", details.getQuantity() / totalShare * 100) + "%"))
+              .append("\t\t\t");
+    }
+    return composition.toString();
   }
 
   private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
