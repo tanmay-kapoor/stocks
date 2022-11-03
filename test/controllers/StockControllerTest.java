@@ -157,6 +157,7 @@ public class StockControllerTest {
             + "Inside getComposition";
     assertEquals(expected, log.toString());
   }
+
   @Test
   public void testGetValue() {
     generateStream("3\nrandom\n2\n2022-10-10\nq\n");
@@ -176,10 +177,10 @@ public class StockControllerTest {
   @Test
   public void testGetValue3() {
     generateStream("3\nwfw\n3\nrandom\n2\n2022-10-10\nx\n");
-    String expected = "Portfolio name : random\n" +
-            "Date created : 2022-10-31\n" +
-            "Inside addShare. Symbol : MSFT Quantity : 10000.0\n" +
-            "Inside getValue(date) Received : 2022-10-10";
+    String expected = "Portfolio name : random\n"
+            + "Date created : 2022-10-31\n"
+            + "Inside addShare. Symbol : MSFT Quantity : 10000.0\n"
+            + "Inside getValue(date) Received : 2022-10-10";
     assertEquals(expected, log.toString());
   }
 
