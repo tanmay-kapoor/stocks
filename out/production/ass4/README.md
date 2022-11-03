@@ -5,8 +5,9 @@
 - Displays a menu stating all the functions that a user can perform and response from methods
   as a result. It also accepts the choice of method to be executed as an input and process the
   requests accordingly.
-  
-  
+
+<br></br>
+
 - Creates a portfolio. The user can choose to create a portfolio and add any stocks along with
   as much quantity of it as they like. The user can choose to create the portfolios using one 
   of the two methods:
@@ -14,8 +15,7 @@
   2. Upload a _<<portfolio_name>>_.csv file that contains the stocks and its quantity along
      with the date of creation of the portfolio.
 
-  
-
+<br></br>
 
 - Get the valuation of the portfolio. The value of the portfolio is determined by the
   sum of the value of each stock in the portfolio. The value of every stock is the product
@@ -26,13 +26,13 @@
   If the date entered by the user is of a weekend or of a federal holiday, then the value of the
   portfolio is calculated based on the closing prices of the latest day when the stock market was
   open.
-  
 
+<br></br>
 
 - Gives the composition of the portfolio. The composition of the portfolio tells us about the
   stocks present in the portfolio, along with their respective quantity.
-  
 
+<br></br>
 
 - After a portfolio has been created by the user, it is automatically saved in a csv format in
   `files/stock` directory.
