@@ -38,7 +38,10 @@ public class StockPortfolioTest {
 
   @Before
   public void setUp() {
-    directory = System.getProperty("user.dir") + "/test/";
+    String rootPath = System.getProperty("user.dir");
+    String[] temp = rootPath.split("/");
+
+    directory = !temp[temp.length-1].equals("res") ? rootPath + "/test/" : "../src/test/";
     portfolioName = "test";
     now = LocalDate.now();
 

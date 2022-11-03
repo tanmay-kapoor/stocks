@@ -36,6 +36,7 @@ abstract class AbstractController implements Controller {
     this.menu = menu;
     this.api = api;
     this.path = path;
+
     try {
       Files.createDirectories(Paths.get(this.path));
       File directory = new File(path);

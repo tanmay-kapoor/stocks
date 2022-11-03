@@ -81,8 +81,7 @@ public class StockControllerTest {
 
   @Before
   public void setUp() {
-    String src = System.getProperty("user.dir") + "/src/";
-    path = src + "files/stocks/";
+    this.path = System.getProperty("user.dir") + "/src/files/stocks/";
     api = new StockApi();
 
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
