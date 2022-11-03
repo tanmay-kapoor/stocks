@@ -66,4 +66,6 @@ public interface Menu {
    * @return the date in string format.
    */
   String getDateForValue();
+
+  char getPortfolioCompositionOption();
 }

@@ -91,6 +91,15 @@ abstract class AbstractMenu implements Menu {
     return getWordVal();
   }
 
+  @Override
+  public char getPortfolioCompositionOption() {
+    this.print("\n1. Get contents of the portfolio\n" +
+            "2. Get weightage of shares in the portfolio" +
+            "\nPress any other key to go back." +
+            "\n\nEnter your choice : ");
+    return getCharVal();
+  }
+
   private void print(String msg) {
     this.out.print(msg);
   }
