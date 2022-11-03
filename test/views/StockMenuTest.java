@@ -116,6 +116,18 @@ public class StockMenuTest {
     assertEquals(expected, bytes.toString());
   }
 
+  @Test
+  public void getPortfolioCompositionOption() {
+    generateInputStream("1\n");
+    char choice = menu.getPortfolioCompositionOption();
+    assertEquals('1', choice);
+    String expected = "\n1. Get contents of the portfolio\n"
+            + "2. Get weightage of shares in the portfolio\n"
+            + "Press any other key to go back.\n\n"
+            + "Enter your choice : ";
+    assertEquals(expected, bytes.toString());
+  }
+
   private void generateInputStream(String input) {
     InputStream in = new ByteArrayInputStream(input.getBytes());
     menu = new StockMenu(in, out);

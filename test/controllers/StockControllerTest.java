@@ -134,7 +134,7 @@ public class StockControllerTest {
 
   @Test
   public void testGetComposition() {
-    generateStream("2\nrandom\nx\n");
+    generateStream("2\nrandom\n1\nx\n");
     String expected = "Portfolio name : random\n"
             + "Date created : 2022-10-31\n"
             + "Inside addShare. Symbol : MSFT Quantity : 10000.0\n"
@@ -148,6 +148,16 @@ public class StockControllerTest {
     assertNull(log);
   }
 
+  @Test
+  public void testGetComposition3() {
+    generateStream("2\nrandom\n2\nx\n");
+    String expected = "Portfolio name : random\n"
+            + "Date created : 2022-10-31\n"
+            + "Inside addShare. Symbol : MSFT Quantity : 10000.0\n"
+            + "Inside getComposition";
+    System.out.println(log);
+    assertEquals(expected, log.toString());
+  }
   @Test
   public void testGetValue() {
     generateStream("3\nrandom\n2\n2022-10-10\nq\n");
