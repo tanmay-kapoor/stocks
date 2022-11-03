@@ -23,14 +23,16 @@ public class StockApi implements ShareApi {
   private final List<String> supportedStocks;
 
   /**
-   * Constructor for the class that initializes the list of stocks supported by out program
+   * Constructor for the class that initializes the list of stocks supported by our program
    * and a hashmap that stores the details of the user requested stocks.
    */
   public StockApi() {
     this.shareDetails = new HashMap<>();
     supportedStocks = new ArrayList<>();
 
-    this.path = System.getProperty("user.dir") + "/src/models/api/supported_stocks/";
+//    this.path = System.getProperty("user.dir") + "../src/models/api/supported_stocks/";
+    this.path = "../src/models/api/supported_stocks/";
+
     File dir = new File(path);
     File[] stockFiles = dir.listFiles();
     for (File stockFile : Objects.requireNonNull(stockFiles)) {

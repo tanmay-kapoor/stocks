@@ -14,6 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
+/**
+ * A class that is used to test the methods implemented in the StockAPI class.
+ */
 public class StockApiTest {
   private ShareApi api;
 
@@ -56,12 +59,12 @@ public class StockApiTest {
       api.getShareDetails("ajbs",
               LocalDate.parse("2022-10-10"));
       fail("Should have failed with unknown ticker but did not");
-    } catch(IllegalArgumentException e1) {
+    } catch (IllegalArgumentException e1) {
       try {
         api.getShareDetails("awef23jbs",
                 LocalDate.parse("2001-05-19"));
         fail("Should have failed with too old of a date but did not");
-      } catch(RuntimeException e2) {
+      } catch (RuntimeException e2) {
         // passes
       }
     }
