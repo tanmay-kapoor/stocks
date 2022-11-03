@@ -2,6 +2,9 @@
   <artifact type="jar" name="ass4:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/ass4_jar</output-path>
     <root id="archive" name="ass4.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/res/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="ass4" />
     </root>
   </artifact>

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -30,16 +29,23 @@ public class StockApi implements ShareApi {
     this.shareDetails = new HashMap<>();
     supportedStocks = new ArrayList<>();
 
-    this.path = "../src/models/api/supported_stocks/";
+    String rootPath = System.getProperty("user.dir");
+    String[] temp = rootPath.split("/");
+    this.path = !temp[temp.length - 1].equals("res") ?
+            System.getProperty("user.dir") + "/src/models/api/supported_stocks/" :
+            "../src/models/api/supported_stocks/";
 
+    System.out.println(this.path);
     File dir = new File(path);
     File[] stockFiles = dir.listFiles();
-    for (File stockFile : Objects.requireNonNull(stockFiles)) {
-      String stockName = stockFile.getName();
-      int dotIndex = stockName.lastIndexOf(".");
-      String extension = stockName.substring(dotIndex + 1);
-      if (extension.equals("csv")) {
-        supportedStocks.add(stockName.substring(0, dotIndex));
+    if (stockFiles != null) {
+      for (File stockFile : stockFiles) {
+        String stockName = stockFile.getName();
+        int dotIndex = stockName.lastIndexOf(".");
+        String extension = stockName.substring(dotIndex + 1);
+        if (extension.equals("csv")) {
+          supportedStocks.add(stockName.substring(0, dotIndex));
+        }
       }
     }
   }
