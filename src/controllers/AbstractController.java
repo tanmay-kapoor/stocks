@@ -210,19 +210,19 @@ abstract class AbstractController implements Controller {
       if (portfolio != null) {
         switch (function) {
           case Composition:
-            Map<String, Details> shareDetails = portfolio.getComposition();
-            StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tdateCreated");
-            for (String share : shareDetails.keySet()) {
-              Details details = shareDetails.get(share);
-              composition
-                      .append("\n")
-                      .append(share)
-                      .append("\t\t")
-                      .append(details.getQuantity())
-                      .append("\t\t\t")
-                      .append(details.getDateCreated().toString());
+            char choice = menu.getPortfolioCompositionOption();
+            switch (choice) {
+              case '1':
+                menu.printMessage(getPortfolioContents(portfolio));
+                break;
+
+              case '2':
+                menu.printMessage(getPortfolioWeightage(portfolio));
+                break;
+
+              default:
+                break;
             }
-            menu.printMessage(composition.toString());
             break;
 
           case GetValue:
@@ -230,12 +230,12 @@ abstract class AbstractController implements Controller {
             do {
               shouldContinue = false;
 
-              char choice;
-              choice = menu.getDateChoice();
+              char ch;
+              ch = menu.getDateChoice();
               String date;
               String val;
               try {
-                switch (choice) {
+                switch (ch) {
                   case '1':
                     date = LocalDate.now().toString();
                     val = String.valueOf(portfolio.getValue());
@@ -271,6 +271,26 @@ abstract class AbstractController implements Controller {
         menu.printMessage(String.format("\n\"%s\" named portfolio does not exist.", name));
       }
     }
+  }
+
+  private String getPortfolioContents(Portfolio portfolio) {
+    Map<String, Details> shareDetails = portfolio.getComposition();
+    StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tdateCreated");
+    for (String share : shareDetails.keySet()) {
+      Details details = shareDetails.get(share);
+      composition
+              .append("\n")
+              .append(share)
+              .append("\t\t")
+              .append(details.getQuantity())
+              .append("\t\t\t")
+              .append(details.getDateCreated().toString());
+    }
+    return composition.toString();
+  }
+
+  private String getPortfolioWeightage(Portfolio portfolio) {
+    return "";
   }
 
   private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
