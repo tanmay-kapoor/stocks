@@ -10,6 +10,9 @@ import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * A test class that is used to test the methods implemented int the StockMenu class.
+ */
 public class StockMenuTest {
   private ByteArrayOutputStream bytes;
   private PrintStream out;
@@ -26,12 +29,12 @@ public class StockMenuTest {
     generateInputStream("1\n");
     char c = menu.getMainMenuChoice();
     assertEquals('1', c);
-    String expected = "\n1. Create Portfolio.\n" +
-            "2. See portfolio composition.\n" +
-            "3. Check portfolio value.\n" +
-            "Press any other key to exit.\n" +
-            "\n" +
-            "Enter your choice : ";
+    String expected = "\n1. Create Portfolio.\n"
+            + "2. See portfolio composition.\n"
+            + "3. Check portfolio value.\n"
+            + "Press any other key to exit.\n"
+            + "\n"
+            + "Enter your choice : ";
     assertEquals(expected, bytes.toString());
   }
 
@@ -77,7 +80,8 @@ public class StockMenuTest {
     generateInputStream("META\n");
     String ticker = menu.getTickerSymbol();
     assertEquals("META", ticker);
-    String expected = "\nEnter ticker symbol of the company you would like to add to this portfolio : ";
+    String expected = "\nEnter ticker symbol of the company you would like to add to this "
+            + "portfolio : ";
     assertEquals(expected, bytes.toString());
   }
 

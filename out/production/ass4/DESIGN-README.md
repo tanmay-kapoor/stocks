@@ -59,7 +59,7 @@ The structure of the model in the project folder is as follows:
      required to implement crypto, forex, or any other king of portfolio.
 
    - `StockPortfolio` (Class) that is an extension of Portfolio class. This class specifically
-     deals with the portfolio that stores shares in the form of stocks listed in the NASDAQ.
+     deals with the portfolio that stores shares supported by our program.
 
 ### Controller
 

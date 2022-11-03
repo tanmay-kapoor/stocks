@@ -2,7 +2,7 @@
 # Design of the project
 
 
-## The design of the program is divided into 3 segments, namely, model, controller, and view.
+## The design of the program is divided into 3 segments, namely, model, view, and controller.
 
 ### View
 *The view is what the end user of the program interacts with.
@@ -59,7 +59,7 @@ The structure of the model in the project folder is as follows:
      required to implement crypto, forex, or any other king of portfolio.
 
    - `StockPortfolio` (Class) that is an extension of Portfolio class. This class specifically
-     deals with the portfolio that stores shares in the form of stocks listed in the NASDAQ.
+     deals with the portfolio that stores shares supported by our program.
 
 ### Controller
 

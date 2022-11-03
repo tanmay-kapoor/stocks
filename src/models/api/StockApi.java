@@ -31,8 +31,8 @@ public class StockApi implements ShareApi {
 
     String rootPath = System.getProperty("user.dir");
     String[] temp = rootPath.split("/");
-    this.path = !temp[temp.length - 1].equals("res") ?
-            System.getProperty("user.dir") + "/src/models/api/supported_stocks/" :
+    this.path = !temp[temp.length - 1].equals("res")
+            ? System.getProperty("user.dir") + "/src/models/api/supported_stocks/" :
             "../src/models/api/supported_stocks/";
 
     System.out.println(this.path);

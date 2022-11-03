@@ -22,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+/**
+ * A test class to test the methods implemented in the StockController.
+ */
 public class StockControllerTest {
   private String path;
   private ShareApi api;
@@ -73,8 +76,8 @@ public class StockControllerTest {
 
     @Override
     protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated) {
-      StringBuilder log = new StringBuilder("Portfolio name : " + portfolioName +
-              "\nDate created : " + dateCreated);
+      StringBuilder log = new StringBuilder("Portfolio name : " + portfolioName
+              + "\nDate created : " + dateCreated);
       return new MockStockPortfolio(log);
     }
   }
@@ -92,10 +95,10 @@ public class StockControllerTest {
   @Test
   public void testStart() {
     generateStream("1\n1\npf1\n1\nAAPL\n38\nx\nx\n");
-    String expected = "Portfolio name : pf1\n" +
-            "Date created : " + LocalDate.now() + "\n" +
-            "Inside addShare. Symbol : AAPL Quantity : 38.0\n" +
-            "Inside savePortfolio";
+    String expected = "Portfolio name : pf1\n"
+            + "Date created : " + LocalDate.now() + "\n"
+            + "Inside addShare. Symbol : AAPL Quantity : 38.0\n"
+            + "Inside savePortfolio";
     assertEquals(expected, log.toString());
   }
 
@@ -112,30 +115,30 @@ public class StockControllerTest {
   @Test
   public void testStart3() {
     generateStream("1\n1\nrandom\nxyz\n1\nAAPL\n22\nx\nx\n");
-    String expected = "Portfolio name : xyz\n" +
-            "Date created : " + LocalDate.now() + "\n" +
-            "Inside addShare. Symbol : AAPL Quantity : 22.0\n" +
-            "Inside savePortfolio";
+    String expected = "Portfolio name : xyz\n"
+            + "Date created : " + LocalDate.now() + "\n"
+            + "Inside addShare. Symbol : AAPL Quantity : 22.0\n"
+            + "Inside savePortfolio";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testStart4() {
     generateStream("1\n1\npf1\n1\nAAPL\n-38\nx\nx\n");
-    String expected = "Portfolio name : pf1\n" +
-            "Date created : " + LocalDate.now() + "\n" +
-            "Inside addShare. Symbol : AAPL Quantity : -38.0\n" +
-            "Inside savePortfolio";
+    String expected = "Portfolio name : pf1\n"
+            + "Date created : " + LocalDate.now() + "\n"
+            + "Inside addShare. Symbol : AAPL Quantity : -38.0\n"
+            + "Inside savePortfolio";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetComposition() {
     generateStream("2\nrandom\nx\n");
-    String expected = "Portfolio name : random\n" +
-            "Date created : 2022-10-31\n" +
-            "Inside addShare. Symbol : MSFT Quantity : 10000.0\n" +
-            "Inside getComposition";
+    String expected = "Portfolio name : random\n"
+            + "Date created : 2022-10-31\n"
+            + "Inside addShare. Symbol : MSFT Quantity : 10000.0\n"
+            + "Inside getComposition";
     assertEquals(expected, log.toString());
   }
 
@@ -148,10 +151,10 @@ public class StockControllerTest {
   @Test
   public void testGetValue() {
     generateStream("3\nrandom\n2\n2022-10-10\nq\n");
-    String expected = "Portfolio name : random\n" +
-            "Date created : 2022-10-31\n" +
-            "Inside addShare. Symbol : MSFT Quantity : 10000.0\n" +
-            "Inside getValue(date) Received : 2022-10-10";
+    String expected = "Portfolio name : random\n"
+            + "Date created : 2022-10-31\n"
+            + "Inside addShare. Symbol : MSFT Quantity : 10000.0\n"
+            + "Inside getValue(date) Received : 2022-10-10";
     assertEquals(expected, log.toString());
   }
 

@@ -21,8 +21,8 @@ public class ProgramRunner {
     String rootPath = System.getProperty("user.dir");
     String[] temp = rootPath.split("/");
 
-    String portfoliosPath = !temp[temp.length - 1].equals("res") ?
-            System.getProperty("user.dir") + "/src/files/stocks/" :
+    String portfoliosPath = !temp[temp.length - 1].equals("res")
+            ? System.getProperty("user.dir") + "/src/files/stocks/" :
             "../res/files/stocks/";
 
     ShareApi api = new StockApi();
