@@ -18,8 +18,8 @@ public class ProgramRunner {
   public static void main(String[] args) {
 
     Menu menu = new StockMenu(System.in, System.out);
-    String src = System.getProperty("user.dir") + "/src/";
-    String portfoliosPath = src + "files/stocks/";
+    String portfoliosPath = "../res/files/stocks/";
+    System.out.println(portfoliosPath);
     ShareApi api = new StockApi();
 
     Controller controller = new StockController(menu, api, portfoliosPath);
