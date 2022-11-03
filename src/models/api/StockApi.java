@@ -35,7 +35,6 @@ public class StockApi implements ShareApi {
             ? System.getProperty("user.dir") + "/src/models/api/supported_stocks/" :
             "../src/models/api/supported_stocks/";
 
-    System.out.println(this.path);
     File dir = new File(path);
     File[] stockFiles = dir.listFiles();
     if (stockFiles != null) {
