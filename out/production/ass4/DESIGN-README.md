@@ -2,7 +2,7 @@
 # Design of the project
 
 
-## The design of the program is divided into 3 segments, namely, model, controller, and view.
+## The design of the program is divided into 3 segments, namely, model, view, and controller.
 
 ### View
 *The view is what the end user of the program interacts with.

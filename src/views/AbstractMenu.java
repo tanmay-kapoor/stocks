@@ -93,10 +93,10 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public char getPortfolioCompositionOption() {
-    this.print("\n1. Get contents of the portfolio\n" +
-            "2. Get weightage of shares in the portfolio" +
-            "\nPress any other key to go back." +
-            "\n\nEnter your choice : ");
+    this.print("\n1. Get contents of the portfolio\n"
+            + "2. Get weightage of shares in the portfolio\n"
+            + "Press any other key to go back.\n\n"
+            + "Enter your choice : ");
     return getCharVal();
   }
 
