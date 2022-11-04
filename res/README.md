@@ -19,8 +19,9 @@
   sum of the value of each stock in the portfolio. The value of every stock is the product
   of its closing price on a particular date by its quantity. Our program allows the client
   to get the latest valuation, or the valuation on a custom date. We support
-  getting the valuation from any dates between `2015-01-01` to `2022-11-02`. By default,
-  the valuation is done based on the closing prince of the stock on a certain date.
+  getting the valuation from any dates between `2015-01-01` to `2022-11-02`. Date chosen after the 
+  latest date will give the valuation from `2022-11-02`. By default,
+  the valuation is done based on the closing price of the stock on a certain date.
   If the date entered by the user is of a weekend or of a federal holiday, then the value of the
   portfolio is calculated based on the closing prices of the latest day when the stock market was
   open.
