@@ -32,7 +32,7 @@
 
 
 - After a portfolio has been created by the user, it is automatically saved in a csv format in
-  `files/stock` directory.
+  `files/stocks` directory.
 
 
 
