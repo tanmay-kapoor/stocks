@@ -37,7 +37,7 @@
 
 
 _**For now, out program supports the use of only the following stocks listed below. If the user 
-choose a share of stock from outside of this list, they'll get an error.**_
+choose a share of stock from outside this list, they'll get an error.**_
 
 | SR no. | Corporation                             | Ticker |
 |--------|-----------------------------------------|--------|
