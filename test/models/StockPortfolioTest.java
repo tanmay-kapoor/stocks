@@ -65,6 +65,18 @@ public class StockPortfolioTest {
   }
 
   @Test
+  public void testPortfolioCreated() {
+    try {
+      Portfolio p = new StockPortfolio("idk",
+              LocalDate.parse("2022-10-01"),
+              this.directory,
+              new StockApi());
+    } catch (Exception e) {
+      fail("should not throw exception but did.");
+    }
+  }
+
+  @Test
   public void addShare() {
     Map<String, Details> expected = new HashMap<>();
     assertEquals(expected, portfolio.getComposition());
