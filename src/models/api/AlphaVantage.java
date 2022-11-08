@@ -21,7 +21,7 @@ public class AlphaVantage implements ShareApi {
    * The API key that is going to be used by the API.
    */
   public AlphaVantage() {
-    this.apiKey = "NAO61MQDSY9EPTN";
+    this.apiKey = "XXT841KPRC9FYXD1";
   }
 
   @Override

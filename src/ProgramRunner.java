@@ -1,5 +1,6 @@
 import controllers.Controller;
 import controllers.StockController;
+import models.api.AlphaVantage;
 import models.api.ShareApi;
 import models.api.StockApi;
 import views.Menu;
@@ -25,7 +26,7 @@ public class ProgramRunner {
             ? System.getProperty("user.dir") + "/src/files/stocks/" :
             "../res/files/stocks/";
 
-    ShareApi api = new StockApi();
+    ShareApi api = new AlphaVantage();
     Controller controller = new StockController(menu, api, portfoliosPath);
     controller.start();
   }
