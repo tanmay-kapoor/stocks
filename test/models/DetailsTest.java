@@ -31,8 +31,8 @@ public class DetailsTest {
   }
 
   @Test
-  public void getDateCreated() {
-    assertEquals(LocalDate.parse("2022-11-15"), details.getDateCreated());
+  public void getPurchaseDate() {
+    assertEquals(LocalDate.parse("2022-11-15"), details.getPurchaseDate());
   }
 
 }

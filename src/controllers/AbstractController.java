@@ -30,7 +30,7 @@ abstract class AbstractController implements Controller {
   private final List<String> allPortfolios;
   private final Map<String, Portfolio> allPortfolioObjects;
 
-  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate dateCreated);
+  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -275,7 +275,7 @@ abstract class AbstractController implements Controller {
 
   private String getPortfolioContents(Portfolio portfolio) {
     Map<String, Details> shareDetails = portfolio.getComposition();
-    StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tdateCreated");
+    StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
     for (String share : shareDetails.keySet()) {
       Details details = shareDetails.get(share);
       composition
@@ -284,7 +284,7 @@ abstract class AbstractController implements Controller {
               .append("\t\t")
               .append(details.getQuantity())
               .append("\t\t\t")
-              .append(details.getDateCreated().toString());
+              .append(details.getPurchaseDate().toString());
     }
     return composition.toString();
   }
@@ -368,7 +368,7 @@ abstract class AbstractController implements Controller {
 
     Map<String, Details> stocks = new HashMap<>();
     boolean isFirstRecord = true;
-    LocalDate dateCreated = LocalDate.now();
+    LocalDate purchaseDate = LocalDate.now();
 
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
@@ -378,12 +378,12 @@ abstract class AbstractController implements Controller {
       stocks.put(vals[0], details);
 
       if (isFirstRecord) {
-        dateCreated = LocalDate.parse(vals[2]);
+        purchaseDate = LocalDate.parse(vals[2]);
         isFirstRecord = false;
       }
     }
     csvReader.close();
-    Portfolio p = createPortfolio(pName, dateCreated);
+    Portfolio p = createPortfolio(pName, purchaseDate);
     for (String stock : stocks.keySet()) {
       p.addShare(stock, stocks.get(stock).getQuantity());
     }

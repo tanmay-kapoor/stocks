@@ -26,10 +26,10 @@ public class StockPortfolio implements Portfolio {
    * date it was created and the API that it is supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
-   * @param dateCreated   creation date of the portfolio.
+   * @param purchaseDate   creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  public StockPortfolio(String portfolioName, LocalDate dateCreated, String path, ShareApi api) {
+  public StockPortfolio(String portfolioName, LocalDate purchaseDate, String path, ShareApi api) {
     this.portfolioName = portfolioName;
     this.api = api;
     this.path = path;
@@ -46,7 +46,7 @@ public class StockPortfolio implements Portfolio {
     Details details;
     if (stocks.containsKey(tickerSymbol)) {
       details = stocks.get(tickerSymbol);
-      details = new Details(details.getQuantity() + quantity, details.getDateCreated());
+      details = new Details(details.getQuantity() + quantity, details.getPurchaseDate());
     } else {
       details = new Details(quantity, LocalDate.now());
     }
@@ -84,14 +84,14 @@ public class StockPortfolio implements Portfolio {
       Files.createDirectories(Paths.get(this.path));
       String fileName = String.format(path + "%s.csv", portfolioName);
       FileWriter csvWriter = new FileWriter(fileName);
-      csvWriter.append("share,quantity,dateCreated\n");
+      csvWriter.append("share,quantity,purchaseDate\n");
       for (String share : stocks.keySet()) {
         Details details = stocks.get(share);
         csvWriter.append(share)
                 .append(",")
                 .append(String.valueOf(details.getQuantity()))
                 .append(",")
-                .append(details.getDateCreated().toString())
+                .append(details.getPurchaseDate().toString())
                 .append("\n");
       }
 

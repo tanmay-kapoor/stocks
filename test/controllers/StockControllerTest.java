@@ -75,9 +75,9 @@ public class StockControllerTest {
     }
 
     @Override
-    protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated) {
+    protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
       StringBuilder log = new StringBuilder("Portfolio name : " + portfolioName
-              + "\nDate created : " + dateCreated);
+              + "\nDate created : " + purchaseDate);
       return new MockStockPortfolio(log);
     }
   }

@@ -194,7 +194,7 @@ public class StockPortfolioTest {
   @Test
   public void savePortfolio() {
     Set<String> expected = new HashSet<>();
-    expected.add("share,quantity,dateCreated");
+    expected.add("share,quantity,purchaseDate");
 
     portfolio.addShare("META", 22.0);
     expected.add(String.format("META,22.0,%s", now));
@@ -257,7 +257,7 @@ public class StockPortfolioTest {
       Details expectedDetails = expected.get(ticker);
       Details currDetails = shareDetails.get(ticker);
       assertEquals(expectedDetails.getQuantity(), currDetails.getQuantity(), 0);
-      assertEquals(expectedDetails.getDateCreated(), currDetails.getDateCreated());
+      assertEquals(expectedDetails.getPurchaseDate(), currDetails.getPurchaseDate());
     }
   }
 }

@@ -16,8 +16,8 @@ public class StockController extends AbstractController {
     super(menu, api, path);
   }
 
-  protected Portfolio createPortfolio(String portfolioName, LocalDate dateCreated) {
-    return new StockPortfolio(portfolioName, dateCreated, path, api);
+  protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
+    return new StockPortfolio(portfolioName, purchaseDate, path, api);
   }
 }
 

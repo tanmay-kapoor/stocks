@@ -8,17 +8,17 @@ import java.time.LocalDate;
  */
 public class Details {
   private final double quantity;
-  private final LocalDate dateCreated;
+  private final LocalDate purchaseDate;
 
   /**
    * constructor that initializes the quantity and creation date.
    *
    * @param quantity    number of shares.
-   * @param dateCreated date it was added to the portfolio.
+   * @param purchaseDate date it was added to the portfolio.
    */
-  public Details(double quantity, LocalDate dateCreated) {
+  public Details(double quantity, LocalDate purchaseDate) {
     this.quantity = quantity;
-    this.dateCreated = dateCreated;
+    this.purchaseDate = purchaseDate;
   }
 
   /**
@@ -35,7 +35,7 @@ public class Details {
    *
    * @return the date it was first added to the portfolio.
    */
-  public LocalDate getDateCreated() {
-    return this.dateCreated;
+  public LocalDate getPurchaseDate() {
+    return this.purchaseDate;
   }
 }
