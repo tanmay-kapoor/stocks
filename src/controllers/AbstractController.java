@@ -373,8 +373,8 @@ abstract class AbstractController implements Controller {
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
       double quantity = Double.parseDouble(vals[1]);
-      LocalDate dateCreatedForRecord = LocalDate.parse(vals[2]);
-      Details details = new Details(quantity, dateCreatedForRecord);
+      LocalDate purchaseDateForRecord = LocalDate.parse(vals[2]);
+      Details details = new Details(quantity, purchaseDateForRecord);
       stocks.put(vals[0], details);
 
       if (isFirstRecord) {
