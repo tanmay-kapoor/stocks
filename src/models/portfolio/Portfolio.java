@@ -1,6 +1,7 @@
 package models.portfolio;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Map;
 
 import models.Details;
@@ -18,7 +19,7 @@ public interface Portfolio {
    * @param quantity     amount of the share to be added to the portfolio. Example - 2 if the
    *                     client want to add two share to their portfolio.
    */
-  void addShare(String tickerSymbol, double quantity);
+  void addShare(String tickerSymbol, double quantity, LocalDate purchaseDate);
 
   /**
    * Get the total value of the portfolio. The valuation of a portfolio is determined by the
@@ -47,7 +48,7 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  Map<String, Details> getComposition();
+  Map<String, ArrayList<Details>> getComposition();
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.

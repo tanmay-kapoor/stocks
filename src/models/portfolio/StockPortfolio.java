@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import models.api.ShareApi;
  */
 public class StockPortfolio implements Portfolio {
   private final String portfolioName;
-  private Map<String, Details> stocks;
+  private final Map<String, ArrayList<Details>> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -37,20 +38,39 @@ public class StockPortfolio implements Portfolio {
   }
 
   @Override
-  public void addShare(String tickerSymbol, double quantity) {
+  public void addShare(String tickerSymbol, double quantity, LocalDate purchaseDate) {
     if (quantity < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
 
+    //new
     tickerSymbol = tickerSymbol.toUpperCase();
-    Details details;
-    if (stocks.containsKey(tickerSymbol)) {
-      details = stocks.get(tickerSymbol);
-      details = new Details(details.getQuantity() + quantity, details.getPurchaseDate());
+    ArrayList<Details> detailsList;
+
+    if(stocks.containsKey(tickerSymbol)) {
+      detailsList = stocks.get(tickerSymbol);
+      boolean purchaseDateExists = false;
+
+      //checking if we have purchased the stock on same date
+      for(Details details: detailsList) {
+        if (details.getPurchaseDate() == purchaseDate) {
+          details = new Details(details.getQuantity() + quantity,
+                  details.getPurchaseDate());
+          purchaseDateExists = true;
+        }
+      }
+
+      //add new Details object to the list only if we have not purchased
+      // the stock on same date before
+      if(!purchaseDateExists) {
+        detailsList.add(new Details(quantity, purchaseDate));
+      }
     } else {
-      details = new Details(quantity, LocalDate.now());
+      detailsList = new ArrayList<>();
+      detailsList.add(new Details(quantity, purchaseDate));
     }
-    stocks.put(tickerSymbol, details);
+
+    stocks.put(tickerSymbol, detailsList);
   }
 
   @Override
@@ -62,44 +82,50 @@ public class StockPortfolio implements Portfolio {
   public double getValue(LocalDate date) throws RuntimeException {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
-      Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-      totalValue += (shareDetails.get("close") * stocks.get(tickerSymbol).getQuantity());
+      ArrayList<Details> detailsList = stocks.get(tickerSymbol);
+
+      for(Details details : detailsList) {
+        Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
+        totalValue += shareDetails.get("close") * details.getQuantity();
+      }
     }
 
     return totalValue;
   }
 
   @Override
-  public Map<String, Details> getComposition() {
+  public Map<String, ArrayList<Details>> getComposition() {
     return new HashMap<>(stocks);
   }
 
   @Override
   public boolean savePortfolio() {
-    if (stocks.size() == 0) {
-      return false;
-    }
-
-    try {
-      Files.createDirectories(Paths.get(this.path));
-      String fileName = String.format(path + "%s.csv", portfolioName);
-      FileWriter csvWriter = new FileWriter(fileName);
-      csvWriter.append("share,quantity,purchaseDate\n");
-      for (String share : stocks.keySet()) {
-        Details details = stocks.get(share);
-        csvWriter.append(share)
-                .append(",")
-                .append(String.valueOf(details.getQuantity()))
-                .append(",")
-                .append(details.getPurchaseDate().toString())
-                .append("\n");
-      }
-
-      csvWriter.flush();
-      csvWriter.close();
-      return true;
-    } catch (IOException e) {
-      throw new RuntimeException("Something went wrong!");
-    }
+//    if (stocks.size() == 0) {
+//      return false;
+//    }
+//
+//    try {
+//      Files.createDirectories(Paths.get(this.path));
+//      String fileName = String.format(path + "%s.csv", portfolioName);
+//      FileWriter csvWriter = new FileWriter(fileName);
+//      csvWriter.append("share,quantity,purchaseDate\n");
+//      for (String share : stocks.keySet()) {
+//        Details details = stocks.get(share);
+//        csvWriter.append(share)
+//                .append(",")
+//                .append(String.valueOf(details.getQuantity()))
+//                .append(",")
+//                .append(details.getPurchaseDate().toString())
+//                .append("\n");
+//      }
+//
+//      csvWriter.flush();
+//      csvWriter.close();
+//      return true;
+//    } catch (IOException e) {
+//      throw new RuntimeException("Something went wrong!");
+//    }
+    return false;
   }
+
 }
