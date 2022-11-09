@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -274,37 +275,52 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    Map<String, Details> shareDetails = portfolio.getComposition();
+    Map<String, ArrayList<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
-    for (String share : shareDetails.keySet()) {
-      Details details = shareDetails.get(share);
+
+    for (String ticker : portfolioContent.keySet()) {
+      ArrayList<Details> detailsList = portfolioContent.get(ticker);
+      int quantity = 0;
+      for(Details details : detailsList) {
+        quantity += details.getQuantity();
+      }
+
       composition
               .append("\n")
-              .append(share)
+              .append(ticker)
               .append("\t\t")
-              .append(details.getQuantity())
+              .append(quantity)
               .append("\t\t\t")
-              .append(details.getPurchaseDate().toString());
+              .append("IDK WHAT DATE TO PUT HERE!!");
     }
     return composition.toString();
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    Map<String, Details> shareDetails = portfolio.getComposition();
+    Map<String, ArrayList<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
+    Map<String, Double> shareQuantity = new HashMap<>();
 
     long totalShare = 0;
-    for (String share : shareDetails.keySet()) {
-      Details details = shareDetails.get(share);
-      totalShare += details.getQuantity();
+    for (String ticker : portfolioContent.keySet()) {
+      ArrayList<Details> detailsList = portfolioContent.get(ticker);
+      double tickerQuantity = 0;
+
+      for(Details details : detailsList) {
+        double n = details.getQuantity();
+        totalShare += n;
+        tickerQuantity += n;
+      }
+      shareQuantity.put(ticker, tickerQuantity);
     }
 
-    for (String share : shareDetails.keySet()) {
-      Details details = shareDetails.get(share);
+    for (String ticker : shareQuantity.keySet()) {
+      double qty = shareQuantity.get(ticker);
+
       composition
               .append("\n")
-              .append(share)
-              .append("\t\t").append(String.format("%.02f", details.getQuantity() / totalShare * 100)).append("%")
+              .append(ticker)
+              .append("\t\t").append(String.format("%.02f", qty / totalShare * 100)).append("%")
               .append("\t\t\t");
     }
     return composition.toString();
@@ -354,7 +370,7 @@ abstract class AbstractController implements SpecificController {
       }
       while (!shouldExit);
 
-      portfolio.addShare(tickerSymbol, quantity, );
+      portfolio.addShare(tickerSymbol, quantity, LocalDate.now());
       menu.printMessage("\nSuccess!");
     } catch (RuntimeException e) {
       menu.printMessage("\n" + e.getMessage());
@@ -384,7 +400,7 @@ abstract class AbstractController implements SpecificController {
     csvReader.close();
     Portfolio p = createPortfolio(pName, purchaseDate);
     for (String stock : stocks.keySet()) {
-      p.addShare(stock, stocks.get(stock).getQuantity(), );
+      p.addShare(stock, stocks.get(stock).getQuantity(), LocalDate.now());
     }
     return p;
   }

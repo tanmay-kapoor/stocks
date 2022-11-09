@@ -16,7 +16,8 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
    * @param purchaseDate   creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  public StockPortfolioInflexible(String portfolioName, LocalDate purchaseDate, String path, ShareApi api) {
+  public StockPortfolioInflexible(String portfolioName, LocalDate purchaseDate,
+                                  String path, ShareApi api) {
     super(portfolioName, purchaseDate, path, api);
   }
 }
