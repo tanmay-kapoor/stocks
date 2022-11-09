@@ -2,9 +2,13 @@ package models.portfolio;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import models.Details;
 import models.api.ShareApi;
@@ -15,7 +19,7 @@ import models.api.ShareApi;
  */
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
-  private final Map<String, List<Details>> stocks;
+  private final Map<String, PriorityQueue<Details>> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -42,7 +46,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
     //new
     tickerSymbol = tickerSymbol.toUpperCase();
-    List<Details> detailsList;
+    PriorityQueue<Details> detailsList;
 
     if(stocks.containsKey(tickerSymbol)) {
       detailsList = stocks.get(tickerSymbol);
@@ -50,7 +54,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
       //checking if we have purchased the stock on same date
       for(Details details: detailsList) {
-        if (details.getPurchaseDate() == purchaseDate) {
+        if (details.getPurchaseDate().compareTo(purchaseDate) == 0) {
           details = new Details(details.getQuantity() + quantity,
                   details.getPurchaseDate());
           purchaseDateExists = true;
@@ -63,7 +67,9 @@ abstract class AbstractPortfolio implements Portfolio {
         detailsList.add(new Details(quantity, purchaseDate));
       }
     } else {
-      detailsList = new ArrayList<>();
+      detailsList = new PriorityQueue<>(
+              Comparator.comparing(Details::getPurchaseDate)
+      );
       detailsList.add(new Details(quantity, purchaseDate));
     }
 
@@ -79,7 +85,7 @@ abstract class AbstractPortfolio implements Portfolio {
   public double getValue(LocalDate date) throws RuntimeException {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
-      List<Details> detailsList = stocks.get(tickerSymbol);
+      PriorityQueue<Details> detailsList = stocks.get(tickerSymbol);
 
       for(Details details : detailsList) {
         Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
@@ -91,7 +97,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, List<Details>> getComposition() {
+  public Map<String, PriorityQueue<Details>> getComposition() {
     return new HashMap<>(stocks);
   }
 
@@ -126,3 +132,4 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 }
+
