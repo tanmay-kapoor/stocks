@@ -4,11 +4,11 @@ import java.time.LocalDate;
 
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
-import models.portfolio.StockPortfolio;
+import models.portfolio.StockPortfolioInflexible;
 import views.Menu;
 
 /**
- * The stockController implements methods that are meant to be executed while working
+ * The StockController implements methods that are meant to be executed while working
  * specifically for stock data.
  */
 public class StockController extends AbstractController {
@@ -17,8 +17,6 @@ public class StockController extends AbstractController {
   }
 
   protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
-    return new StockPortfolio(portfolioName, purchaseDate, path, api);
+    return new StockPortfolioInflexible(portfolioName, purchaseDate, path, api);
   }
 }
-
-

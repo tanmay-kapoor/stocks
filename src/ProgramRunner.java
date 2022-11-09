@@ -1,4 +1,5 @@
 import controllers.Controller;
+import controllers.GenericController;
 import controllers.StockController;
 import models.api.ShareApi;
 import models.api.StockApi;
@@ -17,16 +18,14 @@ public class ProgramRunner {
    */
   public static void main(String[] args) {
 
-    Menu menu = new StockMenu(System.in, System.out);
     String rootPath = System.getProperty("user.dir");
     String[] temp = rootPath.split("/");
 
-    String portfoliosPath = !temp[temp.length - 1].equals("res")
-            ? System.getProperty("user.dir") + "/src/files/stocks/" :
-            "../res/files/stocks/";
+    String commonPath = !temp[temp.length - 1].equals("res")
+            ? System.getProperty("user.dir") + "/src/files/" :
+            "../res/files/";
 
-    ShareApi api = new StockApi();
-    Controller controller = new StockController(menu, api, portfoliosPath);
+    Controller controller = new GenericController(System.in, System.out, commonPath);
     controller.start();
   }
 }

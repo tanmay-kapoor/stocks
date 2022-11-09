@@ -20,11 +20,21 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
+  public char getPortfolioType() {
+    this.print("\nWork with:\n" +
+            "1. Flexible Portfolio\n" +
+            "2. Inflexible Portfolio\n" +
+            "Press any other key to exit.\n" +
+            "\nEnter your choice : ");
+    return getCharVal();
+  }
+
+  @Override
   public char getMainMenuChoice() {
-    this.print("\n1. Create Portfolio.\n"
+    this.print("\n1. Create portfolio.\n"
             + "2. See portfolio composition.\n"
             + "3. Check portfolio value.\n"
-            + "Press any other key to exit.\n"
+            + "Press any other key to go back.\n"
             + "\nEnter your choice : ");
     return getCharVal();
   }

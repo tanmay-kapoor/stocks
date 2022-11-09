@@ -56,10 +56,12 @@ The structure of the model in the project folder is as follows:
 2. `portfolio` package which contains:
    - `Portfolio` (Interface) that states the methods that are expected from any kind of portfolio.
      We make this an interface so that it is scalable for future upgrades. For instance, we may be
-     required to implement crypto, forex, or any other king of portfolio.
+     required to implement crypto, forex, or any other king of portfolio. The portfolio supports 
+     addition of fractional shares, but the controller decides whether to allow whole or  
+     fractional shares
 
-   - `StockPortfolio` (Class) that is an extension of Portfolio class. This class specifically
-     deals with the portfolio that stores shares supported by our program.
+   - `StockPortfolioInflexible` (Class) that is an extension of Portfolio class. This class specifically
+     deals with the portfolio that stores shares supported by our program. 
 
 ### Controller
 

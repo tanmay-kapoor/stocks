@@ -60,7 +60,7 @@ The structure of the model in the project folder is as follows:
      addition of fractional shares, but the controller decides whether to allow whole or  
      fractional shares
 
-   - `StockPortfolio` (Class) that is an extension of Portfolio class. This class specifically
+   - `StockPortfolioInflexible` (Class) that is an extension of Portfolio class. This class specifically
      deals with the portfolio that stores shares supported by our program. 
 
 ### Controller

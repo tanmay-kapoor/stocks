@@ -15,9 +15,9 @@ import models.api.ShareApi;
  * A class that is an extension of <code>Portfolio</code> class. This class specifically
  * deals with the portfolio that store shares in the form of stocks listed in the NASDAQ.
  */
-public class StockPortfolio implements Portfolio {
+public class StockPortfolioInflexible implements Portfolio {
   private final String portfolioName;
-  private Map<String, Details> stocks;
+  private final Map<String, Details> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -29,7 +29,7 @@ public class StockPortfolio implements Portfolio {
    * @param purchaseDate   creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  public StockPortfolio(String portfolioName, LocalDate purchaseDate, String path, ShareApi api) {
+  public StockPortfolioInflexible(String portfolioName, LocalDate purchaseDate, String path, ShareApi api) {
     this.portfolioName = portfolioName;
     this.api = api;
     this.path = path;
