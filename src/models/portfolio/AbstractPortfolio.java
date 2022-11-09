@@ -1,5 +1,9 @@
 package models.portfolio;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,32 +107,33 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public boolean savePortfolio() {
-//    if (stocks.size() == 0) {
-//      return false;
-//    }
-//
-//    try {
-//      Files.createDirectories(Paths.get(this.path));
-//      String fileName = String.format(path + "%s.csv", portfolioName);
-//      FileWriter csvWriter = new FileWriter(fileName);
-//      csvWriter.append("share,quantity,purchaseDate\n");
-//      for (String share : stocks.keySet()) {
-//        Details details = stocks.get(share);
-//        csvWriter.append(share)
-//                .append(",")
-//                .append(String.valueOf(details.getQuantity()))
-//                .append(",")
-//                .append(details.getPurchaseDate().toString())
-//                .append("\n");
-//      }
-//
-//      csvWriter.flush();
-//      csvWriter.close();
-//      return true;
-//    } catch (IOException e) {
-//      throw new RuntimeException("Something went wrong!");
-//    }
-    return false;
+    if (stocks.size() == 0) {
+      return false;
+    }
+
+    try {
+      Files.createDirectories(Paths.get(this.path));
+      String fileName = String.format(path + "%s.csv", portfolioName);
+      FileWriter csvWriter = new FileWriter(fileName);
+      csvWriter.append("share,quantity,purchaseDate\n");
+      for (String ticker : stocks.keySet()) {
+        PriorityQueue<Details> detailsList = stocks.get(ticker);
+
+        for(Details details : detailsList) {
+          csvWriter.append(ticker).append(",")
+                                  .append(String.valueOf(details.getQuantity()))
+                                  .append(",")
+                                  .append(details.getPurchaseDate().toString())
+                                  .append("\n");
+        }
+      }
+
+      csvWriter.flush();
+      csvWriter.close();
+      return true;
+    } catch (IOException e) {
+      throw new RuntimeException("Something went wrong!");
+    }
   }
 
 }
