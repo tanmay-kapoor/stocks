@@ -1,10 +1,5 @@
 import controllers.Controller;
 import controllers.GenericController;
-import controllers.StockController;
-import models.api.ShareApi;
-import models.api.StockApi;
-import views.Menu;
-import views.StockMenu;
 
 /**
  * This is where the starter code lies. When the user starts the program, the main method of this

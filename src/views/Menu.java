@@ -6,7 +6,6 @@ package views;
  * to be used to display the menu to the user.
  */
 public interface Menu {
-  char getPortfolioType();
   /**
    * Shows the started options that the user gets when they run the program.
    *

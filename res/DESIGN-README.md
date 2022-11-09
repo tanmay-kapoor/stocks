@@ -23,7 +23,7 @@ The structure of the view in the project folder is as follows:
    common to other menu classes. This is done because in the future we may include menu for
    crypto/mutual fund portfolio which will share common methods.
 
-3. `StockMenu` (concrete class) is meant to specifically deal with menu while interacting with
+3. `StockMenuInflexible` (concrete class) is meant to specifically deal with menu while interacting with
    user about stock portfolio.
 
 
