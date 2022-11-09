@@ -23,7 +23,7 @@ The structure of the view in the project folder is as follows:
    common to other menu classes. This is done because in the future we may include menu for
    crypto/mutual fund portfolio which will share common methods.
 
-3. `StockMenu` (concrete class) is meant to specifically deal with menu while interacting with
+3. `StockMenuInflexible` (concrete class) is meant to specifically deal with menu while interacting with
    user about stock portfolio.
 
 
@@ -60,7 +60,7 @@ The structure of the model in the project folder is as follows:
      addition of fractional shares, but the controller decides whether to allow whole or  
      fractional shares
 
-   - `StockPortfolio` (Class) that is an extension of Portfolio class. This class specifically
+   - `StockPortfolioInflexible` (Class) that is an extension of Portfolio class. This class specifically
      deals with the portfolio that stores shares supported by our program. 
 
 ### Controller

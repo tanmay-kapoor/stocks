@@ -19,13 +19,11 @@ abstract class AbstractMenu implements Menu {
     sc = new Scanner(this.in);
   }
 
+  protected abstract void displayManyMenuOptions();
+
   @Override
   public char getMainMenuChoice() {
-    this.print("\n1. Create Portfolio.\n"
-            + "2. See portfolio composition.\n"
-            + "3. Check portfolio value.\n"
-            + "Press any other key to exit.\n"
-            + "\nEnter your choice : ");
+    displayManyMenuOptions();
     return getCharVal();
   }
 
@@ -100,7 +98,7 @@ abstract class AbstractMenu implements Menu {
     return getCharVal();
   }
 
-  private void print(String msg) {
+  protected void print(String msg) {
     this.out.print(msg);
   }
 

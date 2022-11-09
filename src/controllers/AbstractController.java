@@ -23,7 +23,7 @@ import views.Menu;
  * An abstract controller that implements methods that are supposed to be common between
  * two or more types of controllers across the program.
  */
-abstract class AbstractController implements Controller {
+abstract class AbstractController implements SpecificController {
   private final Menu menu;
   protected final ShareApi api;
   protected final String path;
@@ -39,7 +39,7 @@ abstract class AbstractController implements Controller {
 
     try {
       Files.createDirectories(Paths.get(this.path));
-      File directory = new File(path);
+      File directory = new File(this.path);
       File[] files = directory.listFiles();
       this.allPortfolios = new ArrayList<>();
       this.allPortfolioObjects = new HashMap<>();
@@ -304,8 +304,7 @@ abstract class AbstractController implements Controller {
       composition
               .append("\n")
               .append(share)
-              .append("\t\t")
-              .append((String.format("%.02f", details.getQuantity() / totalShare * 100) + "%"))
+              .append("\t\t").append(String.format("%.02f", details.getQuantity() / totalShare * 100)).append("%")
               .append("\t\t\t");
     }
     return composition.toString();
@@ -373,8 +372,8 @@ abstract class AbstractController implements Controller {
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
       double quantity = Double.parseDouble(vals[1]);
-      LocalDate dateCreatedForRecord = LocalDate.parse(vals[2]);
-      Details details = new Details(quantity, dateCreatedForRecord);
+      LocalDate purchaseDateForRecord = LocalDate.parse(vals[2]);
+      Details details = new Details(quantity, purchaseDateForRecord);
       stocks.put(vals[0], details);
 
       if (isFirstRecord) {

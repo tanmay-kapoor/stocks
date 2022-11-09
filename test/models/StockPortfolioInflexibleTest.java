@@ -18,7 +18,7 @@ import java.util.Set;
 
 import models.api.StockApi;
 import models.portfolio.Portfolio;
-import models.portfolio.StockPortfolio;
+import models.portfolio.StockPortfolioInflexible;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 /**
  * A test method that is used to test the methods implemented in the StocksPortfolio class.
  */
-public class StockPortfolioTest {
+public class StockPortfolioInflexibleTest {
 
   private Portfolio portfolio;
   private String portfolioName;
@@ -46,13 +46,13 @@ public class StockPortfolioTest {
     now = LocalDate.now();
 
     try {
-      portfolio = new StockPortfolio(portfolioName,
+      portfolio = new StockPortfolioInflexible(portfolioName,
               LocalDate.parse("2022-10-63"),
               this.directory,
               new StockApi());
       fail("Program should've failed while parsing invalid data.");
     } catch (DateTimeParseException e) {
-      portfolio = new StockPortfolio(portfolioName,
+      portfolio = new StockPortfolioInflexible(portfolioName,
               LocalDate.parse("2022-10-01"),
               this.directory,
               new StockApi());
@@ -67,7 +67,7 @@ public class StockPortfolioTest {
   @Test
   public void testPortfolioCreated() {
     try {
-      Portfolio p = new StockPortfolio("idk",
+      Portfolio p = new StockPortfolioInflexible("idk",
               LocalDate.parse("2022-10-01"),
               this.directory,
               new StockApi());

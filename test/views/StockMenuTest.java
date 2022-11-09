@@ -130,6 +130,6 @@ public class StockMenuTest {
 
   private void generateInputStream(String input) {
     InputStream in = new ByteArrayInputStream(input.getBytes());
-    menu = new StockMenu(in, out);
+    menu = new StockMenuInflexible(in, out);
   }
 }
