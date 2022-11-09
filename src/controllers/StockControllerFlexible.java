@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
-import models.portfolio.StockPortfolioInflexible;
 import views.Menu;
 
 public class StockControllerFlexible extends AbstractController {
@@ -15,6 +14,6 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
-    return new StockPortfolioInflexible(portfolioName, purchaseDate, path, api);
+    return new StockPortfolioFlexible(portfolioName, purchaseDate, path, api);
   }
 }
