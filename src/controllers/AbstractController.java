@@ -354,7 +354,7 @@ abstract class AbstractController implements SpecificController {
       }
       while (!shouldExit);
 
-      portfolio.addShare(tickerSymbol, quantity);
+      portfolio.addShare(tickerSymbol, quantity, );
       menu.printMessage("\nSuccess!");
     } catch (RuntimeException e) {
       menu.printMessage("\n" + e.getMessage());
@@ -384,7 +384,7 @@ abstract class AbstractController implements SpecificController {
     csvReader.close();
     Portfolio p = createPortfolio(pName, purchaseDate);
     for (String stock : stocks.keySet()) {
-      p.addShare(stock, stocks.get(stock).getQuantity());
+      p.addShare(stock, stocks.get(stock).getQuantity(), LocalDate.now());
     }
     return p;
   }
