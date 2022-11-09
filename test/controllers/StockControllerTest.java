@@ -23,7 +23,7 @@
 //import static org.junit.Assert.fail;
 //
 ///**
-// * A test class to test the methods implemented in the StockController.
+// * A test class to test the methods implemented in the StockControllerInflexible.
 // */
 //public class StockControllerTest {
 //  private String path;

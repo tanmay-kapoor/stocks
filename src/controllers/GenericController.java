@@ -3,6 +3,7 @@ package controllers;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import models.api.AlphaVantage;
 import models.api.ShareApi;
 import models.api.StockApi;
 import views.StockMenuFlexible;
@@ -25,34 +26,32 @@ public class GenericController implements Controller {
 
   @Override
   public void start() {
-    char choice;
+    ShareApi api;
     String path;
     MainMenu mainMenu = new MainMenuImpl(this.in, this.out);
 
+    char choice;
     do {
       choice = mainMenu.getPortfolioType();
 
       switch (choice) {
         case '1':
           this.menu = new StockMenuFlexible(this.in, this.out);
+          api = new AlphaVantage();
           path = this.commonPath + "stocks/flexible/";
-          callStockController(menu, path);
+          new StockControllerInflexible(menu, api, path).start();
           break;
 
         case '2':
           this.menu = new StockMenuInflexible(this.in, this.out);
+          api = new AlphaVantage();
           path = this.commonPath + "stocks/inflexible/";
-          callStockController(menu, path);
+          new StockControllerFlexible(menu, api, path).start();
           break;
 
         default:
           break;
       }
     } while (choice >= '1' && choice <= '2');
-  }
-
-  private void callStockController(Menu menu, String path) {
-    ShareApi api = new StockApi();
-    new StockController(menu, api, path).start();
   }
 }

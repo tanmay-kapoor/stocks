@@ -384,7 +384,7 @@ abstract class AbstractController implements SpecificController {
     csvReader.close();
     Portfolio p = createPortfolio(pName, purchaseDate);
     for (String stock : stocks.keySet()) {
-      p.addShare(stock, stocks.get(stock).getQuantity(), LocalDate.now());
+      p.addShare(stock, stocks.get(stock).getQuantity(), );
     }
     return p;
   }
