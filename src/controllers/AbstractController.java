@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -275,11 +274,11 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    Map<String, ArrayList<Details>> portfolioContent = portfolio.getComposition();
+    Map<String, List<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
 
     for (String ticker : portfolioContent.keySet()) {
-      ArrayList<Details> detailsList = portfolioContent.get(ticker);
+      List<Details> detailsList = portfolioContent.get(ticker);
       int quantity = 0;
       for(Details details : detailsList) {
         quantity += details.getQuantity();
@@ -297,13 +296,13 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    Map<String, ArrayList<Details>> portfolioContent = portfolio.getComposition();
+    Map<String,List<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
     Map<String, Double> shareQuantity = new HashMap<>();
 
     long totalShare = 0;
     for (String ticker : portfolioContent.keySet()) {
-      ArrayList<Details> detailsList = portfolioContent.get(ticker);
+      List<Details> detailsList = portfolioContent.get(ticker);
       double tickerQuantity = 0;
 
       for(Details details : detailsList) {

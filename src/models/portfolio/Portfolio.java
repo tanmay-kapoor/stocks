@@ -2,6 +2,7 @@ package models.portfolio;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import models.Details;
@@ -48,7 +49,7 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  Map<String, ArrayList<Details>> getComposition();
+  Map<String, List<Details>> getComposition();
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.

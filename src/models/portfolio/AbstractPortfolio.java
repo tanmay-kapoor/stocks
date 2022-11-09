@@ -3,6 +3,7 @@ package models.portfolio;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.Details;
@@ -14,7 +15,7 @@ import models.api.ShareApi;
  */
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
-  private final Map<String, ArrayList<Details>> stocks;
+  private final Map<String, List<Details>> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -41,7 +42,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
     //new
     tickerSymbol = tickerSymbol.toUpperCase();
-    ArrayList<Details> detailsList;
+    List<Details> detailsList;
 
     if(stocks.containsKey(tickerSymbol)) {
       detailsList = stocks.get(tickerSymbol);
@@ -78,7 +79,7 @@ abstract class AbstractPortfolio implements Portfolio {
   public double getValue(LocalDate date) throws RuntimeException {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
-      ArrayList<Details> detailsList = stocks.get(tickerSymbol);
+      List<Details> detailsList = stocks.get(tickerSymbol);
 
       for(Details details : detailsList) {
         Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
@@ -90,7 +91,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, ArrayList<Details>> getComposition() {
+  public Map<String, List<Details>> getComposition() {
     return new HashMap<>(stocks);
   }
 
