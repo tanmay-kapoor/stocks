@@ -24,7 +24,7 @@ import models.api.ShareApi;
  */
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
-  private final Map<String, Queue<Details>> stocks;
+  protected Map<String, Queue<Details>> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -36,7 +36,8 @@ abstract class AbstractPortfolio implements Portfolio {
    * @param purchaseDate   creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  protected AbstractPortfolio(String portfolioName, LocalDate purchaseDate, String path, ShareApi api) {
+  protected AbstractPortfolio(String portfolioName, LocalDate purchaseDate,
+                              String path, ShareApi api) {
     this.portfolioName = portfolioName;
     this.api = api;
     this.path = path;
