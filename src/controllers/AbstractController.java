@@ -38,6 +38,7 @@ abstract class AbstractController implements SpecificController {
   protected abstract void handleBuySellOption();
 
   protected abstract char getLastOption();
+
   protected abstract void handleBuySellInPortfolio(String name);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
@@ -398,8 +399,8 @@ abstract class AbstractController implements SpecificController {
   }
 
   private boolean validateQuantity(double quantity) {
-    if (quantity - Math.floor(quantity) != 0.0) {
-      menu.printMessage("\nNumber of shares must be an integer.\n");
+    if (quantity < 0 || (quantity - Math.floor(quantity) != 0.0)) {
+      menu.printMessage("\nNumber of shares must be an integer > 0.\n");
       return false;
     }
     return true;
