@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 import models.Details;
 import models.api.ShareApi;
@@ -23,7 +24,7 @@ import models.api.ShareApi;
  */
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
-  private final Map<String, PriorityQueue<Details>> stocks;
+  private final Map<String, Queue<Details>> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -50,7 +51,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
     //new
     tickerSymbol = tickerSymbol.toUpperCase();
-    PriorityQueue<Details> detailsList;
+    Queue<Details> detailsList;
 
     if(stocks.containsKey(tickerSymbol)) {
       detailsList = stocks.get(tickerSymbol);
@@ -58,7 +59,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
       //checking if we have purchased the stock on same date
       for(Details details: detailsList) {
-        if (details.getPurchaseDate().compareTo(purchaseDate) == 0) {
+        if (details.getPurchaseDate() == purchaseDate) {
           details = new Details(details.getQuantity() + quantity,
                   details.getPurchaseDate());
           purchaseDateExists = true;
@@ -89,7 +90,7 @@ abstract class AbstractPortfolio implements Portfolio {
   public double getValue(LocalDate date) throws RuntimeException {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
-      PriorityQueue<Details> detailsList = stocks.get(tickerSymbol);
+      Queue<Details> detailsList = stocks.get(tickerSymbol);
 
       for(Details details : detailsList) {
         Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
@@ -101,7 +102,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, PriorityQueue<Details>> getComposition() {
+  public Map<String, Queue<Details>> getComposition() {
     return new HashMap<>(stocks);
   }
 
@@ -117,7 +118,7 @@ abstract class AbstractPortfolio implements Portfolio {
       FileWriter csvWriter = new FileWriter(fileName);
       csvWriter.append("share,quantity,purchaseDate\n");
       for (String ticker : stocks.keySet()) {
-        PriorityQueue<Details> detailsList = stocks.get(ticker);
+        Queue<Details> detailsList = stocks.get(ticker);
 
         for(Details details : detailsList) {
           csvWriter.append(ticker).append(",")
