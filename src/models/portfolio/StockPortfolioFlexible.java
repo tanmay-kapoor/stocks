@@ -24,13 +24,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
 
-  public void buy(String ticker, double quantity, LocalDate purchaseDate) {
-    if (quantity < 0.0) {
-      throw new IllegalArgumentException("Quantity should be grater than 0.");
-    }
-    this.updatePortfolio(ticker, quantity, purchaseDate);
-  }
-
   //can do return err msg
   public boolean sell(String ticker, double quantity, LocalDate sellDate) {
     if (stocks.containsKey(ticker)) {

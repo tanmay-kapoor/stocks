@@ -40,8 +40,7 @@ abstract class AbstractPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
-  @Override
-  public void updatePortfolio(String tickerSymbol, double quantity, LocalDate updateDate) {
+  protected void updatePortfolio(String tickerSymbol, double quantity, LocalDate updateDate) {
     //new
     tickerSymbol = tickerSymbol.toUpperCase();
     Queue<Details> detailsList;
@@ -81,6 +80,13 @@ abstract class AbstractPortfolio implements Portfolio {
     }
 
     stocks.put(tickerSymbol, detailsList);
+  }
+
+  public void buy(String ticker, double quantity, LocalDate purchaseDate) {
+    if (quantity < 0.0) {
+      throw new IllegalArgumentException("Quantity should be grater than 0.");
+    }
+    this.updatePortfolio(ticker, quantity, purchaseDate);
   }
 
   @Override
@@ -140,13 +146,13 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 
-  public void updatePortfolio(Txn txn, String tickerSymbol, double quantity, LocalDate updateDate) {
-    if(txn == Txn.Buy) {
-
-    } else {
-
-    }
-  }
+//  public void updatePortfolio(Txn txn, String tickerSymbol, double quantity, LocalDate updateDate) {
+//    if(txn == Txn.Buy) {
+//
+//    } else {
+//
+//    }
+//  }
 
 }
 
