@@ -1,6 +1,7 @@
 package models.portfolio;
 
 import java.time.LocalDate;
+
 import models.api.ShareApi;
 
 /**
@@ -13,7 +14,7 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
    * date it was created and the API that it is supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
-   * @param purchaseDate   creation date of the portfolio.
+   * @param purchaseDate  creation date of the portfolio.
    * @param api           API is meant to be used.
    */
   public StockPortfolioInflexible(String portfolioName, LocalDate purchaseDate,
@@ -22,6 +23,10 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
   }
 
   public void buy(String ticker, double quantity, LocalDate purchaseDate) {
+    if (quantity < 0.0) {
+      throw new IllegalArgumentException("Quantity should be grater than 0.");
+    }
     this.updatePortfolio(ticker, quantity, purchaseDate);
   }
+
 }

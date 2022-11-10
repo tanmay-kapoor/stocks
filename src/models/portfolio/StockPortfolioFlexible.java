@@ -25,18 +25,22 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   public void buy(String ticker, double quantity, LocalDate purchaseDate) {
+    if (quantity < 0.0) {
+      throw new IllegalArgumentException("Quantity should be grater than 0.");
+    }
     this.updatePortfolio(ticker, quantity, purchaseDate);
   }
 
+  //can do return err msg
   public boolean sell(String ticker, double quantity, LocalDate sellDate) {
-    if(stocks.containsKey(ticker)) {
+    if (stocks.containsKey(ticker)) {
       return false;
     }
 
     Queue<Details> detailsList = stocks.get(ticker);
-    double sharesAvailable = getShareQuantityTillDate(sellDate);
+    double sharesAvailable = getShareQuantityTillDate(detailsList, sellDate);
 
-    if(sharesAvailable < quantity) {
+    if (sharesAvailable < quantity) {
       return false;
     }
 
@@ -46,7 +50,16 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
 
-  double getShareQuantityTillDate(LocalDate date) {
-    return 100.00;
+  double getShareQuantityTillDate(Queue<Details> detailsList, LocalDate date) {
+    double qtyAvailable = 0;
+
+    for(Details details: detailsList) {
+      if(details.getPurchaseDate().compareTo(date) > 0) {
+        break;
+      }
+      qtyAvailable += details.getQuantity();
+    }
+
+    return qtyAvailable;
   }
 }
