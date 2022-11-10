@@ -68,4 +68,5 @@ public interface Menu {
   String getDateForValue();
 
   char getPortfolioCompositionOption();
+  char getBuySellChoice();
 }

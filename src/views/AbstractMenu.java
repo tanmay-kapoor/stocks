@@ -20,6 +20,7 @@ abstract class AbstractMenu implements Menu {
   }
 
   protected abstract void displayManyMenuOptions();
+  protected abstract char getBuySellChoiceIfApplicable();
 
   @Override
   public char getMainMenuChoice() {
@@ -98,17 +99,22 @@ abstract class AbstractMenu implements Menu {
     return getCharVal();
   }
 
+  @Override
+  public char getBuySellChoice() {
+    return getBuySellChoiceIfApplicable();
+  }
+
   protected void print(String msg) {
     this.out.print(msg);
   }
 
-  private char getCharVal() {
+  protected char getCharVal() {
     char val = sc.next().charAt(0);
     sc.nextLine();
     return val;
   }
 
-  private String getWordVal() {
+  protected String getWordVal() {
     String val = sc.next();
     sc.nextLine();
     return val;

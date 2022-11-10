@@ -21,4 +21,27 @@ public class StockControllerFlexible extends AbstractController {
   protected LocalDate getPurchaseDate() {
     return LocalDate.parse(menu.getDateForValue());
   }
+
+  @Override
+  protected void handleBuySellOption() {
+    char choice;
+    do {
+      choice = menu.getBuySellChoice();
+      switch (choice) {
+        case '1':
+          break;
+
+        case '2':
+          break;
+
+        default:
+          break;
+      }
+    } while (choice >= '1' && choice <= '2');
+  }
+
+  @Override
+  protected char getLastOption() {
+    return '4';
+  }
 }

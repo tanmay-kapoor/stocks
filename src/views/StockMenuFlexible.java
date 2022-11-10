@@ -16,4 +16,12 @@ public class StockMenuFlexible extends AbstractMenu {
             + "Press any other key to go back.\n"
             + "\nEnter your choice : ");
   }
+
+  protected char getBuySellChoiceIfApplicable() {
+    print("\n1. Buy a stock\n" +
+            "2. Sell a stock\n" +
+            "Press any other key to go back.\n\n" +
+            "Enter your choice : ");
+    return getCharVal();
+  }
 }
