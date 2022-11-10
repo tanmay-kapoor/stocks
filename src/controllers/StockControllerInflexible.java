@@ -24,4 +24,14 @@ public class StockControllerInflexible extends AbstractController {
   protected LocalDate getPurchaseDate() {
     return LocalDate.now();
   }
+
+  @Override
+  protected void handleBuySellOption() {
+    return;
+  }
+
+  @Override
+  protected char getLastOption() {
+    return '3';
+  }
 }

@@ -20,4 +20,9 @@ public class StockMenuInflexible extends AbstractMenu {
             + "Press any other key to go back.\n"
             + "\nEnter your choice : ");
   }
+
+  protected char getBuySellChoiceIfApplicable() {
+    print("\nNot allowed for inflexible portfolio\n");
+    return 'q';
+  }
 }

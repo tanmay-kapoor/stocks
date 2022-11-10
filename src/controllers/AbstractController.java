@@ -35,6 +35,8 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
   protected abstract LocalDate getPurchaseDate();
+  protected abstract void handleBuySellOption();
+  protected abstract char getLastOption();
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -83,11 +85,15 @@ abstract class AbstractController implements SpecificController {
           handlePortfolioValueOption();
           break;
 
+        case '4':
+          handleBuySellOption();
+          break;
+
         default:
           break;
       }
     }
-    while (choice >= '1' && choice <= '3');
+    while (choice >= '1' && choice <= getLastOption());
   }
 
   private void handleCreatePortfolioChoice() {
