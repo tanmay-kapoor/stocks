@@ -16,4 +16,9 @@ public class StockControllerFlexible extends AbstractController {
   protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
     return new StockPortfolioFlexible(portfolioName, purchaseDate, path, api);
   }
+
+  @Override
+  protected LocalDate getPurchaseDate() {
+    return LocalDate.parse(menu.getDateForValue());
+  }
 }

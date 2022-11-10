@@ -39,14 +39,14 @@ public class GenericController implements Controller {
           this.menu = new StockMenuFlexible(this.in, this.out);
           api = new AlphaVantage();
           path = this.commonPath + "stocks/flexible/";
-          new StockControllerInflexible(menu, api, path).start();
+          new StockControllerFlexible(menu, api, path).start();
           break;
 
         case '2':
           this.menu = new StockMenuInflexible(this.in, this.out);
           api = new AlphaVantage();
           path = this.commonPath + "stocks/inflexible/";
-          new StockControllerFlexible(menu, api, path).start();
+          new StockControllerInflexible(menu, api, path).start();
           break;
 
         default:

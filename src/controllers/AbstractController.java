@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +26,14 @@ import views.Menu;
  * two or more types of controllers across the program.
  */
 abstract class AbstractController implements SpecificController {
-  private final Menu menu;
+  protected final Menu menu;
   protected final ShareApi api;
   protected final String path;
   private final List<String> allPortfolios;
   private final Map<String, Portfolio> allPortfolioObjects;
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
+  protected abstract LocalDate getPurchaseDate();
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -370,8 +372,17 @@ abstract class AbstractController implements SpecificController {
       }
       while (!shouldExit);
 
-      portfolio.addShare(tickerSymbol, quantity, LocalDate.now());
-      menu.printMessage("\nSuccess!");
+      do {
+        shouldExit = true;
+        try {
+          LocalDate purchaseDate = getPurchaseDate();
+          portfolio.addShare(tickerSymbol, quantity, purchaseDate);
+          menu.printMessage("\nSuccess!");
+        } catch(DateTimeParseException e) {
+          shouldExit = false;
+          menu.printMessage("\nInvalid date format");
+        }
+      } while(!shouldExit);
     } catch (RuntimeException e) {
       menu.printMessage("\n" + e.getMessage());
     }
