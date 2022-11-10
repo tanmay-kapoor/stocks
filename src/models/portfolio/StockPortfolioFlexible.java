@@ -23,8 +23,9 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     super(portfolioName, purchaseDate, path, api);
   }
 
+
   public void buy(String ticker, double quantity, LocalDate purchaseDate) {
-    this.addShare(ticker, quantity, purchaseDate);
+    this.updatePortfolio(ticker, quantity, purchaseDate);
   }
 
   public boolean sell(String ticker, double quantity, LocalDate sellDate) {
@@ -39,6 +40,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       return false;
     }
 
+    //preform all checks above, only then do update portfolio
+    this.updatePortfolio(ticker, quantity * -1, sellDate);
     return true;
   }
 

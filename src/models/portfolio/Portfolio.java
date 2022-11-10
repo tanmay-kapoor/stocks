@@ -14,7 +14,7 @@ import models.Details;
  * portfolio, crypto portfolio, mutual fund portfolio, etc.).
  */
 public interface Portfolio {
-  /**
+  /** --------
    * Adds a particular share to the <code>Portfolio</code> object.
    *
    * @param tickerSymbol ticker of the share to be added to the portfolio. Example-AAPL for
@@ -22,7 +22,7 @@ public interface Portfolio {
    * @param quantity     amount of the share to be added to the portfolio. Example - 2 if the
    *                     client want to add two share to their portfolio.
    */
-  void addShare(String tickerSymbol, double quantity, LocalDate purchaseDate);
+  void updatePortfolio(String tickerSymbol, double quantity, LocalDate purchaseDate);
 
   /**
    * Get the total value of the portfolio. The valuation of a portfolio is determined by the
@@ -59,5 +59,7 @@ public interface Portfolio {
    * @return true if the portfolio is saved successfully, false if not saved.
    */
   boolean savePortfolio();
+
+  void buy(String ticker, double quantity, LocalDate purchaseDate);
 
 }

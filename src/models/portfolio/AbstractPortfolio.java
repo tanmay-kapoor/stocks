@@ -45,7 +45,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public void addShare(String tickerSymbol, double quantity, LocalDate purchaseDate) {
+  public void updatePortfolio(String tickerSymbol, double quantity, LocalDate purchaseDate) {
     if (quantity < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
