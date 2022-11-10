@@ -140,13 +140,13 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 
-//  public void updatePortfolio(Txn txn, String tickerSymbol, double quantity, LocalDate updateDate) {
-//    if(txn == Txn.Buy) {
-//
-//    } else {
-//
-//    }
-//  }
+  public void updatePortfolio(Txn txn, String tickerSymbol, double quantity, LocalDate updateDate) {
+    if(txn == Txn.Buy) {
+
+    } else {
+
+    }
+  }
 
 }
 
