@@ -20,4 +20,8 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
                                   String path, ShareApi api) {
     super(portfolioName, purchaseDate, path, api);
   }
+
+  public void buy(String ticker, double quantity, LocalDate purchaseDate) {
+    this.updatePortfolio(ticker, quantity, purchaseDate);
+  }
 }
