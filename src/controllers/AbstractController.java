@@ -9,11 +9,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -30,13 +28,18 @@ abstract class AbstractController implements SpecificController {
   protected final Menu menu;
   protected final ShareApi api;
   protected final String path;
-  private final List<String> allPortfolios;
-  private final Map<String, Portfolio> allPortfolioObjects;
+  protected final List<String> allPortfolios;
+  protected final Map<String, Portfolio> allPortfolioObjects;
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
+
   protected abstract LocalDate getPurchaseDate();
+
   protected abstract void handleBuySellOption();
+
   protected abstract char getLastOption();
+
+  protected abstract void handleBuySellInPortfolio(String name);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -189,7 +192,7 @@ abstract class AbstractController implements SpecificController {
     commonStuff(Function.GetValue);
   }
 
-  private void commonStuff(Function function) {
+  protected void commonStuff(Function function) {
     if (allPortfolios.size() == 0) {
       menu.printMessage("\nNo existing portfolios.");
     } else {
@@ -220,58 +223,15 @@ abstract class AbstractController implements SpecificController {
       if (portfolio != null) {
         switch (function) {
           case Composition:
-            char choice = menu.getPortfolioCompositionOption();
-            switch (choice) {
-              case '1':
-                menu.printMessage(getPortfolioContents(portfolio));
-                break;
-
-              case '2':
-                menu.printMessage(getPortfolioWeightage(portfolio));
-                break;
-
-              default:
-                break;
-            }
+            handleGetPortfolioComposition(portfolio);
             break;
 
           case GetValue:
-            boolean shouldContinue;
-            do {
-              shouldContinue = false;
+            handleGetPortfolioValue(portfolio);
+            break;
 
-              char ch;
-              ch = menu.getDateChoice();
-              String date;
-              String val;
-              try {
-                switch (ch) {
-                  case '1':
-                    date = LocalDate.now().toString();
-                    val = String.valueOf(portfolio.getValue());
-                    menu.printMessage(String.format("\nValue of portfolio on %s = %s",
-                            date, val));
-                    break;
-
-                  case '2':
-                    date = menu.getDateForValue();
-                    val = String.valueOf(portfolio.getValue(LocalDate.parse(date)));
-                    menu.printMessage(String.format("\nValue of portfolio on %s = %s",
-                            date, val));
-                    break;
-
-                  default:
-                    break;
-                }
-              } catch (DateTimeParseException e) {
-                shouldContinue = true;
-                menu.printMessage("\nInvalid date format");
-              } catch (RuntimeException e) {
-                shouldContinue = true;
-                menu.printMessage("\n" + e.getMessage());
-              }
-            }
-            while (shouldContinue);
+          case BuySell:
+            handleBuySellInPortfolio(name);
             break;
 
           default:
@@ -283,6 +243,83 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
+  private void handleGetPortfolioComposition(Portfolio portfolio) {
+    char choice = menu.getPortfolioCompositionOption();
+    switch (choice) {
+      case '1':
+        menu.printMessage(getPortfolioContents(portfolio));
+        break;
+
+      case '2':
+        menu.printMessage(getPortfolioWeightage(portfolio));
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private void handleGetPortfolioValue(Portfolio portfolio) {
+    boolean shouldContinue;
+    do {
+      shouldContinue = false;
+
+      char ch;
+      ch = menu.getDateChoice();
+      String date;
+      String val;
+      try {
+        switch (ch) {
+          case '1':
+            date = LocalDate.now().toString();
+            val = String.valueOf(portfolio.getValue());
+            menu.printMessage(String.format("\nValue of portfolio on %s = %s",
+                    date, val));
+            break;
+
+          case '2':
+            date = menu.getDateForValue();
+            val = String.valueOf(portfolio.getValue(LocalDate.parse(date)));
+            menu.printMessage(String.format("\nValue of portfolio on %s = %s",
+                    date, val));
+            break;
+
+          default:
+            break;
+        }
+      } catch (DateTimeParseException e) {
+        shouldContinue = true;
+        menu.printMessage("\nInvalid date format");
+      } catch (RuntimeException e) {
+        shouldContinue = true;
+        menu.printMessage("\n" + e.getMessage());
+      }
+    }
+    while (shouldContinue);
+  }
+
+  protected Details getDetails() {
+    boolean isValid;
+    double quantity;
+    do {
+      quantity = menu.getQuantity();
+      isValid = this.validateQuantity(quantity);
+    } while (!isValid);
+
+    LocalDate purchaseDate;
+    do {
+      isValid = true;
+      purchaseDate = LocalDate.now();
+      try {
+        purchaseDate = LocalDate.parse(menu.getDateForValue());
+      } catch (DateTimeParseException e) {
+        isValid = false;
+        menu.printMessage("Invalid date format\n");
+      }
+    } while (!isValid);
+    return new Details(quantity, purchaseDate);
+  }
+
   private String getPortfolioContents(Portfolio portfolio) {
     Map<String, Queue<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
@@ -290,7 +327,7 @@ abstract class AbstractController implements SpecificController {
     for (String ticker : portfolioContent.keySet()) {
       Queue<Details> detailsList = portfolioContent.get(ticker);
       int quantity = 0;
-      for(Details details : detailsList) {
+      for (Details details : detailsList) {
         quantity += details.getQuantity();
       }
 
@@ -315,7 +352,7 @@ abstract class AbstractController implements SpecificController {
       Queue<Details> detailsList = portfolioContent.get(ticker);
       double tickerQuantity = 0;
 
-      for(Details details : detailsList) {
+      for (Details details : detailsList) {
         double n = details.getQuantity();
         totalShare += n;
         tickerQuantity += n;
@@ -361,6 +398,14 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
+  private boolean validateQuantity(double quantity) {
+    if (quantity < 0 || (quantity - Math.floor(quantity) != 0.0)) {
+      menu.printMessage("\nNumber of shares must be an integer > 0.\n");
+      return false;
+    }
+    return true;
+  }
+
   private void displayAddStockStuff(Portfolio portfolio) {
     String tickerSymbol = menu.getTickerSymbol();
 
@@ -370,12 +415,8 @@ abstract class AbstractController implements SpecificController {
       boolean shouldExit;
 
       do {
-        shouldExit = true;
         quantity = menu.getQuantity();
-        if (quantity - Math.floor(quantity) != 0.0) {
-          shouldExit = false;
-          menu.printMessage("\nNumber of shares must be an integer.\n");
-        }
+        shouldExit = this.validateQuantity(quantity);
       }
       while (!shouldExit);
 
@@ -385,11 +426,11 @@ abstract class AbstractController implements SpecificController {
           LocalDate purchaseDate = getPurchaseDate();
           portfolio.buy(tickerSymbol, quantity, purchaseDate);
           menu.printMessage("\nSuccess!");
-        } catch(DateTimeParseException e) {
+        } catch (DateTimeParseException e) {
           shouldExit = false;
           menu.printMessage("\nInvalid date format");
         }
-      } while(!shouldExit);
+      } while (!shouldExit);
     } catch (RuntimeException e) {
       menu.printMessage("\n" + e.getMessage());
     }
