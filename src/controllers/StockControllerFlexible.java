@@ -1,7 +1,14 @@
 package controllers;
 
+import java.sql.Array;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
+import models.Details;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
@@ -23,25 +30,49 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   @Override
+  protected char getLastOption() {
+    return '4';
+  }
+
+  @Override
   protected void handleBuySellOption() {
-    char choice;
+    commonStuff(Function.BuySell);
+  }
+
+  @Override
+  protected void handleBuySellInPortfolio(String name) {
+    char ch;
     do {
-      choice = menu.getBuySellChoice();
-      switch (choice) {
+      ch = menu.getBuySellChoice();
+      String ticker;
+      Details d;
+
+      switch (ch) {
         case '1':
+          try {
+            ticker = menu.getTickerSymbol().toUpperCase();
+            api.getShareDetails(ticker, LocalDate.now());
+            d = getDetails();
+            System.out.println("\nnow do buy stuff");
+          } catch (IllegalArgumentException e) {
+            menu.printMessage("\n" + e.getMessage());
+          }
           break;
 
         case '2':
+          Map<String, Queue<Details>> currentPortfolio = allPortfolioObjects.get(name).getComposition();
+          ticker = menu.getTickerSymbol().toUpperCase();
+          if (!currentPortfolio.containsKey(ticker)) {
+            menu.printMessage("\nCannot sell ticker that is not in portfolio");
+          } else {
+            d = getDetails();
+            System.out.println("\nnow do sell stuff");
+          }
           break;
 
         default:
           break;
       }
-    } while (choice >= '1' && choice <= '2');
-  }
-
-  @Override
-  protected char getLastOption() {
-    return '4';
+    } while (ch >= '1' && ch <= '2');
   }
 }

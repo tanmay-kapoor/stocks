@@ -26,12 +26,17 @@ public class StockControllerInflexible extends AbstractController {
   }
 
   @Override
+  protected char getLastOption() {
+    return '3';
+  }
+
+  @Override
   protected void handleBuySellOption() {
     return;
   }
 
   @Override
-  protected char getLastOption() {
-    return '3';
+  protected void handleBuySellInPortfolio(String name) {
+    return;
   }
 }
