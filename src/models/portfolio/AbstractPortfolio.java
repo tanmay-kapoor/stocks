@@ -54,14 +54,13 @@ abstract class AbstractPortfolio implements Portfolio {
         if (details.getPurchaseDate() == updateDate) {
           purchaseDateExists = true;
           double updatedQty = details.getQuantity() + quantity;
-          if(quantity < 0) {
+          if (quantity < 0) {
             details.setLastSold(updateDate);
           }
           //if quantity becomes zero after selling then remove from the detailsList PQ
-          if(updatedQty == 0) {
+          if (updatedQty == 0) {
             detailsList.remove(details);
-          }
-          else {
+          } else {
             details = new Details(updatedQty, details.getPurchaseDate());
           }
         }
@@ -80,13 +79,19 @@ abstract class AbstractPortfolio implements Portfolio {
     }
 
     stocks.put(tickerSymbol, detailsList);
+//    Queue<Details> arr = stocks.get(tickerSymbol);
+//    for(Details ele : arr) {
+//      System.out.println(ele.getQuantity() + " " + ele.getPurchaseDate());
+//    }
+    System.out.println(stocks);
   }
 
-  public void buy(String ticker, double quantity, LocalDate purchaseDate) {
-    if (quantity < 0.0) {
+  @Override
+  public void buy(String ticker, Details details) {
+    if (details.getQuantity() < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
-    this.updatePortfolio(ticker, quantity, purchaseDate);
+    this.updatePortfolio(ticker, details.getQuantity(), details.getPurchaseDate());
   }
 
   @Override

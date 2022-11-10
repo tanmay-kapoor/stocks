@@ -51,6 +51,6 @@ public interface Portfolio {
    */
   boolean savePortfolio();
 
-  void buy(String ticker, double quantity, LocalDate purchaseDate);
+  void buy(String ticker, Details details);
 
 }

@@ -41,6 +41,8 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected void handleBuySellInPortfolio(String name) {
+    Portfolio portfolio = allPortfolioObjects.get(name);
+    Map<String, Queue<Details>> portfolioComposition = portfolio.getComposition();
     char ch;
     do {
       ch = menu.getBuySellChoice();
@@ -53,16 +55,15 @@ public class StockControllerFlexible extends AbstractController {
             ticker = menu.getTickerSymbol().toUpperCase();
             api.getShareDetails(ticker, LocalDate.now());
             d = getDetails();
-            System.out.println("\nnow do buy stuff");
+            portfolio.buy(ticker, d);
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }
           break;
 
         case '2':
-          Map<String, Queue<Details>> currentPortfolio = allPortfolioObjects.get(name).getComposition();
           ticker = menu.getTickerSymbol().toUpperCase();
-          if (!currentPortfolio.containsKey(ticker)) {
+          if (!portfolioComposition.containsKey(ticker)) {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
             d = getDetails();

@@ -424,7 +424,8 @@ abstract class AbstractController implements SpecificController {
         shouldExit = true;
         try {
           LocalDate purchaseDate = getPurchaseDate();
-          portfolio.buy(tickerSymbol, quantity, purchaseDate);
+          Details details = new Details(quantity, purchaseDate);
+          portfolio.buy(tickerSymbol, details);
           menu.printMessage("\nSuccess!");
         } catch (DateTimeParseException e) {
           shouldExit = false;
@@ -459,7 +460,7 @@ abstract class AbstractController implements SpecificController {
     csvReader.close();
     Portfolio p = createPortfolio(pName, purchaseDate);
     for (String stock : stocks.keySet()) {
-      p.buy(stock, stocks.get(stock).getQuantity(), LocalDate.now());
+      p.buy(stock, new Details(stocks.get(stock).getQuantity(), LocalDate.now()));
     }
     return p;
   }
