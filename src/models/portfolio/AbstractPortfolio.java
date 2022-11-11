@@ -51,7 +51,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
       //checking if we have purchased the stock on same date
       for (Details details : detailsList) {
-        if (details.getPurchaseDate() == updateDate) {
+        if (details.getPurchaseDate().equals(updateDate)) {
           purchaseDateExists = true;
           double updatedQty = details.getQuantity() + quantity;
           if (quantity < 0) {
@@ -61,7 +61,8 @@ abstract class AbstractPortfolio implements Portfolio {
           if (updatedQty == 0) {
             detailsList.remove(details);
           } else {
-            details = new Details(updatedQty, details.getPurchaseDate());
+            details.setQuantity(updatedQty);
+//            details = new Details(updatedQty, details.getPurchaseDate());
           }
         }
       }
@@ -73,17 +74,13 @@ abstract class AbstractPortfolio implements Portfolio {
       }
     } else {
       detailsList = new PriorityQueue<>(
-              Comparator.comparing(Details::getPurchaseDate)
+//              Comparator.comparing(Details::getPurchaseDate)
+              (a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate())
       );
       detailsList.add(new Details(quantity, updateDate));
     }
 
     stocks.put(tickerSymbol, detailsList);
-//    Queue<Details> arr = stocks.get(tickerSymbol);
-//    for(Details ele : arr) {
-//      System.out.println(ele.getQuantity() + " " + ele.getPurchaseDate());
-//    }
-    System.out.println(stocks);
   }
 
   @Override

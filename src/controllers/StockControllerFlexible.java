@@ -43,6 +43,7 @@ public class StockControllerFlexible extends AbstractController {
   protected void handleBuySellInPortfolio(String name) {
     Portfolio portfolio = allPortfolioObjects.get(name);
     Map<String, Queue<Details>> portfolioComposition = portfolio.getComposition();
+
     char ch;
     do {
       ch = menu.getBuySellChoice();
@@ -72,6 +73,7 @@ public class StockControllerFlexible extends AbstractController {
           break;
 
         default:
+          portfolio.savePortfolio();
           break;
       }
     } while (ch >= '1' && ch <= '2');
