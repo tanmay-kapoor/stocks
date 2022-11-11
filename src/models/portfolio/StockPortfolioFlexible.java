@@ -1,5 +1,9 @@
 package models.portfolio;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +37,12 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   //can do return err msg
-  public boolean PortfolioBasedSell(String ticker, Details details) {
+  protected boolean PortfolioBasedSell(String ticker, Details details) {
     double sellQty = details.getQuantity();
     LocalDate sellDate = details.getPurchaseDate();
 
     Log log = stocks.get(ticker);
+    System.out.println(log.getLastSoldDate());
     //this never gets executed
     if(log.getLastSoldDate() != null &&
             log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
@@ -96,5 +101,29 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
 
     return qtyAvailable;
+  }
+
+  protected void saveLastSoldLog() {
+    try {
+      String path_log = this.path + "logs/";
+      System.out.println(path_log);
+      Files.createDirectories(Paths.get(path_log));
+      String fileName = String.format(path_log + "%s.csv", portfolioName);
+      FileWriter csvWriter = new FileWriter(fileName);
+      csvWriter.append("share,lastSellDate\n");
+      for (String ticker : stocks.keySet()) {
+        Log log = stocks.get(ticker);
+
+        csvWriter.append(ticker.toUpperCase()).append(",")
+                .append(String.valueOf(log.getLastSoldDate()))
+                .append("\n");
+
+      }
+
+      csvWriter.flush();
+      csvWriter.close();
+    } catch (IOException e) {
+      throw new RuntimeException("Something went wrong in creating log!");
+    }
   }
 }
