@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import models.Details;
+import models.Log;
 import models.api.ShareApi;
 
 public class StockPortfolioFlexible extends AbstractPortfolio {
@@ -23,33 +24,43 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   //can do return err msg
-//  public boolean sell(String ticker, double quantity, LocalDate sellDate) {
-//    if (stocks.containsKey(ticker)) {
-//      return false;
-//    }
-//
-//    Set<Details> detailsList = stocks.get(ticker);
-//    double sharesAvailable = getShareQuantityTillDate(detailsList, sellDate);
-//
-//    if (sharesAvailable < quantity) {
-//      return false;
-//    }
-//
-//    //preform all checks above, only then do update portfolio
-//    this.updatePortfolio(ticker, quantity * -1, sellDate);
-//    return true;
-//  }
+  public boolean sell(String ticker, double quantity, LocalDate sellDate) {
+    if (stocks.containsKey(ticker)) {
+      return false;
+    }
+
+    Log log = stocks.get(ticker);
+    Set<Details> detailsSet = log.getDetailsSet();
+    double sharesAvailable = getShareQuantityTillDate(detailsSet, sellDate);
+
+    if (sharesAvailable < quantity) {
+      return false;
+    }
+
+    for(Details d : detailsSet) {
+      if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
+        d.setQuantity(d.getQuantity() - quantity);
+      }
+    }
+
+    log.setDetailsSet(detailsSet);
+    log.setLastSoldDate(sellDate);
+
+    return true;
+  }
 
 
-  double getShareQuantityTillDate(Set<Details> detailsList, LocalDate date) {
+  double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {
     double qtyAvailable = 0;
 
-    for(Details details: detailsList) {
+    for(Details details: detailsSet) {
       if(details.getPurchaseDate().compareTo(date) > 0) {
         break;
       }
       qtyAvailable += details.getQuantity();
     }
+
+
 
     return qtyAvailable;
   }

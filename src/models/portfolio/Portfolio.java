@@ -56,4 +56,5 @@ public interface Portfolio {
 
   void buy(String ticker, Details details);
 
+
 }

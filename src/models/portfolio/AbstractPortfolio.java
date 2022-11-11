@@ -114,27 +114,25 @@ abstract class AbstractPortfolio implements Portfolio {
     else {
       Log log = stocks.get(ticker);
       Set<Details> detailsSet = log.getDetailsSet();
+      boolean haveBoughtBefore = false;
 
       for(Details d : detailsSet) {
-
-        boolean haveBoughtBefore = false;
         //just add to the quantity if we've purchased stock on same date
         if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
-
           haveBoughtBefore = true;
           double newQty = d.getQuantity() + details.getQuantity();
           d.setQuantity(newQty);
-        }
-
-        if(!haveBoughtBefore) {
-          detailsSet.add(new Details(details.getQuantity(), details.getPurchaseDate()));
+          break;
         }
       }
 
-//      Set<Details> modifiedDetailsSet = new TreeSet<>(detailsSet);
+      if(!haveBoughtBefore) {
+        detailsSet.add(new Details(details.getQuantity(), details.getPurchaseDate()));
+      }
+
       log.setDetailsSet(detailsSet);
     }
-//    updateAllStocksAfter(ticker, details);
+    updateAllStocksAfter(ticker, details);
   }
 
 
@@ -214,14 +212,15 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 
-
   private void updateAllStocksAfter(String ticker, Details details) {
     Log log = stocks.get(ticker);
     Set<Details> detailsSet = log.getDetailsSet();
-
+    Iterator<Details> itr = detailsSet.iterator();
     //update quantity if it was purchased after the date received in argument
+
     for(Details d : detailsSet) {
-      if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 1) {
+      if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) > 0) {
+        System.out.println("here");
         d.setQuantity(d.getQuantity() + details.getQuantity());
       }
     }
