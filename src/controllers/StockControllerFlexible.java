@@ -70,7 +70,7 @@ public class StockControllerFlexible extends AbstractController {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
             d = getDetails();
-            System.out.println("\nnow do sell stuff");
+            portfolio.sell(ticker, d);
           }
           break;
 

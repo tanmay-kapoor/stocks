@@ -54,7 +54,9 @@ public interface Portfolio {
    */
   boolean savePortfolio();
 
+
   void buy(String ticker, Details details);
 
+  boolean sell(String ticker, Details details);
 
 }

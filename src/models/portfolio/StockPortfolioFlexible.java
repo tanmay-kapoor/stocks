@@ -24,7 +24,10 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   //can do return err msg
-  public boolean sell(String ticker, double quantity, LocalDate sellDate) {
+  public boolean PortfolioBasedSell(String ticker, Details details) {
+    double sellQty = details.getQuantity();
+    LocalDate sellDate = details.getPurchaseDate();
+
     if (stocks.containsKey(ticker)) {
       return false;
     }
@@ -33,13 +36,13 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     Set<Details> detailsSet = log.getDetailsSet();
     double sharesAvailable = getShareQuantityTillDate(detailsSet, sellDate);
 
-    if (sharesAvailable < quantity) {
+    if (sharesAvailable < sellQty) {
       return false;
     }
 
     for(Details d : detailsSet) {
       if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
-        d.setQuantity(d.getQuantity() - quantity);
+        d.setQuantity(d.getQuantity() - sellQty);
       }
     }
 
@@ -50,7 +53,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
 
-  double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {
+
+  private double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {
     double qtyAvailable = 0;
 
     for(Details details: detailsSet) {

@@ -1,7 +1,9 @@
 package models.portfolio;
 
 import java.time.LocalDate;
+import java.util.Set;
 
+import models.Details;
 import models.api.ShareApi;
 
 /**
@@ -22,6 +24,7 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     super(portfolioName, purchaseDate, path, api);
   }
 
-
-
+  public boolean PortfolioBasedSell(String ticker, Details details) {
+    return false;
+  }
 }

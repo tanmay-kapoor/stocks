@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,6 +26,8 @@ abstract class AbstractPortfolio implements Portfolio {
   private final ShareApi api;
   private final String path;
 
+  abstract boolean PortfolioBasedSell(String ticker, Details details);
+
   /**
    * Constructor for the class that initializes the name of the portfolio,
    * date it was created and the API that it is supposed to use for the fetching relevant data.
@@ -44,66 +44,15 @@ abstract class AbstractPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
-//  protected void updatePortfolio(String tickerSymbol, double quantity, LocalDate updateDate) {
-//    //new
-//    tickerSymbol = tickerSymbol.toUpperCase();
-//    Set<Details> detailsList;
-//
-//    if (stocks.containsKey(tickerSymbol)) {
-//      detailsList = stocks.get(tickerSymbol);
-//      boolean purchaseDateExists = false;
-//
-//      //checking if we have purchased the stock on same date
-//      for (Details details : detailsList) {
-//        if (details.getPurchaseDate().equals(updateDate)) {
-//          purchaseDateExists = true;
-//          double updatedQty = details.getQuantity() + quantity;
-//          if (quantity < 0) {
-//            details.setLastSold(updateDate);
-//          }
-//          //if quantity becomes zero after selling then remove from the detailsList PQ
-//          if (updatedQty == 0) {
-//            detailsList.remove(details);
-//          } else {
-//            details.setQuantity(updatedQty);
-////            details = new Details(updatedQty, details.getPurchaseDate());
-//          }
-//        }
-//      }
-//
-//      //add new Details object to the list only if we have not purchased
-//      // the stock on same date before
-//      if (!purchaseDateExists) {
-//        detailsList.add(new Details(quantity, updateDate));
-//      }
-//    } else {
-//      detailsList = new TreeSet<>(
-////              Comparator.comparing(Details::getPurchaseDate)
-//              (a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate())
-//      );
-//      detailsList.add(new Details(quantity, updateDate));
-//    }
-//
-//    stocks.put(tickerSymbol, detailsList);
-//  }
-
-//  @Override
-//  public void buy(String ticker, Details details) {
-//    if (details.getQuantity() < 0.0) {
-//      throw new IllegalArgumentException("Quantity should be grater than 0.");
-//    }
-//    this.updatePortfolio(ticker, details.getQuantity(), details.getPurchaseDate());
-//  }
-
 
   @Override
   public void buy(String ticker, Details details) {
     if (details.getQuantity() < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
-
+    ticker = ticker.toUpperCase();
     //if ticker doesn't exist in the portfolio just add it
-    if(!stocks.containsKey(ticker)) {
+    if (!stocks.containsKey(ticker)) {
       Set<Details> detailsSet = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
       detailsSet.add(details);
       Log log = new Log(detailsSet, null);
@@ -115,24 +64,38 @@ abstract class AbstractPortfolio implements Portfolio {
       Log log = stocks.get(ticker);
       Set<Details> detailsSet = log.getDetailsSet();
       boolean haveBoughtBefore = false;
+      double prevRowQty = 0;
 
-      for(Details d : detailsSet) {
-        //just add to the quantity if we've purchased stock on same date
-        if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
+      for (Details d : detailsSet) {
+
+        if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) < 0) {
+          prevRowQty = d.getQuantity();
+        }
+        else if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
           haveBoughtBefore = true;
-          double newQty = d.getQuantity() + details.getQuantity();
-          d.setQuantity(newQty);
-          break;
+          System.out.println("Date" +d.getPurchaseDate() + "Adding on: " + d.getQuantity() +" "+ details.getQuantity());
+          d.setQuantity(d.getQuantity() + details.getQuantity());
+        }
+        else {
+          System.out.println("Date" +d.getPurchaseDate() + "Adding on: " + d.getQuantity() +" "+ details.getQuantity());
+          d.setQuantity(d.getQuantity() + details.getQuantity());
+          System.out.println("=="  + d.getQuantity());
         }
       }
 
-      if(!haveBoughtBefore) {
-        detailsSet.add(new Details(details.getQuantity(), details.getPurchaseDate()));
+      if (!haveBoughtBefore) {
+        detailsSet.add(new Details(details.getQuantity() + prevRowQty, details.getPurchaseDate()));
       }
 
       log.setDetailsSet(detailsSet);
     }
-    updateAllStocksAfter(ticker, details);
+//    updateAllStocksAfter(ticker, details);
+  }
+
+
+  @Override
+  public boolean sell(String ticker, Details details) {
+    return PortfolioBasedSell(ticker, details);
   }
 
 
@@ -195,7 +158,7 @@ abstract class AbstractPortfolio implements Portfolio {
         Set<Details> detailsSet = log.getDetailsSet();
 
         for (Details d : detailsSet) {
-          csvWriter.append(ticker).append(",")
+          csvWriter.append(ticker.toUpperCase()).append(",")
                   .append(String.valueOf(d.getQuantity()))
                   .append(",")
                   .append(d.getPurchaseDate().toString())
@@ -205,9 +168,34 @@ abstract class AbstractPortfolio implements Portfolio {
 
       csvWriter.flush();
       csvWriter.close();
+      saveLastSoldLog();
       return true;
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong!");
+    }
+  }
+
+  private void saveLastSoldLog() {
+    try {
+      String path_log = this.path + "logs/";
+      System.out.println(path_log);
+      Files.createDirectories(Paths.get(path_log));
+      String fileName = String.format(path_log + "%s.csv", portfolioName);
+      FileWriter csvWriter = new FileWriter(fileName);
+      csvWriter.append("share,lastSellDate\n");
+      for (String ticker : stocks.keySet()) {
+        Log log = stocks.get(ticker);
+
+        csvWriter.append(ticker.toUpperCase()).append(",")
+                .append(String.valueOf(log.getLastSoldDate()))
+                .append("\n");
+
+      }
+
+      csvWriter.flush();
+      csvWriter.close();
+    } catch (IOException e) {
+      throw new RuntimeException("Something went wrong in creating log!");
     }
   }
 
@@ -216,10 +204,10 @@ abstract class AbstractPortfolio implements Portfolio {
     Log log = stocks.get(ticker);
     Set<Details> detailsSet = log.getDetailsSet();
     Iterator<Details> itr = detailsSet.iterator();
-    //update quantity if it was purchased after the date received in argument
 
-    for(Details d : detailsSet) {
-      if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) > 0) {
+    //update quantity if it was purchased after the date received in argument
+    for (Details d : detailsSet) {
+      if (d.getPurchaseDate().compareTo(details.getPurchaseDate()) > 0) {
         System.out.println("here");
         d.setQuantity(d.getQuantity() + details.getQuantity());
       }

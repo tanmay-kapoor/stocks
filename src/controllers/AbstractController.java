@@ -60,11 +60,13 @@ abstract class AbstractController implements SpecificController {
 
       if (files != null) {
         for (File file : files) {
-          String name = file.getName();
-          String extension = name.substring(name.lastIndexOf(".") + 1);
-          name = name.substring(0, name.lastIndexOf("."));
-          if (extension.equals("csv")) {
-            allPortfolios.add(name);
+          if(!file.isDirectory()) {
+            String name = file.getName();
+            String extension = name.substring(name.lastIndexOf(".") + 1);
+            name = name.substring(0, name.lastIndexOf("."));
+            if (extension.equals("csv")) {
+              allPortfolios.add(name);
+            }
           }
         }
       }
@@ -175,7 +177,8 @@ abstract class AbstractController implements SpecificController {
                     + "Portfolio names are case insensitive! Please rename your file "
                     + "and try again!", portfolioName));
           } else {
-            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file);
+            //need to change this 3rd argument later
+            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file, file);
             savePortfolio(portfolioName, portfolio);
             shouldContinue = false;
           }
@@ -217,6 +220,7 @@ abstract class AbstractController implements SpecificController {
         if (allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
           try {
             portfolio = createPortfolioFromCsv(name,
+                    new File(String.format("%s%s.csv", this.path, name)),
                     new File(String.format("%s%s.csv", this.path, name)));
             allPortfolioObjects.put(name, portfolio);
           } catch (FileNotFoundException e) {
@@ -445,26 +449,35 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
-  private Portfolio createPortfolioFromCsv(String pName, File file) throws FileNotFoundException {
+  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile) throws FileNotFoundException {
     Scanner csvReader = new Scanner(file);
     csvReader.nextLine();
 
-    Map<String, Set<Details>> stocks = new HashMap<>();
+    Map<String, Log> stocks = new HashMap<>();
     boolean isFirstRecord = true;
     LocalDate purchaseDate = LocalDate.now();
 
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
+      String ticker = vals[0];
       double quantity = Double.parseDouble(vals[1]);
       LocalDate purchaseDateForRecord = LocalDate.parse(vals[2]);
       Details details = new Details(quantity, purchaseDateForRecord);
 
+      //need to fetch this from the log file
+      LocalDate lastDateSold = null;
       if (!stocks.containsKey(vals[0])) {
-        TreeSet<Details> detailsList = new TreeSet<>((a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate()));
+        Set<Details> detailsList = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
         detailsList.add(details);
-        stocks.put(vals[0], detailsList);
+        Log log = new Log(detailsList, lastDateSold);
+        stocks.put(ticker, log);
+//        stocks.put(vals[0], detailsList);
       } else {
-        stocks.get(vals[0]).add(details);
+        Log log = stocks.get(ticker);
+        Set<Details> detailsSet = log.getDetailsSet();
+        detailsSet.add(details);
+        log.setDetailsSet(detailsSet);
+        stocks.put(ticker, log);
       }
 
       if (isFirstRecord) {
@@ -474,9 +487,13 @@ abstract class AbstractController implements SpecificController {
     }
     csvReader.close();
     Portfolio p = createPortfolio(pName, purchaseDate);
-    for (String stock : stocks.keySet()) {
-      for (Details d : stocks.get(stock)) {
-        p.buy(stock, new Details(d.getQuantity(), d.getPurchaseDate()));
+    for (String tickerSymbol : stocks.keySet()) {
+      Log log = stocks.get(tickerSymbol);
+      Set<Details> detailsSet = log.getDetailsSet();
+
+      for (Details d : detailsSet) {
+        System.out.println(" ---->  " + d.getQuantity() + "  " + d.getPurchaseDate());
+        p.buy(tickerSymbol, new Details(d.getQuantity(), d.getPurchaseDate()));
       }
     }
     return p;
