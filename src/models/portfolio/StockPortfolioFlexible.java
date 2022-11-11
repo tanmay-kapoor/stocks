@@ -36,9 +36,12 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     LocalDate sellDate = details.getPurchaseDate();
 
     Log log = stocks.get(ticker);
-    if(log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
+    //this never gets executed
+    if(log.getLastSoldDate() != null &&
+            log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
       throw new IllegalArgumentException("Please choose a time later than or equal to " + log.getLastSoldDate());
     }
+
     Set<Details> detailsSet = log.getDetailsSet();
     double sharesAvailable = getShareQuantityTillDate(detailsSet, sellDate);
 
@@ -49,7 +52,14 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     for(Details d : detailsSet) {
       if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
         d.setQuantity(d.getQuantity() - sellQty);
+
+        //causes concurrent modification error
+//        if(d.getQuantity() == 0) {
+//          detailsSet.remove(d);
+//        }
       }
+
+      //fail_proof iterator
     }
 
     log.setDetailsSet(detailsSet);
