@@ -32,12 +32,12 @@
 
 
 - After a portfolio has been created by the user, it is automatically saved in a csv format in
-  `files/stock` directory.
+  `files/stocks` directory.
 
 
 
 _**For now, out program supports the use of only the following stocks listed below. If the user 
-choose a share of stock from outside of this list, they'll get an error.**_
+choose a share of stock from outside this list, they'll get an error.**_
 
 | SR no. | Corporation                             | Ticker |
 |--------|-----------------------------------------|--------|

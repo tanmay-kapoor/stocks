@@ -7,7 +7,7 @@ import java.time.LocalDate;
  * and the date on which it was added to portfolio.
  */
 public class Details {
-  private final double quantity;
+  private double quantity;
   private final LocalDate purchaseDate;
   private LocalDate lastSold;
 
@@ -43,5 +43,9 @@ public class Details {
 
   public void setLastSold(LocalDate sellDate) {
     this.lastSold = sellDate;
+  }
+
+  public void setQuantity(double quantity) {
+    this.quantity = quantity;
   }
 }

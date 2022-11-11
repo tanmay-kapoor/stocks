@@ -9,9 +9,11 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -441,7 +443,7 @@ abstract class AbstractController implements SpecificController {
     Scanner csvReader = new Scanner(file);
     csvReader.nextLine();
 
-    Map<String, Details> stocks = new HashMap<>();
+    Map<String, Queue<Details>> stocks = new HashMap<>();
     boolean isFirstRecord = true;
     LocalDate purchaseDate = LocalDate.now();
 
@@ -450,7 +452,14 @@ abstract class AbstractController implements SpecificController {
       double quantity = Double.parseDouble(vals[1]);
       LocalDate purchaseDateForRecord = LocalDate.parse(vals[2]);
       Details details = new Details(quantity, purchaseDateForRecord);
-      stocks.put(vals[0], details);
+
+      if (!stocks.containsKey(vals[0])) {
+        Queue<Details> detailsList = new PriorityQueue<>((a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate()));
+        detailsList.add(details);
+        stocks.put(vals[0], detailsList);
+      } else {
+        stocks.get(vals[0]).add(details);
+      }
 
       if (isFirstRecord) {
         purchaseDate = LocalDate.parse(vals[2]);
@@ -460,7 +469,9 @@ abstract class AbstractController implements SpecificController {
     csvReader.close();
     Portfolio p = createPortfolio(pName, purchaseDate);
     for (String stock : stocks.keySet()) {
-      p.buy(stock, new Details(stocks.get(stock).getQuantity(), LocalDate.now()));
+      for (Details d : stocks.get(stock)) {
+        p.buy(stock, new Details(d.getQuantity(), d.getPurchaseDate()));
+      }
     }
     return p;
   }
