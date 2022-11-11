@@ -35,10 +35,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     double sellQty = details.getQuantity();
     LocalDate sellDate = details.getPurchaseDate();
 
-    if (stocks.containsKey(ticker)) {
-      return false;
-    }
-
     Log log = stocks.get(ticker);
     Set<Details> detailsSet = log.getDetailsSet();
     double sharesAvailable = getShareQuantityTillDate(detailsSet, sellDate);
@@ -59,6 +55,15 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     return true;
   }
 
+  double getTxnCommission(String ticker, Details details, double commissionPercent) {
+    ShareApi api = new StockApi();
+
+    Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
+    double price = shareDetails.get("Close");
+
+    return price * details.getQuantity() * commissionPercent / 100;
+  }
+
 
 
   private double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {
@@ -68,10 +73,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       if(details.getPurchaseDate().compareTo(date) > 0) {
         break;
       }
-      qtyAvailable += details.getQuantity();
+      qtyAvailable = details.getQuantity();
     }
-
-
 
     return qtyAvailable;
   }
