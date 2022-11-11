@@ -24,9 +24,10 @@ abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
   protected Map<String, Log> stocks;
   private final ShareApi api;
-  private final String path;
+  final String path;
 
   abstract boolean PortfolioBasedSell(String ticker, Details details);
+  abstract void saveLastSoldLog();
 
   /**
    * Constructor for the class that initializes the name of the portfolio,
@@ -150,7 +151,7 @@ abstract class AbstractPortfolio implements Portfolio {
         filteredStocks.put(stock, logCopy);
       }
     }
-//    return new HashMap<>(stocks);
+
     return filteredStocks;
   }
 
@@ -185,30 +186,6 @@ abstract class AbstractPortfolio implements Portfolio {
       return true;
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong!");
-    }
-  }
-
-  private void saveLastSoldLog() {
-    try {
-      String path_log = this.path + "logs/";
-      System.out.println(path_log);
-      Files.createDirectories(Paths.get(path_log));
-      String fileName = String.format(path_log + "%s.csv", portfolioName);
-      FileWriter csvWriter = new FileWriter(fileName);
-      csvWriter.append("share,lastSellDate\n");
-      for (String ticker : stocks.keySet()) {
-        Log log = stocks.get(ticker);
-
-        csvWriter.append(ticker.toUpperCase()).append(",")
-                .append(String.valueOf(log.getLastSoldDate()))
-                .append("\n");
-
-      }
-
-      csvWriter.flush();
-      csvWriter.close();
-    } catch (IOException e) {
-      throw new RuntimeException("Something went wrong in creating log!");
     }
   }
 

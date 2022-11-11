@@ -1,5 +1,9 @@
 package models.portfolio;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +35,9 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     super(portfolioName, purchaseDate, stocks, path, api);
   }
 
-  public boolean PortfolioBasedSell(String ticker, Details details) {
+  protected boolean PortfolioBasedSell(String ticker, Details details) {
     return false;
   }
+
+  protected void saveLastSoldLog() {}
 }
