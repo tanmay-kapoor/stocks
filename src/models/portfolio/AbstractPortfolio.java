@@ -113,16 +113,22 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public double getValue(LocalDate date) throws RuntimeException {
+    if(date.compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("Cannot get value for a future date.");
+    }
+
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Log log = stocks.get(tickerSymbol);
 
       Set<Details> detailsSet = log.getDetailsSet();
-
+      double quantity = 0.0;
       for (Details d : detailsSet) {
-        Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-        totalValue += shareDetails.get("close") * d.getQuantity();
+        quantity = d.getQuantity();
       }
+      Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
+      totalValue += shareDetails.get("close") * quantity;
+      System.out.println(shareDetails.get("close") + " " + quantity);
     }
 
     return totalValue;
