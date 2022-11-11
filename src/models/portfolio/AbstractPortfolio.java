@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import models.Details;
+import models.Log;
 import models.api.ShareApi;
 
 /**
@@ -19,7 +22,7 @@ import models.api.ShareApi;
  */
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
-  protected Map<String, Set<Details>> stocks;
+  protected Map<String, Log> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -39,56 +42,99 @@ abstract class AbstractPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
-  protected void updatePortfolio(String tickerSymbol, double quantity, LocalDate updateDate) {
-    //new
-    tickerSymbol = tickerSymbol.toUpperCase();
-    Set<Details> detailsList;
+//  protected void updatePortfolio(String tickerSymbol, double quantity, LocalDate updateDate) {
+//    //new
+//    tickerSymbol = tickerSymbol.toUpperCase();
+//    Set<Details> detailsList;
+//
+//    if (stocks.containsKey(tickerSymbol)) {
+//      detailsList = stocks.get(tickerSymbol);
+//      boolean purchaseDateExists = false;
+//
+//      //checking if we have purchased the stock on same date
+//      for (Details details : detailsList) {
+//        if (details.getPurchaseDate().equals(updateDate)) {
+//          purchaseDateExists = true;
+//          double updatedQty = details.getQuantity() + quantity;
+//          if (quantity < 0) {
+//            details.setLastSold(updateDate);
+//          }
+//          //if quantity becomes zero after selling then remove from the detailsList PQ
+//          if (updatedQty == 0) {
+//            detailsList.remove(details);
+//          } else {
+//            details.setQuantity(updatedQty);
+////            details = new Details(updatedQty, details.getPurchaseDate());
+//          }
+//        }
+//      }
+//
+//      //add new Details object to the list only if we have not purchased
+//      // the stock on same date before
+//      if (!purchaseDateExists) {
+//        detailsList.add(new Details(quantity, updateDate));
+//      }
+//    } else {
+//      detailsList = new TreeSet<>(
+////              Comparator.comparing(Details::getPurchaseDate)
+//              (a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate())
+//      );
+//      detailsList.add(new Details(quantity, updateDate));
+//    }
+//
+//    stocks.put(tickerSymbol, detailsList);
+//  }
 
-    if (stocks.containsKey(tickerSymbol)) {
-      detailsList = stocks.get(tickerSymbol);
-      boolean purchaseDateExists = false;
+//  @Override
+//  public void buy(String ticker, Details details) {
+//    if (details.getQuantity() < 0.0) {
+//      throw new IllegalArgumentException("Quantity should be grater than 0.");
+//    }
+//    this.updatePortfolio(ticker, details.getQuantity(), details.getPurchaseDate());
+//  }
 
-      //checking if we have purchased the stock on same date
-      for (Details details : detailsList) {
-        if (details.getPurchaseDate().equals(updateDate)) {
-          purchaseDateExists = true;
-          double updatedQty = details.getQuantity() + quantity;
-          if (quantity < 0) {
-            details.setLastSold(updateDate);
-          }
-          //if quantity becomes zero after selling then remove from the detailsList PQ
-          if (updatedQty == 0) {
-            detailsList.remove(details);
-          } else {
-            details.setQuantity(updatedQty);
-//            details = new Details(updatedQty, details.getPurchaseDate());
-          }
-        }
-      }
-
-      //add new Details object to the list only if we have not purchased
-      // the stock on same date before
-      if (!purchaseDateExists) {
-        detailsList.add(new Details(quantity, updateDate));
-      }
-    } else {
-      detailsList = new TreeSet<>(
-//              Comparator.comparing(Details::getPurchaseDate)
-              (a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate())
-      );
-      detailsList.add(new Details(quantity, updateDate));
-    }
-
-    stocks.put(tickerSymbol, detailsList);
-  }
 
   @Override
   public void buy(String ticker, Details details) {
     if (details.getQuantity() < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
-    this.updatePortfolio(ticker, details.getQuantity(), details.getPurchaseDate());
+
+    //if ticker doesn't exist in the portfolio just add it
+    if(!stocks.containsKey(ticker)) {
+      Set<Details> detailsSet = new TreeSet<>((a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate()));
+      detailsSet.add(details);
+      Log log = new Log(detailsSet);
+
+      stocks.put(ticker, log);
+    }
+    // add the existing Log of the stock
+    else {
+      Log log = stocks.get(ticker);
+      Set<Details> detailsSet = log.getDetailsSet();
+
+      for(Details d : detailsSet) {
+
+        boolean haveBoughtBefore = false;
+        //just add to the quantity if we've purchased stock on same date
+        if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
+
+          haveBoughtBefore = true;
+          double newQty = d.getQuantity() + details.getQuantity();
+          d.setQuantity(newQty);
+        }
+
+        if(!haveBoughtBefore) {
+          detailsSet.add(new Details(details.getQuantity(), details.getPurchaseDate()));
+        }
+      }
+
+//      Set<Details> modifiedDetailsSet = new TreeSet<>(detailsSet);
+      log.setDetailsSet(detailsSet);
+    }
+//    updateAllStocksAfter(ticker, details);
   }
+
 
   @Override
   public double getValue() {
@@ -99,11 +145,13 @@ abstract class AbstractPortfolio implements Portfolio {
   public double getValue(LocalDate date) throws RuntimeException {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
-      Set<Details> detailsList = stocks.get(tickerSymbol);
+      Log log = stocks.get(tickerSymbol);
 
-      for (Details details : detailsList) {
+      Set<Details> detailsSet = log.getDetailsSet();
+
+      for (Details d : detailsSet) {
         Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-        totalValue += shareDetails.get("close") * details.getQuantity();
+        totalValue += shareDetails.get("close") * d.getQuantity();
       }
     }
 
@@ -111,7 +159,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, Set<Details>> getComposition() {
+  public Map<String, Log> getComposition() {
     return new HashMap<>(stocks);
   }
 
@@ -127,13 +175,15 @@ abstract class AbstractPortfolio implements Portfolio {
       FileWriter csvWriter = new FileWriter(fileName);
       csvWriter.append("share,quantity,purchaseDate\n");
       for (String ticker : stocks.keySet()) {
-        Set<Details> detailsList = stocks.get(ticker);
+        Log log = stocks.get(ticker);
 
-        for (Details details : detailsList) {
+        Set<Details> detailsSet = log.getDetailsSet();
+
+        for (Details d : detailsSet) {
           csvWriter.append(ticker).append(",")
-                  .append(String.valueOf(details.getQuantity()))
+                  .append(String.valueOf(d.getQuantity()))
                   .append(",")
-                  .append(details.getPurchaseDate().toString())
+                  .append(d.getPurchaseDate().toString())
                   .append("\n");
         }
       }
@@ -147,13 +197,19 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 
-//  public void updatePortfolio(Txn txn, String tickerSymbol, double quantity, LocalDate updateDate) {
-//    if(txn == Txn.Buy) {
-//
-//    } else {
-//
-//    }
-//  }
 
+  private void updateAllStocksAfter(String ticker, Details details) {
+    Log log = stocks.get(ticker);
+    Set<Details> detailsSet = log.getDetailsSet();
+
+    //update quantity if it was purchased after the date received in argument
+    for(Details d : detailsSet) {
+      if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 1) {
+        d.setQuantity(d.getQuantity() + details.getQuantity());
+      }
+    }
+
+    log.setDetailsSet(detailsSet);
+  }
 }
 

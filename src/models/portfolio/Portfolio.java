@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import models.Details;
+import models.Log;
 
 /**
  * An interface that states the methods that are expected from any kind of portfolio (e.g. stock
@@ -44,7 +45,7 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  Map<String, Set<Details>> getComposition();
+  Map<String, Log> getComposition();
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.

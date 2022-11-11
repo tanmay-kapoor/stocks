@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import models.Details;
+import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
@@ -43,7 +44,7 @@ public class StockControllerFlexible extends AbstractController {
   @Override
   protected void handleBuySellInPortfolio(String name) {
     Portfolio portfolio = allPortfolioObjects.get(name);
-    Map<String, Set<Details>> portfolioComposition = portfolio.getComposition();
+    Map<String, Log> portfolioComposition = portfolio.getComposition();
 
     char ch;
     do {

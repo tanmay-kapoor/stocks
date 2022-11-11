@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import models.Details;
+import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import views.Menu;
@@ -325,13 +326,14 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    Map<String, Set<Details>> portfolioContent = portfolio.getComposition();
+    Map<String, Log> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
 
     for (String ticker : portfolioContent.keySet()) {
-      Set<Details> detailsList = portfolioContent.get(ticker);
+      Log log = portfolioContent.get(ticker);
+      Set<Details> detailsSet = log.getDetailsSet();
       int quantity = 0;
-      for (Details details : detailsList) {
+      for (Details details : detailsSet) {
         quantity += details.getQuantity();
       }
 
@@ -347,16 +349,18 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    Map<String, Set<Details>> portfolioContent = portfolio.getComposition();
+    Map<String, Log> portfolioContent = portfolio.getComposition();
+
     StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
     Map<String, Double> shareQuantity = new HashMap<>();
 
     long totalShare = 0;
     for (String ticker : portfolioContent.keySet()) {
-      Set<Details> detailsList = portfolioContent.get(ticker);
+      Log log = portfolioContent.get(ticker);
+      Set<Details> detailsSet = log.getDetailsSet();
       double tickerQuantity = 0;
 
-      for (Details details : detailsList) {
+      for (Details details : detailsSet) {
         double n = details.getQuantity();
         totalShare += n;
         tickerQuantity += n;

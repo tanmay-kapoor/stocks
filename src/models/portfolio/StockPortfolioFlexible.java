@@ -1,10 +1,7 @@
 package models.portfolio;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import models.Details;
 import models.api.ShareApi;
@@ -26,22 +23,22 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   //can do return err msg
-  public boolean sell(String ticker, double quantity, LocalDate sellDate) {
-    if (stocks.containsKey(ticker)) {
-      return false;
-    }
-
-    Set<Details> detailsList = stocks.get(ticker);
-    double sharesAvailable = getShareQuantityTillDate(detailsList, sellDate);
-
-    if (sharesAvailable < quantity) {
-      return false;
-    }
-
-    //preform all checks above, only then do update portfolio
-    this.updatePortfolio(ticker, quantity * -1, sellDate);
-    return true;
-  }
+//  public boolean sell(String ticker, double quantity, LocalDate sellDate) {
+//    if (stocks.containsKey(ticker)) {
+//      return false;
+//    }
+//
+//    Set<Details> detailsList = stocks.get(ticker);
+//    double sharesAvailable = getShareQuantityTillDate(detailsList, sellDate);
+//
+//    if (sharesAvailable < quantity) {
+//      return false;
+//    }
+//
+//    //preform all checks above, only then do update portfolio
+//    this.updatePortfolio(ticker, quantity * -1, sellDate);
+//    return true;
+//  }
 
 
   double getShareQuantityTillDate(Set<Details> detailsList, LocalDate date) {
