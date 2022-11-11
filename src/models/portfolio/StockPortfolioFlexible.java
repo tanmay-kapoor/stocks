@@ -31,11 +31,14 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     LocalDate sellDate = details.getPurchaseDate();
 
     Log log = stocks.get(ticker);
+    if(log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
+      throw new IllegalArgumentException("Please choose a time later than or equal to " + log.getLastSoldDate());
+    }
     Set<Details> detailsSet = log.getDetailsSet();
     double sharesAvailable = getShareQuantityTillDate(detailsSet, sellDate);
 
     if (sharesAvailable < sellQty) {
-      return false;
+      throw  new IllegalArgumentException("You cannot sell more stock than available. Current quantity: " + sharesAvailable);
     }
 
     for(Details d : detailsSet) {
