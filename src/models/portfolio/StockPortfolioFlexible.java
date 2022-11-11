@@ -3,6 +3,7 @@ package models.portfolio;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import models.Details;
@@ -30,7 +31,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       return false;
     }
 
-    TreeSet<Details> detailsList = stocks.get(ticker);
+    Set<Details> detailsList = stocks.get(ticker);
     double sharesAvailable = getShareQuantityTillDate(detailsList, sellDate);
 
     if (sharesAvailable < quantity) {
@@ -43,7 +44,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
 
-  double getShareQuantityTillDate(TreeSet<Details> detailsList, LocalDate date) {
+  double getShareQuantityTillDate(Set<Details> detailsList, LocalDate date) {
     double qtyAvailable = 0;
 
     for(Details details: detailsList) {
