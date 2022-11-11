@@ -25,4 +25,9 @@ public class StockMenuInflexible extends AbstractMenu {
     print("\nNot allowed for inflexible portfolio\n");
     return 'q';
   }
+
+  protected double getCommissionPercentIfApplicable() {
+    print("\nNot allowed for inflexible portfolio\n");
+    return 0.0;
+  }
 }

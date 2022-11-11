@@ -21,6 +21,7 @@ abstract class AbstractMenu implements Menu {
 
   protected abstract void displayManyMenuOptions();
   protected abstract char getBuySellChoiceIfApplicable();
+  protected abstract double getCommissionPercentIfApplicable();
 
   @Override
   public char getMainMenuChoice() {
@@ -86,7 +87,7 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public String getDateForValue() {
-    this.print("\nEnter date in YYYY-MM-DD format : ");
+    this.print("Enter date in YYYY-MM-DD format : ");
     return getWordVal();
   }
 
@@ -102,6 +103,11 @@ abstract class AbstractMenu implements Menu {
   @Override
   public char getBuySellChoice() {
     return getBuySellChoiceIfApplicable();
+  }
+
+  @Override
+  public double getCommissionPercent() {
+    return getCommissionPercentIfApplicable();
   }
 
   protected void print(String msg) {

@@ -49,15 +49,13 @@ public class StockControllerFlexible extends AbstractController {
     do {
       ch = menu.getBuySellChoice();
       String ticker;
-      Details d;
 
       switch (ch) {
         case '1':
           try {
             ticker = menu.getTickerSymbol().toUpperCase();
             api.getShareDetails(ticker, LocalDate.now());
-            d = getDetails();
-            portfolio.buy(ticker, d);
+            portfolio.buy(ticker, getDetails(), getCommissionPercent());
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }
@@ -69,7 +67,7 @@ public class StockControllerFlexible extends AbstractController {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
             try {
-              portfolio.sell(ticker, getDetails());
+              portfolio.sell(ticker, getDetails(), getCommissionPercent());
             } catch (IllegalArgumentException e) {
               menu.printMessage("\n" + e.getMessage());
             }
@@ -81,5 +79,16 @@ public class StockControllerFlexible extends AbstractController {
           break;
       }
     } while (ch >= '1' && ch <= '2');
+  }
+
+  protected double getCommissionPercent() {
+    double commissionPercent;
+    do {
+      commissionPercent = menu.getCommissionPercent();
+      if (commissionPercent < 0.0 || commissionPercent > 100.0) {
+        menu.printMessage("\nCommission percentage must be between 0 and 100%");
+      }
+    } while (commissionPercent < 0.0 || commissionPercent > 100.0);
+    return commissionPercent;
   }
 }

@@ -46,4 +46,8 @@ public class StockControllerInflexible extends AbstractController {
   protected void handleBuySellInPortfolio(String name) {
     return;
   }
+
+  protected double getCommissionPercent() {
+    return 0.0;
+  }
 }

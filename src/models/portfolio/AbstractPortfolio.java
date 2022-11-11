@@ -54,7 +54,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
 
   @Override
-  public void buy(String ticker, Details details) {
+  public void buy(String ticker, Details details, double commissionPercent) {
     if (details.getQuantity() < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
@@ -101,7 +101,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
 
   @Override
-  public boolean sell(String ticker, Details details) {
+  public boolean sell(String ticker, Details details, double commissionPercent) {
     return PortfolioBasedSell(ticker, details);
   }
 

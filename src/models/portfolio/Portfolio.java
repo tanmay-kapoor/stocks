@@ -55,8 +55,8 @@ public interface Portfolio {
   boolean savePortfolio();
 
 
-  void buy(String ticker, Details details);
+  void buy(String ticker, Details details, double commissionPercent);
 
-  boolean sell(String ticker, Details details);
+  boolean sell(String ticker, Details details, double commissionPercent);
 
 }
