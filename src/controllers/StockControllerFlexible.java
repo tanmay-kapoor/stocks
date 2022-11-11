@@ -68,9 +68,10 @@ public class StockControllerFlexible extends AbstractController {
           if (!portfolioComposition.containsKey(ticker)) {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
-            d = getDetails();
-            if (!portfolio.sell(ticker, d)) {
-              menu.printMessage("This quantity invalidates transactions entered earlier hence it will be aborted!");
+            try {
+              portfolio.sell(ticker, getDetails());
+            } catch (IllegalArgumentException e) {
+              menu.printMessage("\n" + e.getMessage());
             }
           }
           break;
