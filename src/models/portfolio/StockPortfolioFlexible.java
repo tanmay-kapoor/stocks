@@ -37,6 +37,14 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       return false;
     }
 
+    for(Details d : detailsSet) {
+      if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
+        d.setQuantity(d.getQuantity() - quantity);
+      }
+    }
+
+    log.setDetailsSet(detailsSet);
+    log.setLastSoldDate(sellDate);
 
     return true;
   }
@@ -51,6 +59,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       }
       qtyAvailable += details.getQuantity();
     }
+
+
 
     return qtyAvailable;
   }

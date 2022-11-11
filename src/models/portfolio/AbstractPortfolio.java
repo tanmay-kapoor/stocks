@@ -194,22 +194,11 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 
-
   private void updateAllStocksAfter(String ticker, Details details) {
     Log log = stocks.get(ticker);
     Set<Details> detailsSet = log.getDetailsSet();
     Iterator<Details> itr = detailsSet.iterator();
     //update quantity if it was purchased after the date received in argument
-    int accumulator = 0;
-//    while(itr.hasNext()) {
-//      Details d = itr.next();
-//
-//      if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) > 0) {
-//        System.out.println("here");
-//        accumulator += d.getQuantity();
-//        d.setQuantity(accumulator);
-//      }
-//    }
 
     for(Details d : detailsSet) {
       if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) > 0) {
