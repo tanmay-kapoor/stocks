@@ -45,7 +45,7 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  Map<String, Log> getComposition();
+  Map<String, Log> getComposition(LocalDate purchaseDate);
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.

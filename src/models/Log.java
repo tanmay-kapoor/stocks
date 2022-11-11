@@ -8,9 +8,9 @@ public class Log {
   private Set<Details> detailsSet;
   private LocalDate lastSoldDate;
 
-  public Log(Set<Details> detailsSet) {
+  public Log(Set<Details> detailsSet, LocalDate lastSoldDate) {
     this.detailsSet = detailsSet;
-    this.lastSoldDate = null;
+    this.lastSoldDate = lastSoldDate;
   }
 
   public void setDetailsSet(Set<Details> detailsSet) {

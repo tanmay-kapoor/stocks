@@ -6,8 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -102,9 +104,9 @@ abstract class AbstractPortfolio implements Portfolio {
 
     //if ticker doesn't exist in the portfolio just add it
     if(!stocks.containsKey(ticker)) {
-      Set<Details> detailsSet = new TreeSet<>((a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate()));
+      Set<Details> detailsSet = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
       detailsSet.add(details);
-      Log log = new Log(detailsSet);
+      Log log = new Log(detailsSet, null);
 
       stocks.put(ticker, log);
     }
@@ -159,8 +161,23 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, Log> getComposition() {
-    return new HashMap<>(stocks);
+  public Map<String, Log> getComposition(LocalDate purchaseDate) {
+    Map<String, Log> filteredStocks = new HashMap<>();
+    for(String stock : stocks.keySet()) {
+      Log log = stocks.get(stock);
+      Set<Details> d = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
+      for(Details details : log.getDetailsSet()) {
+        if(details.getPurchaseDate().compareTo(purchaseDate) <= 0) {
+          d.add(details);
+        }
+      }
+      if(d.size() > 0) {
+        Log logCopy = new Log(d, log.getLastSoldDate());
+        filteredStocks.put(stock, logCopy);
+      }
+    }
+//    return new HashMap<>(stocks);
+    return filteredStocks;
   }
 
   @Override

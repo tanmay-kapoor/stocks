@@ -326,7 +326,7 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    Map<String, Log> portfolioContent = portfolio.getComposition();
+    Map<String, Log> portfolioContent = portfolio.getComposition(getPurchaseDate());
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
 
     for (String ticker : portfolioContent.keySet()) {
@@ -349,7 +349,7 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    Map<String, Log> portfolioContent = portfolio.getComposition();
+    Map<String, Log> portfolioContent = portfolio.getComposition(getPurchaseDate());
 
     StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
     Map<String, Double> shareQuantity = new HashMap<>();
@@ -449,7 +449,7 @@ abstract class AbstractController implements SpecificController {
     Scanner csvReader = new Scanner(file);
     csvReader.nextLine();
 
-    Map<String, TreeSet<Details>> stocks = new HashMap<>();
+    Map<String, Set<Details>> stocks = new HashMap<>();
     boolean isFirstRecord = true;
     LocalDate purchaseDate = LocalDate.now();
 

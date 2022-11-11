@@ -44,7 +44,7 @@ public class StockControllerFlexible extends AbstractController {
   @Override
   protected void handleBuySellInPortfolio(String name) {
     Portfolio portfolio = allPortfolioObjects.get(name);
-    Map<String, Log> portfolioComposition = portfolio.getComposition();
+    Map<String, Log> portfolioComposition = portfolio.getComposition(LocalDate.now());
 
     char ch;
     do {
