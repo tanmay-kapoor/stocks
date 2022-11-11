@@ -1,6 +1,8 @@
 package models.portfolio;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,17 +51,21 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       throw  new IllegalArgumentException("You cannot sell more stock than available. Current quantity: " + sharesAvailable);
     }
 
+    List<Details> detailsToRemove = new ArrayList<>();
+
     for(Details d : detailsSet) {
       if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
         d.setQuantity(d.getQuantity() - sellQty);
 
         //causes concurrent modification error
-//        if(d.getQuantity() == 0) {
-//          detailsSet.remove(d);
-//        }
+        if(d.getQuantity() == 0) {
+          detailsToRemove.add(d);
+        }
       }
+    }
 
-      //fail_proof iterator
+    for (Details value : detailsToRemove) {
+      detailsSet.remove(value);
     }
 
     log.setDetailsSet(detailsSet);
