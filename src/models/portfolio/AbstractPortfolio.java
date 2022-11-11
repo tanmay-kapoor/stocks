@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 
 import models.Details;
 import models.api.ShareApi;
@@ -20,7 +19,7 @@ import models.api.ShareApi;
  */
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
-  protected Map<String, Queue<Details>> stocks;
+  protected Map<String, Set<Details>> stocks;
   private final ShareApi api;
   private final String path;
 
@@ -43,7 +42,7 @@ abstract class AbstractPortfolio implements Portfolio {
   protected void updatePortfolio(String tickerSymbol, double quantity, LocalDate updateDate) {
     //new
     tickerSymbol = tickerSymbol.toUpperCase();
-    Queue<Details> detailsList;
+    Set<Details> detailsList;
 
     if (stocks.containsKey(tickerSymbol)) {
       detailsList = stocks.get(tickerSymbol);
@@ -73,7 +72,7 @@ abstract class AbstractPortfolio implements Portfolio {
         detailsList.add(new Details(quantity, updateDate));
       }
     } else {
-      detailsList = new PriorityQueue<>(
+      detailsList = new TreeSet<>(
 //              Comparator.comparing(Details::getPurchaseDate)
               (a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate())
       );
@@ -100,7 +99,7 @@ abstract class AbstractPortfolio implements Portfolio {
   public double getValue(LocalDate date) throws RuntimeException {
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
-      Queue<Details> detailsList = stocks.get(tickerSymbol);
+      Set<Details> detailsList = stocks.get(tickerSymbol);
 
       for (Details details : detailsList) {
         Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
@@ -112,7 +111,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, Queue<Details>> getComposition() {
+  public Map<String, Set<Details>> getComposition() {
     return new HashMap<>(stocks);
   }
 
@@ -128,7 +127,7 @@ abstract class AbstractPortfolio implements Portfolio {
       FileWriter csvWriter = new FileWriter(fileName);
       csvWriter.append("share,quantity,purchaseDate\n");
       for (String ticker : stocks.keySet()) {
-        Queue<Details> detailsList = stocks.get(ticker);
+        Set<Details> detailsList = stocks.get(ticker);
 
         for (Details details : detailsList) {
           csvWriter.append(ticker).append(",")

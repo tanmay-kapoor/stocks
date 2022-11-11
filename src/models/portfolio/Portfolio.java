@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 
 import models.Details;
 
@@ -42,7 +44,7 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  Map<String, Queue<Details>> getComposition();
+  Map<String, Set<Details>> getComposition();
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.

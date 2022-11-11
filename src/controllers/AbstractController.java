@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import models.Details;
 import models.api.ShareApi;
@@ -323,11 +325,11 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    Map<String, Queue<Details>> portfolioContent = portfolio.getComposition();
+    Map<String, Set<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
 
     for (String ticker : portfolioContent.keySet()) {
-      Queue<Details> detailsList = portfolioContent.get(ticker);
+      Set<Details> detailsList = portfolioContent.get(ticker);
       int quantity = 0;
       for (Details details : detailsList) {
         quantity += details.getQuantity();
@@ -345,13 +347,13 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    Map<String, Queue<Details>> portfolioContent = portfolio.getComposition();
+    Map<String, Set<Details>> portfolioContent = portfolio.getComposition();
     StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
     Map<String, Double> shareQuantity = new HashMap<>();
 
     long totalShare = 0;
     for (String ticker : portfolioContent.keySet()) {
-      Queue<Details> detailsList = portfolioContent.get(ticker);
+      Set<Details> detailsList = portfolioContent.get(ticker);
       double tickerQuantity = 0;
 
       for (Details details : detailsList) {
@@ -443,7 +445,7 @@ abstract class AbstractController implements SpecificController {
     Scanner csvReader = new Scanner(file);
     csvReader.nextLine();
 
-    Map<String, Queue<Details>> stocks = new HashMap<>();
+    Map<String, TreeSet<Details>> stocks = new HashMap<>();
     boolean isFirstRecord = true;
     LocalDate purchaseDate = LocalDate.now();
 
@@ -454,7 +456,7 @@ abstract class AbstractController implements SpecificController {
       Details details = new Details(quantity, purchaseDateForRecord);
 
       if (!stocks.containsKey(vals[0])) {
-        Queue<Details> detailsList = new PriorityQueue<>((a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate()));
+        TreeSet<Details> detailsList = new TreeSet<>((a, b) -> a.getPurchaseDate().compareTo(b.getPurchaseDate()));
         detailsList.add(details);
         stocks.put(vals[0], detailsList);
       } else {

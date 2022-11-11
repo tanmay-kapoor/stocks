@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 
 import models.Details;
 import models.api.ShareApi;
@@ -42,7 +43,7 @@ public class StockControllerFlexible extends AbstractController {
   @Override
   protected void handleBuySellInPortfolio(String name) {
     Portfolio portfolio = allPortfolioObjects.get(name);
-    Map<String, Queue<Details>> portfolioComposition = portfolio.getComposition();
+    Map<String, Set<Details>> portfolioComposition = portfolio.getComposition();
 
     char ch;
     do {
