@@ -13,8 +13,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -37,6 +35,7 @@ abstract class AbstractController implements SpecificController {
   protected final Map<String, Portfolio> allPortfolioObjects;
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
+
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks);
 
   protected abstract LocalDate getPurchaseDate();
@@ -61,7 +60,7 @@ abstract class AbstractController implements SpecificController {
 
       if (files != null) {
         for (File file : files) {
-          if(!file.isDirectory()) {
+          if (!file.isDirectory()) {
             String name = file.getName();
             String extension = name.substring(name.lastIndexOf(".") + 1);
             name = name.substring(0, name.lastIndexOf("."));
@@ -277,21 +276,19 @@ abstract class AbstractController implements SpecificController {
       char ch;
       ch = menu.getDateChoice();
       String date;
-      String val;
+      double val;
       try {
         switch (ch) {
           case '1':
             date = LocalDate.now().toString();
-            val = String.valueOf(portfolio.getValue());
-            menu.printMessage(String.format("\nValue of portfolio on %s = %s",
-                    date, val));
+            val = portfolio.getValue();
+            menu.printMessage(String.format("\nValue of portfolio on %s = $%.2f", date, val));
             break;
 
           case '2':
             date = menu.getDateForValue();
-            val = String.valueOf(portfolio.getValue(LocalDate.parse(date)));
-            menu.printMessage(String.format("\nValue of portfolio on %s = %s",
-                    date, val));
+            val = portfolio.getValue(LocalDate.parse(date));
+            menu.printMessage(String.format("\nValue of portfolio on %s = %.2f", date, val));
             break;
 
           default:
