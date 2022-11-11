@@ -1,13 +1,7 @@
 package controllers;
 
-import java.sql.Array;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
@@ -24,6 +18,11 @@ public class StockControllerFlexible extends AbstractController {
   @Override
   protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
     return new StockPortfolioFlexible(portfolioName, purchaseDate, path, api);
+  }
+
+  @Override
+  protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks) {
+    return new StockPortfolioFlexible(portfolioName, purchaseDate, stocks, path, api);
   }
 
   @Override
@@ -69,8 +68,11 @@ public class StockControllerFlexible extends AbstractController {
           if (!portfolioComposition.containsKey(ticker)) {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
-            d = getDetails();
-            portfolio.sell(ticker, d);
+            try {
+              portfolio.sell(ticker, getDetails());
+            } catch (IllegalArgumentException e) {
+              menu.printMessage("\n" + e.getMessage());
+            }
           }
           break;
 

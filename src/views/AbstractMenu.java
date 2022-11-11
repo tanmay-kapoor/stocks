@@ -68,7 +68,7 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public double getQuantity() {
-    this.print("Enter the number of shares you would like to add : ");
+    this.print("Enter the number of shares : ");
     double quantity = sc.nextDouble();
     sc.nextLine();
     return quantity;

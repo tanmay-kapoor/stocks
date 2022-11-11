@@ -24,6 +24,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     super(portfolioName, purchaseDate, path, api);
   }
 
+  public StockPortfolioFlexible(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
+                                String path, ShareApi api) {
+    super(portfolioName, purchaseDate, stocks, path, api);
+  }
+
 
   //can do return err msg
   public boolean PortfolioBasedSell(String ticker, Details details) {
