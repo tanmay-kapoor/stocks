@@ -1,11 +1,13 @@
 package models.portfolio;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Set;
 
 import models.Details;
 import models.Log;
 import models.api.ShareApi;
+import models.api.StockApi;
 
 public class StockPortfolioFlexible extends AbstractPortfolio {
   /**
@@ -20,6 +22,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   public StockPortfolioFlexible(String portfolioName, LocalDate purchaseDate,
                                 String path, ShareApi api) {
     super(portfolioName, purchaseDate, path, api);
+  }
+
+  public StockPortfolioFlexible(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
+                                String path, ShareApi api) {
+    super(portfolioName, purchaseDate, stocks, path, api);
   }
 
 

@@ -44,6 +44,14 @@ abstract class AbstractPortfolio implements Portfolio {
     this.stocks = new HashMap<>();
   }
 
+  protected AbstractPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
+                              String path, ShareApi api) {
+    this.portfolioName = portfolioName;
+    this.api = api;
+    this.path = path;
+    this.stocks = new HashMap<>(stocks);
+  }
+
 
   @Override
   public void buy(String ticker, Details details) {

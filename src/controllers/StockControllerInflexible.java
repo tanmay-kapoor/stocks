@@ -1,7 +1,9 @@
 package controllers;
 
 import java.time.LocalDate;
+import java.util.Map;
 
+import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioInflexible;
@@ -18,6 +20,11 @@ public class StockControllerInflexible extends AbstractController {
 
   protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
     return new StockPortfolioInflexible(portfolioName, purchaseDate, path, api);
+  }
+
+  @Override
+  protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks) {
+    return new StockPortfolioInflexible(portfolioName, purchaseDate, stocks, path, api);
   }
 
   @Override

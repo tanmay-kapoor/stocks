@@ -37,6 +37,7 @@ abstract class AbstractController implements SpecificController {
   protected final Map<String, Portfolio> allPortfolioObjects;
 
   protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
+  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks);
 
   protected abstract LocalDate getPurchaseDate();
 
@@ -486,16 +487,6 @@ abstract class AbstractController implements SpecificController {
       }
     }
     csvReader.close();
-    Portfolio p = createPortfolio(pName, purchaseDate);
-    for (String tickerSymbol : stocks.keySet()) {
-      Log log = stocks.get(tickerSymbol);
-      Set<Details> detailsSet = log.getDetailsSet();
-
-      for (Details d : detailsSet) {
-        System.out.println(" ---->  " + d.getQuantity() + "  " + d.getPurchaseDate());
-        p.buy(tickerSymbol, new Details(d.getQuantity(), d.getPurchaseDate()));
-      }
-    }
-    return p;
+    return createPortfolio(pName, purchaseDate, stocks);
   }
 }
