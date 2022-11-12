@@ -44,7 +44,7 @@ public class StockControllerFlexible extends AbstractController {
   @Override
   protected void handleBuySellInPortfolio(String name) {
     Portfolio portfolio = allPortfolioObjects.get(name);
-    Map<String, Log> portfolioComposition = portfolio.getComposition(LocalDate.now());
+    Map<String, Log> portfolioComposition = portfolio.getComposition();
 
     char ch;
     do {
@@ -57,6 +57,7 @@ public class StockControllerFlexible extends AbstractController {
             ticker = menu.getTickerSymbol().toUpperCase();
             api.getShareDetails(ticker, LocalDate.now());
             portfolio.buy(ticker, getDetails(), getCommissionPercent());
+            portfolioComposition = portfolio.getComposition();
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }
@@ -69,6 +70,7 @@ public class StockControllerFlexible extends AbstractController {
           } else {
             try {
               portfolio.sell(ticker, getDetails(), getCommissionPercent());
+              portfolioComposition = portfolio.getComposition();
             } catch (IllegalArgumentException e) {
               menu.printMessage("\n" + e.getMessage());
             }
