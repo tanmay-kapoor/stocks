@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import models.Details;
@@ -34,9 +35,11 @@ abstract class AbstractController implements SpecificController {
   protected final List<String> allPortfolios;
   protected final Map<String, Portfolio> allPortfolioObjects;
 
-  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate);
+  protected abstract Portfolio createPortfolio(String portfolioName);
 
-  protected abstract Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks);
+  protected abstract Portfolio createPortfolio(String portfolioName,
+                                               Map<String, Log> stocks,
+                                               Map<LocalDate, Double> costBasisHistory);
 
   protected abstract LocalDate getPurchaseDate();
 
@@ -139,7 +142,7 @@ abstract class AbstractController implements SpecificController {
       }
 
       if (!shouldContinue) {
-        Portfolio portfolio = createPortfolio(portfolioName, LocalDate.now());
+        Portfolio portfolio = createPortfolio(portfolioName);
         boolean shouldExit;
         do {
           char option = menu.getAddToPortfolioChoice();
@@ -179,8 +182,8 @@ abstract class AbstractController implements SpecificController {
                     + "Portfolio names are case insensitive! Please rename your file "
                     + "and try again!", portfolioName));
           } else {
-            //need to change this 3rd argument later
-            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file, file);
+            //need to pass correct files in 3rd and 4th argument.
+            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file, file, file);
             savePortfolio(portfolioName, portfolio);
             shouldContinue = false;
           }
@@ -221,9 +224,12 @@ abstract class AbstractController implements SpecificController {
       } else {
         if (allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
           try {
+            String logPath = this.path + "logs/";
+            String costBasisPath = this.path + "costbasis/";
             portfolio = createPortfolioFromCsv(name,
                     new File(String.format("%s%s.csv", this.path, name)),
-                    new File(String.format("%s%s.csv", this.path, name)));
+                    new File(String.format("%s%s.csv", logPath, name)),
+                    new File(String.format("%s%s.csv", costBasisPath, name)));
             allPortfolioObjects.put(name, portfolio);
           } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -449,13 +455,30 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
-  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile) throws FileNotFoundException {
+  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile, File costBasisFile) throws FileNotFoundException {
+    //implement try catch here
+    LocalDate lastSoldDate = readLastSoldDateFromCsv(logFile);    //need to correct this
+    Map<String, Log> stocks = readStocksFromCsv(file, lastSoldDate);
+    Map<LocalDate, Double> costBasisHistory = readStockBasisHistoryFromCsv(costBasisFile);
+
+    return createPortfolio(pName, stocks, costBasisHistory);
+  }
+
+  private LocalDate readLastSoldDateFromCsv(File logFile) throws FileNotFoundException {
+    Scanner csvReader = new Scanner(logFile);
+    csvReader.nextLine();
+
+//    while(csvReader.hasNext()) {
+//      String[] vals = csvReader.nextLine().split(",");
+//    }
+    return null;
+  }
+
+  private Map<String, Log> readStocksFromCsv(File file, LocalDate lastSoldDate) throws FileNotFoundException {
     Scanner csvReader = new Scanner(file);
     csvReader.nextLine();
 
     Map<String, Log> stocks = new HashMap<>();
-    boolean isFirstRecord = true;
-    LocalDate purchaseDate = LocalDate.now();
 
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
@@ -464,14 +487,12 @@ abstract class AbstractController implements SpecificController {
       LocalDate purchaseDateForRecord = LocalDate.parse(vals[2]);
       Details details = new Details(quantity, purchaseDateForRecord);
 
-      //need to fetch this from the log file
-      LocalDate lastDateSold = null;
+      //refine this ....common methods outside both loops
       if (!stocks.containsKey(vals[0])) {
         Set<Details> detailsList = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
         detailsList.add(details);
-        Log log = new Log(detailsList, lastDateSold);
+        Log log = new Log(detailsList, lastSoldDate);
         stocks.put(ticker, log);
-//        stocks.put(vals[0], detailsList);
       } else {
         Log log = stocks.get(ticker);
         Set<Details> detailsSet = log.getDetailsSet();
@@ -479,13 +500,22 @@ abstract class AbstractController implements SpecificController {
         log.setDetailsSet(detailsSet);
         stocks.put(ticker, log);
       }
-
-      if (isFirstRecord) {
-        purchaseDate = LocalDate.parse(vals[2]);
-        isFirstRecord = false;
-      }
     }
     csvReader.close();
-    return createPortfolio(pName, purchaseDate, stocks);
+    return stocks;
+  }
+
+  private Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile) throws FileNotFoundException {
+    Scanner csvReader = new Scanner(costBasisFile);
+    csvReader.nextLine();
+
+    Map<LocalDate, Double> costBasisHistory = new TreeMap<>();
+
+    while(csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      costBasisHistory.put(LocalDate.parse(vals[0]), Double.parseDouble(vals[1]));
+    }
+
+    return costBasisHistory;
   }
 }

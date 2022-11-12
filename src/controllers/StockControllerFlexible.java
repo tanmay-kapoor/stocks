@@ -16,13 +16,14 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   @Override
-  protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate) {
-    return new StockPortfolioFlexible(portfolioName, purchaseDate, path, api);
+  protected Portfolio createPortfolio(String portfolioName) {
+    return new StockPortfolioFlexible(portfolioName, path, api);
   }
 
   @Override
-  protected Portfolio createPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks) {
-    return new StockPortfolioFlexible(portfolioName, purchaseDate, stocks, path, api);
+  protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
+                                      Map<LocalDate, Double> costBasisHistory) {
+    return new StockPortfolioFlexible(portfolioName, stocks, path, api, costBasisHistory);
   }
 
   @Override
