@@ -228,12 +228,16 @@ public class StockPortfolioInflexibleTest {
     checkHashMapEquality(expected, shareDetails);
   }
 
-//  @Test
-//  public void sell() {
-//    Map<String, Log> expected = new HashMap<>();
-//    assertEquals(expected, portfolio.getComposition());
-//    portfolio.buy("META", 100);
-//  }
+  @Test
+  public void sell() {
+    Map<String, Log> expected = new HashMap<>();
+    assertEquals(expected, portfolio.getComposition());
+    portfolio.buy("META", 100);
+    Map<String, Log> og = portfolio.getComposition();
+    portfolio.sell("META", new Details(100, LocalDate.now()), 0);
+    Map<String, Log> test = portfolio.getComposition();
+    assertEquals(og, test);
+  }
 
   @Test
   public void savePortfolio() {

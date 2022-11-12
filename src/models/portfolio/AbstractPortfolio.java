@@ -30,7 +30,9 @@ abstract class AbstractPortfolio implements Portfolio {
   abstract boolean portfolioBasedSell(String ticker, Details details, double commissionFee);
   abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
   abstract void saveLastSoldLog();
-  abstract Map<String, Log> getCompositionSpecificDate(LocalDate date);
+  abstract void changePurchaseDateIfApplicable(Details details);
+  abstract double changeCommissionFeeIfApplicable(double commissionFee);
+  abstract LocalDate getSpecificDate(LocalDate date);
 
   /**
    * Constructor for the class that initializes the name of the portfolio,
@@ -63,6 +65,9 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public void buy(String ticker, Details details, double commissionFee) {
+    commissionFee = changeCommissionFeeIfApplicable(commissionFee);
+    changePurchaseDateIfApplicable(details);
+
     if (details.getQuantity() < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
@@ -146,10 +151,8 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public Map<String, Log> getComposition(LocalDate date) {
-    return getCompositionSpecificDate(date);
-  }
+    date = getSpecificDate(date);
 
-  protected Map<String, Log> filterBasedOnDate(LocalDate date) {
     Map<String, Log> filteredStocks = new HashMap<>();
     for(String stock : stocks.keySet()) {
       Log log = stocks.get(stock);

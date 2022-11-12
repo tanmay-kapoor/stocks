@@ -142,8 +142,16 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
   }
 
-  protected Map<String, Log> getCompositionSpecificDate(LocalDate date) {
-    return filterBasedOnDate(date);
+  protected void changePurchaseDateIfApplicable(Details details) {
+    return;
+  }
+
+  protected double changeCommissionFeeIfApplicable(double commissionFee) {
+    return commissionFee;
+  }
+
+  protected LocalDate getSpecificDate(LocalDate date) {
+    return LocalDate.now();
   }
 
   private void saveCostBasisLog() {
