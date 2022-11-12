@@ -15,24 +15,25 @@ import models.Log;
 import models.api.ShareApi;
 import models.api.StockApi;
 
+import static models.portfolio.Txn.Buy;
+import static models.portfolio.Txn.Sell;
+
 public class StockPortfolioFlexible extends AbstractPortfolio {
   /**
    * Constructor for the class that initializes the name of the portfolio,
    * date it was created and the API that it is supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
-   * @param purchaseDate  creation date of the portfolio.
    * @param path
    * @param api           API is meant to be used.
    */
-  public StockPortfolioFlexible(String portfolioName, LocalDate purchaseDate,
-                                String path, ShareApi api) {
-    super(portfolioName, purchaseDate, path, api);
+  public StockPortfolioFlexible(String portfolioName, String path, ShareApi api) {
+    super(portfolioName, path, api);
   }
 
-  public StockPortfolioFlexible(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
-                                String path, ShareApi api) {
-    super(portfolioName, purchaseDate, stocks, path, api);
+  public StockPortfolioFlexible(String portfolioName, Map<String, Log> stocks, String path,
+                                ShareApi api, Map<LocalDate, Double> costBasisHistory) {
+    super(portfolioName, stocks, path, api, costBasisHistory);
   }
 
 
@@ -42,7 +43,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     LocalDate sellDate = details.getPurchaseDate();
 
     Log log = stocks.get(ticker);
-    System.out.println(log.getLastSoldDate());
+
     //this never gets executed
     if(log.getLastSoldDate() != null &&
             log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
@@ -75,32 +76,35 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     log.setDetailsSet(detailsSet);
     log.setLastSoldDate(sellDate);
-    storeCostBasis(ticker, details, 0.0, Txn.Sell);
+    storeCostBasis(ticker, details, 0.0, Sell);
     return true;
   }
 
   protected void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn) {
     double costBasisTillNow = 0;
     for(LocalDate date : this.costBasisHistory.keySet()) {
+      System.out.println("Date: " + date);
       if(details.getPurchaseDate().compareTo(date) >= 0) {
+        System.out.println("Date entered is future.");
         costBasisTillNow = costBasisHistory.get(date);
       }
       else {
         break;
       }
     }
-
-    if(txn == Txn.Sell) {
+    System.out.println("Cost basis till now: " + costBasisTillNow);
+    if(txn == Sell) {
       costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + commissionFee);
     }
-    else {
+    else if(txn == Buy) {
       ShareApi api = new StockApi();
       Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
       double price = shareDetails.get("close");
-      double txnCost =  price * details.getQuantity() * commissionFee;
+      double txnCost =  price * details.getQuantity() + commissionFee;
       costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + txnCost);
     }
 
+    saveCostBasisLog();
   }
 
 
@@ -120,7 +124,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   protected void saveLastSoldLog() {
     try {
       String path_log = this.path + "logs/";
-      System.out.println(path_log);
       Files.createDirectories(Paths.get(path_log));
       String fileName = String.format(path_log + "%s.csv", portfolioName);
       FileWriter csvWriter = new FileWriter(fileName);
@@ -132,6 +135,26 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
                 .append(String.valueOf(log.getLastSoldDate()))
                 .append("\n");
 
+      }
+
+      csvWriter.flush();
+      csvWriter.close();
+    } catch (IOException e) {
+      throw new RuntimeException("Something went wrong in creating log!");
+    }
+  }
+
+  private void saveCostBasisLog() {
+    try {
+      String path_costbasis = this.path + "costbasis/";
+      Files.createDirectories(Paths.get(path_costbasis));
+      String fileName = String.format(path_costbasis + "%s.csv", portfolioName);
+      FileWriter csvWriter = new FileWriter(fileName);
+      csvWriter.append("Date, CostBasis\n");
+      for (LocalDate date : costBasisHistory.keySet()) {
+        csvWriter.append(date.toString()).append(",")
+                .append(costBasisHistory.get(date).toString())
+                .append("\n");
       }
 
       csvWriter.flush();

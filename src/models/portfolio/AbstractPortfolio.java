@@ -36,11 +36,9 @@ abstract class AbstractPortfolio implements Portfolio {
    * date it was created and the API that it is supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
-   * @param purchaseDate  creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  protected AbstractPortfolio(String portfolioName, LocalDate purchaseDate,
-                              String path, ShareApi api) {
+  protected AbstractPortfolio(String portfolioName, String path, ShareApi api) {
     this.portfolioName = portfolioName;
     this.api = api;
     this.path = path;
@@ -48,13 +46,13 @@ abstract class AbstractPortfolio implements Portfolio {
     this.costBasisHistory = new TreeMap<>(LocalDate::compareTo);
   }
 
-  protected AbstractPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
-                              String path, ShareApi api) {
+  protected AbstractPortfolio(String portfolioName, Map<String, Log> stocks, String path,
+                              ShareApi api, Map<LocalDate, Double> costBasisHistory) {
     this.portfolioName = portfolioName;
     this.api = api;
     this.path = path;
     this.stocks = new HashMap<>(stocks);
-    this.costBasisHistory = new TreeMap<>(LocalDate::compareTo);
+    this.costBasisHistory = new TreeMap<>(costBasisHistory);
   }
 
 
@@ -86,13 +84,10 @@ abstract class AbstractPortfolio implements Portfolio {
         }
         else if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
           haveBoughtBefore = true;
-          System.out.println("Date" +d.getPurchaseDate() + "Adding on: " + d.getQuantity() +" "+ details.getQuantity());
           d.setQuantity(d.getQuantity() + details.getQuantity());
         }
         else {
-          System.out.println("Date" +d.getPurchaseDate() + "Adding on: " + d.getQuantity() +" "+ details.getQuantity());
           d.setQuantity(d.getQuantity() + details.getQuantity());
-          System.out.println("=="  + d.getQuantity());
         }
       }
 
@@ -134,7 +129,6 @@ abstract class AbstractPortfolio implements Portfolio {
       }
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
       totalValue += shareDetails.get("close") * quantity;
-      System.out.println(shareDetails.get("close") + " " + quantity);
     }
 
     return totalValue;
@@ -159,7 +153,6 @@ abstract class AbstractPortfolio implements Portfolio {
 
     return filteredStocks;
   }
-
 
   //make that argument enum : Quarterly, Monthly, Yearly
   public void getPortfolioPerformance(int timeInterval) {

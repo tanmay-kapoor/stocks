@@ -1,13 +1,7 @@
 package models.portfolio;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
 
 import models.Details;
 import models.Log;

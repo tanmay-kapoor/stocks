@@ -22,17 +22,15 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
    * date it was created and the API that it is supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
-   * @param purchaseDate  creation date of the portfolio.
    * @param api           API is meant to be used.
    */
-  public StockPortfolioInflexible(String portfolioName, LocalDate purchaseDate,
-                                  String path, ShareApi api) {
-    super(portfolioName, purchaseDate, path, api);
+  public StockPortfolioInflexible(String portfolioName, String path, ShareApi api) {
+    super(portfolioName, path, api);
   }
 
-  public StockPortfolioInflexible(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
-                                  String path, ShareApi api) {
-    super(portfolioName, purchaseDate, stocks, path, api);
+  public StockPortfolioInflexible(String portfolioName, Map<String, Log> stocks, String path,
+                                  ShareApi api, Map<LocalDate, Double> costBasisHistory) {
+    super(portfolioName, stocks, path, api, costBasisHistory);
   }
 
   protected boolean PortfolioBasedSell(String ticker, Details details) {
