@@ -8,7 +8,7 @@ import java.time.LocalDate;
  */
 public class Details {
   private double quantity;
-  private final LocalDate purchaseDate;
+  private LocalDate purchaseDate;
 
   /**
    * constructor that initializes the quantity and creation date.
@@ -41,5 +41,9 @@ public class Details {
 
   public void setQuantity(double quantity) {
     this.quantity = quantity;
+  }
+
+  public void setPurchaseDate(LocalDate purchaseDate) {
+    this.purchaseDate = purchaseDate;
   }
 }

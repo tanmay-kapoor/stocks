@@ -116,6 +116,25 @@ public class StockPortfolioInflexibleTest {
   }
 
   @Test
+  public void buyWithIncorrectPurchaseDate() {
+    Map<String, Log> expected = new HashMap<>();
+    assertEquals(expected, portfolio.getComposition());
+
+    Map<String, Log> shareDetails;
+    Set<Details> detailsSet;
+
+    portfolio.buy("META", new Details(22.0, LocalDate.parse("2020-12-12")), 55);
+    shareDetails = portfolio.getComposition();
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(22.0, LocalDate.now()));
+    expected.put("META", newLog(detailsSet));
+    checkHashMapEquality(expected, shareDetails);
+
+    // purchase is automatically converted to LocalDate.now()
+    // commission is automatically converted to 0
+  }
+
+  @Test
   public void buyInvalid() {
     assertEquals(new HashMap<>(), portfolio.getComposition());
 
@@ -160,6 +179,15 @@ public class StockPortfolioInflexibleTest {
         // passes
       }
     }
+  }
+
+  @Test
+  public void getValueWithIncorrectDate() {
+    portfolio.buy("AMZN", new Details(27, LocalDate.parse("2020-10-10")), 44);
+    portfolio.buy("NFLX", new Details(18, LocalDate.parse("2018-11-10")), 33);
+    double val = portfolio.getValue(LocalDate.now());
+    assertEquals(7774.83, val, 0);
+    // automatically changes date to curr date and commission to 0
   }
 
   @Test
@@ -228,12 +256,16 @@ public class StockPortfolioInflexibleTest {
     checkHashMapEquality(expected, shareDetails);
   }
 
-//  @Test
-//  public void sell() {
-//    Map<String, Log> expected = new HashMap<>();
-//    assertEquals(expected, portfolio.getComposition());
-//    portfolio.buy("META", 100);
-//  }
+  @Test
+  public void sell() {
+    Map<String, Log> expected = new HashMap<>();
+    assertEquals(expected, portfolio.getComposition());
+    portfolio.buy("META", 100);
+    Map<String, Log> og = portfolio.getComposition();
+    portfolio.sell("META", new Details(100, LocalDate.now()), 0);
+    Map<String, Log> test = portfolio.getComposition();
+    assertEquals(og, test);
+  }
 
   @Test
   public void savePortfolio() {

@@ -444,6 +444,7 @@ abstract class AbstractController implements SpecificController {
         try {
           LocalDate purchaseDate = getPurchaseDate();
           Details details = new Details(quantity, purchaseDate);
+          api.getShareDetails(tickerSymbol, purchaseDate);
           portfolio.buy(tickerSymbol, details, getCommissionPercent());
           menu.printMessage("\nSuccess!");
         } catch (DateTimeParseException e) {
