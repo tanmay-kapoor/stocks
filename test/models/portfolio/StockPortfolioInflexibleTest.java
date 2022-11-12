@@ -47,18 +47,7 @@ public class StockPortfolioInflexibleTest {
     portfolioName = "test";
     now = LocalDate.now();
 
-    try {
-      portfolio = new StockPortfolioInflexible(portfolioName,
-              LocalDate.parse("2022-10-63"),
-              this.directory,
-              new StockApi());
-      fail("Program should've failed while parsing invalid data.");
-    } catch (DateTimeParseException e) {
-      portfolio = new StockPortfolioInflexible(portfolioName,
-              LocalDate.parse("2022-10-01"),
-              this.directory,
-              new StockApi());
-    }
+    portfolio = new StockPortfolioInflexible(portfolioName, this.directory, new StockApi());
   }
 
   @Test
@@ -70,7 +59,6 @@ public class StockPortfolioInflexibleTest {
   public void testPortfolioCreated() {
     try {
       new StockPortfolioInflexible("idk",
-              LocalDate.parse("2022-10-01"),
               this.directory,
               new StockApi());
     } catch (Exception e) {
@@ -90,14 +78,14 @@ public class StockPortfolioInflexibleTest {
     shareDetails = portfolio.getComposition();
     detailsSet = newTreeSet();
     detailsSet.add(new Details(22.0, LocalDate.now()));
-    expected.put("META",  newLog(detailsSet));
+    expected.put("META", newLog(detailsSet));
     checkHashMapEquality(expected, shareDetails);
 
     portfolio.buy("gOoG", 34);
     shareDetails = portfolio.getComposition();
     detailsSet = newTreeSet();
     detailsSet.add(new Details(34, LocalDate.now()));
-    expected.put("GOOG",  newLog(detailsSet));
+    expected.put("GOOG", newLog(detailsSet));
     checkHashMapEquality(expected, shareDetails);
 
     portfolio.buy("xyz", 33);
@@ -186,14 +174,14 @@ public class StockPortfolioInflexibleTest {
     shareDetails = portfolio.getComposition();
     detailsSet = newTreeSet();
     detailsSet.add(new Details(22.0, LocalDate.now()));
-    expected.put("META",  newLog(detailsSet));
+    expected.put("META", newLog(detailsSet));
     checkHashMapEquality(expected, shareDetails);
 
     portfolio.buy("gOoG", 34);
     shareDetails = portfolio.getComposition();
     detailsSet = newTreeSet();
     detailsSet.add(new Details(34, LocalDate.now()));
-    expected.put("GOOG",  newLog(detailsSet));
+    expected.put("GOOG", newLog(detailsSet));
     checkHashMapEquality(expected, shareDetails);
 
     portfolio.buy("xyz", 33);
@@ -236,7 +224,7 @@ public class StockPortfolioInflexibleTest {
     shareDetails = portfolio.getComposition(LocalDate.parse("2020-10-10"));
     detailsSet = newTreeSet();
     detailsSet.add(new Details(22.0, now));
-    expected.put("META",  newLog(detailsSet));
+    expected.put("META", newLog(detailsSet));
     checkHashMapEquality(expected, shareDetails);
   }
 
