@@ -36,7 +36,7 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     super(portfolioName, stocks, path, api, costBasisHistory);
   }
 
-  protected boolean portfolioBasedSell(String ticker, Details details) {
+  protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {
     return false;
   }
 

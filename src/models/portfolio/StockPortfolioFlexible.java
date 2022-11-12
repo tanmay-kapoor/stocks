@@ -6,12 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
@@ -41,7 +38,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   //can do return err msg
-  protected boolean portfolioBasedSell(String ticker, Details details) {
+  protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {
     double sellQty = details.getQuantity();
     LocalDate sellDate = details.getPurchaseDate();
 
@@ -79,11 +76,19 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     log.setDetailsSet(detailsSet);
     log.setLastSoldDate(sellDate);
-    storeCostBasis(ticker, details, 0.0, Sell);
+    storeCostBasis(ticker, details, commissionFee, Sell);
     return true;
   }
 
   protected void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn) {
+    double txnCost = 0;
+    if(txn == Sell) {
+      txnCost = commissionFee;
+    }
+    else if(txn == Buy) {
+      txnCost = getTxnCost(ticker, details, commissionFee);
+    }
+
     double costBasisTillNow = 0;
     for(LocalDate date : this.costBasisHistory.keySet()) {
       System.out.println("Date: " + date);
@@ -92,24 +97,14 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
         costBasisTillNow = costBasisHistory.get(date);
       }
       else {
-        break;
+        //adding txn cost to all the future dates
+        costBasisHistory.put(date, costBasisHistory.get(date) + txnCost);
       }
     }
     System.out.println("Cost basis till now: " + costBasisTillNow);
-    if(txn == Sell) {
-      costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + commissionFee);
-    }
-    else if(txn == Buy) {
-      ShareApi api = new StockApi();
-      Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
-      double price = shareDetails.get("close");
-      double txnCost =  price * details.getQuantity() + commissionFee;
-      costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + txnCost);
-    }
-
+    costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + txnCost);
     saveCostBasisLog();
   }
-
 
   private double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {
     double qtyAvailable = 0;
@@ -147,11 +142,15 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
   }
 
+  protected Map<String, Log> getCompositionSpecificDate(LocalDate date) {
+    return filterBasedOnDate(date);
+  }
+
   private void saveCostBasisLog() {
     try {
-      String path_costbasis = this.path + "costbasis/";
-      Files.createDirectories(Paths.get(path_costbasis));
-      String fileName = String.format(path_costbasis + "%s.csv", portfolioName);
+      String pathCostBasis = this.path + "costbasis/";
+      Files.createDirectories(Paths.get(pathCostBasis));
+      String fileName = String.format(pathCostBasis + "%s.csv", portfolioName);
       FileWriter csvWriter = new FileWriter(fileName);
       csvWriter.append("Date, CostBasis\n");
       for (LocalDate date : costBasisHistory.keySet()) {
@@ -167,7 +166,10 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
   }
 
-  protected Map<String, Log> getCompositionSpecificDate(LocalDate date) {
-    return filterBasedOnDate(date);
+  private double getTxnCost(String ticker, Details details, double commissionFee) {
+    ShareApi api = new StockApi();
+    Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
+    double price = shareDetails.get("close");
+    return  price * details.getQuantity() + commissionFee;
   }
 }

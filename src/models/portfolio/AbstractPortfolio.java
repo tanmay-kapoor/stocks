@@ -27,7 +27,7 @@ abstract class AbstractPortfolio implements Portfolio {
   final String path;
   protected Map<LocalDate, Double> costBasisHistory;
 
-  abstract boolean portfolioBasedSell(String ticker, Details details);
+  abstract boolean portfolioBasedSell(String ticker, Details details, double commissionFee);
   abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
   abstract void saveLastSoldLog();
   abstract Map<String, Log> getCompositionSpecificDate(LocalDate date);
@@ -107,8 +107,8 @@ abstract class AbstractPortfolio implements Portfolio {
 
 
   @Override
-  public boolean sell(String ticker, Details details, double commissionPercent) {
-    return portfolioBasedSell(ticker, details);
+  public boolean sell(String ticker, Details details, double commissionFee) {
+    return portfolioBasedSell(ticker, details, commissionFee);
   }
 
 
