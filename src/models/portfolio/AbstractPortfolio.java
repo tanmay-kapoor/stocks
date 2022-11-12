@@ -27,9 +27,10 @@ abstract class AbstractPortfolio implements Portfolio {
   final String path;
   protected Map<LocalDate, Double> costBasisHistory;
 
-  abstract boolean PortfolioBasedSell(String ticker, Details details);
+  abstract boolean portfolioBasedSell(String ticker, Details details);
   abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
   abstract void saveLastSoldLog();
+  abstract Map<String, Log> getCompositionSpecificDate(LocalDate date);
 
   /**
    * Constructor for the class that initializes the name of the portfolio,
@@ -57,6 +58,10 @@ abstract class AbstractPortfolio implements Portfolio {
     this.costBasisHistory = new TreeMap<>(LocalDate::compareTo);
   }
 
+  @Override
+  public void buy(String ticker, double quantity) {
+    buy(ticker, new Details(quantity, LocalDate.now()), 0);
+  }
 
   @Override
   public void buy(String ticker, Details details, double commissionFee) {
@@ -108,7 +113,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public boolean sell(String ticker, Details details, double commissionPercent) {
-    return PortfolioBasedSell(ticker, details);
+    return portfolioBasedSell(ticker, details);
   }
 
 
@@ -141,13 +146,22 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   @Override
-  public Map<String, Log> getComposition(LocalDate purchaseDate) {
+  public Map<String, Log> getComposition() {
+    return new HashMap<>(stocks);
+  }
+
+  @Override
+  public Map<String, Log> getComposition(LocalDate date) {
+    return getCompositionSpecificDate(date);
+  }
+
+  protected Map<String, Log> filterBasedOnDate(LocalDate date) {
     Map<String, Log> filteredStocks = new HashMap<>();
     for(String stock : stocks.keySet()) {
       Log log = stocks.get(stock);
       Set<Details> d = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
       for(Details details : log.getDetailsSet()) {
-        if(details.getPurchaseDate().compareTo(purchaseDate) <= 0) {
+        if(details.getPurchaseDate().compareTo(date) <= 0) {
           d.add(details);
         }
       }

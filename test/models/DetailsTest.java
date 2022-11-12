@@ -35,4 +35,9 @@ public class DetailsTest {
     assertEquals(LocalDate.parse("2022-11-15"), details.getPurchaseDate());
   }
 
+  @Test
+  public void setQuantity() {
+    details.setQuantity(55);
+    assertEquals(55.0, details.getQuantity(), 0);
+  }
 }

@@ -6,9 +6,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
@@ -37,7 +40,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
 
   //can do return err msg
-  protected boolean PortfolioBasedSell(String ticker, Details details) {
+  protected boolean portfolioBasedSell(String ticker, Details details) {
     double sellQty = details.getQuantity();
     LocalDate sellDate = details.getPurchaseDate();
 
@@ -139,5 +142,9 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong in creating log!");
     }
+  }
+
+  protected Map<String, Log> getCompositionSpecificDate(LocalDate date) {
+    return filterBasedOnDate(date);
   }
 }

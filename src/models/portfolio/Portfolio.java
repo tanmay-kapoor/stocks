@@ -1,13 +1,7 @@
 package models.portfolio;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
@@ -17,6 +11,11 @@ import models.Log;
  * portfolio, crypto portfolio, mutual fund portfolio, etc.).
  */
 public interface Portfolio {
+  void buy(String ticker, double quantity);
+
+  void buy(String ticker, Details details, double commissionPercent);
+
+  boolean sell(String ticker, Details details, double commissionPercent);
 
   /**
    * Get the total value of the portfolio. The valuation of a portfolio is determined by the
@@ -45,7 +44,9 @@ public interface Portfolio {
    *
    * @return quantity of shares next to their ticker symbols.
    */
-  Map<String, Log> getComposition(LocalDate purchaseDate);
+  Map<String, Log> getComposition();
+
+  Map<String, Log> getComposition(LocalDate date);
 
   /**
    * Saves the portfolio created by the client in the local directory in csv format.
@@ -53,10 +54,4 @@ public interface Portfolio {
    * @return true if the portfolio is saved successfully, false if not saved.
    */
   boolean savePortfolio();
-
-
-  void buy(String ticker, Details details, double commissionPercent);
-
-  boolean sell(String ticker, Details details, double commissionPercent);
-
 }

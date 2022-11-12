@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
@@ -35,7 +38,7 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     super(portfolioName, purchaseDate, stocks, path, api);
   }
 
-  protected boolean PortfolioBasedSell(String ticker, Details details) {
+  protected boolean portfolioBasedSell(String ticker, Details details) {
     return false;
   }
 
@@ -43,5 +46,12 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     return;
   }
 
-  protected void saveLastSoldLog() {}
+  protected void saveLastSoldLog() {
+    return;
+  }
+
+  protected Map<String, Log> getCompositionSpecificDate(LocalDate date) {
+    date = LocalDate.now();
+    return filterBasedOnDate(date);
+  }
 }
