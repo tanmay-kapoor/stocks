@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import models.Details;
@@ -25,8 +25,10 @@ abstract class AbstractPortfolio implements Portfolio {
   protected Map<String, Log> stocks;
   private final ShareApi api;
   final String path;
+  protected Map<LocalDate, Double> costBasisHistory;
 
   abstract boolean PortfolioBasedSell(String ticker, Details details);
+  abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
   abstract void saveLastSoldLog();
 
   /**
@@ -43,6 +45,7 @@ abstract class AbstractPortfolio implements Portfolio {
     this.api = api;
     this.path = path;
     this.stocks = new HashMap<>();
+    this.costBasisHistory = new TreeMap<>(LocalDate::compareTo);
   }
 
   protected AbstractPortfolio(String portfolioName, LocalDate purchaseDate, Map<String, Log> stocks,
@@ -51,11 +54,12 @@ abstract class AbstractPortfolio implements Portfolio {
     this.api = api;
     this.path = path;
     this.stocks = new HashMap<>(stocks);
+    this.costBasisHistory = new TreeMap<>(LocalDate::compareTo);
   }
 
 
   @Override
-  public void buy(String ticker, Details details, double commissionPercent) {
+  public void buy(String ticker, Details details, double commissionFee) {
     if (details.getQuantity() < 0.0) {
       throw new IllegalArgumentException("Quantity should be grater than 0.");
     }
@@ -98,6 +102,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
       log.setDetailsSet(detailsSet);
     }
+    storeCostBasis(ticker, details, commissionFee, Txn.Buy);
   }
 
 
@@ -155,6 +160,12 @@ abstract class AbstractPortfolio implements Portfolio {
     return filteredStocks;
   }
 
+
+  //make that argument enum : Quarterly, Monthly, Yearly
+  public void getPortfolioPerformance(int timeInterval) {
+
+  }
+
   @Override
   public boolean savePortfolio() {
     if (stocks.size() == 0) {
@@ -187,6 +198,10 @@ abstract class AbstractPortfolio implements Portfolio {
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong!");
     }
+  }
+
+  private void getCostBasis() {
+
   }
 
 }

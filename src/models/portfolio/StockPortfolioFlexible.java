@@ -75,19 +75,33 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     log.setDetailsSet(detailsSet);
     log.setLastSoldDate(sellDate);
-
+    storeCostBasis(ticker, details, 0.0, Txn.Sell);
     return true;
   }
 
-  double getTxnCommission(String ticker, Details details, double commissionPercent) {
-    ShareApi api = new StockApi();
+  protected void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn) {
+    double costBasisTillNow = 0;
+    for(LocalDate date : this.costBasisHistory.keySet()) {
+      if(details.getPurchaseDate().compareTo(date) >= 0) {
+        costBasisTillNow = costBasisHistory.get(date);
+      }
+      else {
+        break;
+      }
+    }
 
-    Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
-    double price = shareDetails.get("Close");
+    if(txn == Txn.Sell) {
+      costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + commissionFee);
+    }
+    else {
+      ShareApi api = new StockApi();
+      Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
+      double price = shareDetails.get("close");
+      double txnCost =  price * details.getQuantity() * commissionFee;
+      costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + txnCost);
+    }
 
-    return price * details.getQuantity() * commissionPercent / 100;
   }
-
 
 
   private double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {

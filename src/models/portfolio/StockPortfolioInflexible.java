@@ -39,5 +39,9 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     return false;
   }
 
+  protected void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn) {
+    return;
+  }
+
   protected void saveLastSoldLog() {}
 }

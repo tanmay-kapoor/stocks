@@ -2,7 +2,6 @@ package models;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class Log {
   private Set<Details> detailsSet;
