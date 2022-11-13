@@ -1,15 +1,7 @@
 package models.portfolio;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
