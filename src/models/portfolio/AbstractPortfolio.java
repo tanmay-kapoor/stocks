@@ -66,6 +66,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public void buy(String ticker, Details details, double commissionFee) {
+    System.out.println("here");
     commissionFee = changeCommissionFeeIfApplicable(commissionFee);
     changePurchaseDateIfApplicable(details);
 

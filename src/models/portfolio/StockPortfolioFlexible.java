@@ -10,9 +10,7 @@ import java.util.Set;
 
 import models.Details;
 import models.Log;
-import models.api.AlphaVantage;
 import models.api.ShareApi;
-import models.api.StockApi;
 
 import static models.portfolio.Txn.Buy;
 import static models.portfolio.Txn.Sell;
@@ -47,6 +45,12 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
 
     Set<Details> detailsSet = log.getDetailsSet();
+
+    LocalDate firstPurchaseDate = detailsSet.iterator().next().getPurchaseDate();
+    if(detailsSet.size() == 0 || firstPurchaseDate.compareTo(details.getPurchaseDate()) > 0) {
+      throw new IllegalArgumentException("Cannot sell shares if they do not exist in the portfolio yet.");
+    }
+
     double sharesAvailable = 0;
     boolean sharesBoughtOnSellDay = false;
 
