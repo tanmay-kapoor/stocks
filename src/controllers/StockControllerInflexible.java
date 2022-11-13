@@ -61,7 +61,7 @@ public class StockControllerInflexible extends AbstractController {
     return;
   }
 
-  protected double getCommissionPercent() {
+  protected double getCommissionFee() {
     return 0.0;
   }
 }

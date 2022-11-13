@@ -27,7 +27,7 @@ public class StockMenuInflexibleTest extends AbstractStockMenuTest {
     return "\nNot allowed for inflexible portfolio\n";
   }
 
-  protected String getCommissionPercentExpected() {
+  protected String getCommissionFeeExpected() {
     return "\nNot allowed for inflexible portfolio\n";
   }
 

@@ -17,7 +17,7 @@ abstract class AbstractStockMenuTest {
 
   protected abstract String getMainMenuExpected();
   protected abstract String getBuySellChoiceExpected();
-  protected abstract String getCommissionPercentExpected();
+  protected abstract String getCommissionFeeExpected();
   protected abstract Menu createObject(InputStream in, PrintStream out);
   protected abstract void getAssertStatementForBuySell(char c);
   protected abstract void getAssertStatementForCommission(double c);
@@ -137,11 +137,11 @@ abstract class AbstractStockMenuTest {
   }
 
   @Test
-  public void getCommissionPercent() {
+  public void getCommissionFee() {
     generateInputStream("44.0\n");
-    double c = menu.getCommissionPercent();
+    double c = menu.getCommissionFee();
     getAssertStatementForCommission(c);
-    String expected = getCommissionPercentExpected();
+    String expected = getCommissionFeeExpected();
     assertEquals(expected, bytes.toString());
   }
 

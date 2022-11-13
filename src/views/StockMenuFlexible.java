@@ -25,8 +25,8 @@ public class StockMenuFlexible extends AbstractMenu {
     return getCharVal();
   }
 
-  protected double getCommissionPercentIfApplicable() {
-    print("Enter the commission % you want to charge for this transaction : ");
+  protected double getCommissionFeeIfApplicable() {
+    print("Enter the commission fee you want to charge for this transaction : ");
     return sc.nextDouble();
   }
 }

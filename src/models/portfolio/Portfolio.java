@@ -13,9 +13,9 @@ import models.Log;
 public interface Portfolio {
   void buy(String ticker, double quantity);
 
-  void buy(String ticker, Details details, double commissionPercent);
+  void buy(String ticker, Details details, double commissionFee);
 
-  boolean sell(String ticker, Details details, double commissionPercent);
+  boolean sell(String ticker, Details details, double commissionFee);
 
   /**
    * Get the total value of the portfolio. The valuation of a portfolio is determined by the
