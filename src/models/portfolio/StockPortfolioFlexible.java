@@ -42,7 +42,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     if (log.getLastSoldDate() != null &&
             log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
-      throw new IllegalArgumentException("Please choose a time later than or equal to " + log.getLastSoldDate());
+      throw new IllegalArgumentException
+              ("Please choose a time later than or equal to " + log.getLastSoldDate());
     }
 
     Set<Details> detailsSet = log.getDetailsSet();
@@ -54,7 +55,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
         sharesAvailable = d.getQuantity();
       } else {
         if (sharesAvailable < 0) {
-          throw new IllegalArgumentException("You cannot sell more stock than available. Current quantity: " + sharesAvailable);
+          throw new IllegalArgumentException("You cannot sell more stock than available. "
+                  + "Current quantity: " + sharesAvailable);
         }
 
         if (d.getPurchaseDate().compareTo(sellDate) == 0) {
@@ -66,7 +68,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     //doing this so that we can store interim changes in share quantity
     if (!sharesBoughtOnSellDay) {
-      detailsSet.add(new Details(sharesAvailable - details.getQuantity(), details.getPurchaseDate()));
+      detailsSet.add(new Details(sharesAvailable - details.getQuantity(),
+              details.getPurchaseDate()));
     }
 
     log.setDetailsSet(detailsSet);
