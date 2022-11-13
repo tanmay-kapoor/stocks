@@ -41,6 +41,11 @@ abstract class AbstractController implements SpecificController {
   protected abstract Portfolio createPortfolio(String portfolioName,
                                                Map<String, Log> stocks,
                                                Map<LocalDate, Double> costBasisHistory);
+  protected abstract Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
+          throws FileNotFoundException;
+
+  protected abstract Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
+          throws FileNotFoundException;
 
   protected abstract LocalDate getPurchaseDate();
 
@@ -457,7 +462,8 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
-  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile, File costBasisFile) throws FileNotFoundException {
+  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile,
+                                           File costBasisFile) throws FileNotFoundException {
     //implement try catch here
     Map<String, LocalDate> lastSoldDateList = readLastSoldDateFromCsv(logFile);
     Map<String, Log> stocks = readStocksFromCsv(file, lastSoldDateList);
@@ -466,22 +472,7 @@ abstract class AbstractController implements SpecificController {
     return createPortfolio(pName, stocks, costBasisHistory);
   }
 
-  private Map<String, LocalDate> readLastSoldDateFromCsv(File logFile) throws FileNotFoundException {
-    Scanner csvReader = new Scanner(logFile);
-    csvReader.nextLine();
 
-    Map<String, LocalDate> lastDateSoldList = new HashMap<>();
-
-    while(csvReader.hasNext()) {
-      String[] vals = csvReader.nextLine().split(",");
-      if(Objects.equals(vals[1], "null")) {
-        lastDateSoldList.put(vals[0], null);
-      } else {
-        lastDateSoldList.put(vals[0], LocalDate.parse(vals[1]));
-      }
-    }
-    return lastDateSoldList;
-  }
 
   private Map<String, Log> readStocksFromCsv(File file, Map<String, LocalDate> lastSoldDateList)
           throws FileNotFoundException {
@@ -516,17 +507,5 @@ abstract class AbstractController implements SpecificController {
     return stocks;
   }
 
-  private Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile) throws FileNotFoundException {
-    Scanner csvReader = new Scanner(costBasisFile);
-    csvReader.nextLine();
 
-    Map<LocalDate, Double> costBasisHistory = new TreeMap<>();
-
-    while(csvReader.hasNext()) {
-      String[] vals = csvReader.nextLine().split(",");
-      costBasisHistory.put(LocalDate.parse(vals[0]), Double.parseDouble(vals[1]));
-    }
-
-    return costBasisHistory;
-  }
 }
