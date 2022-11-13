@@ -140,7 +140,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
   protected LocalDate getSpecificDate(LocalDate date) {
-    return LocalDate.now();
+    return date;
   }
 
   private void saveCostBasisLog() {
@@ -166,6 +166,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private double getTxnCost(String ticker, Details details, double commissionFee) {
     Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
     double price = shareDetails.get("close");
+    System.out.println(price);
     return price * details.getQuantity() + commissionFee;
   }
 }

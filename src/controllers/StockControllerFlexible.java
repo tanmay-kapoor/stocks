@@ -53,6 +53,7 @@ public class StockControllerFlexible extends AbstractController {
     Map<String, Log> portfolioComposition = portfolio.getComposition();
 
     char ch;
+    boolean shouldSave = false;
     do {
       ch = menu.getBuySellChoice();
       String ticker;
@@ -64,6 +65,7 @@ public class StockControllerFlexible extends AbstractController {
             api.getShareDetails(ticker, LocalDate.now());
             portfolio.buy(ticker, getDetails(), getCommissionPercent());
             portfolioComposition = portfolio.getComposition();
+            shouldSave = true;
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }
@@ -77,6 +79,7 @@ public class StockControllerFlexible extends AbstractController {
             try {
               portfolio.sell(ticker, getDetails(), getCommissionPercent());
               portfolioComposition = portfolio.getComposition();
+              shouldSave = true;
             } catch (IllegalArgumentException e) {
               menu.printMessage("\n" + e.getMessage());
             }
@@ -84,7 +87,9 @@ public class StockControllerFlexible extends AbstractController {
           break;
 
         default:
-          portfolio.savePortfolio();
+          if(shouldSave) {
+            portfolio.savePortfolio();
+          }
           break;
       }
     } while (ch >= '1' && ch <= '2');

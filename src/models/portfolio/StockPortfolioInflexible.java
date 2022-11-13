@@ -49,6 +49,6 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
   }
 
   protected LocalDate getSpecificDate(LocalDate date) {
-    return date;
+    return LocalDate.now();
   }
 }
