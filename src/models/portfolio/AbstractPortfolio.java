@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -184,9 +185,27 @@ abstract class AbstractPortfolio implements Portfolio {
     return filteredStocks;
   }
 
-  //make that argument enum : Quarterly, Monthly, Yearly
-  public void getPortfolioPerformance(int timeInterval) {
+  public Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to) {
+    long days = ChronoUnit.DAYS.between(from, to);
+    if(days < 5) {
+      throw new IllegalArgumentException("Please enter a longer timespan with atleast 5 days.");
+    }
 
+    Map<LocalDate, Double> performance = new TreeMap<>();
+    int n = 29;
+    long intervals = days > n ? 1 : (days / (n-1));
+    LocalDate i = from;
+    int total = 1;
+
+    for(; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
+      performance.put(i, getValue(i));
+      System.out.println(i);
+    }
+    if(!performance.containsKey(to)) {
+      performance.put(i, getValue(to));
+    }
+
+    return performance;
   }
 
   @Override
@@ -223,8 +242,8 @@ abstract class AbstractPortfolio implements Portfolio {
     }
   }
 
-  private void getCostBasis() {
-
+  private void getCostBasis(LocalDate date) {
+//    for()
   }
 
 }
