@@ -1,6 +1,9 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 import models.Log;
@@ -26,6 +29,16 @@ public class StockControllerInflexible extends AbstractController {
   protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
                                       Map<LocalDate, Double> costBasisHistory) {
     return new StockPortfolioInflexible(portfolioName, stocks, path, api, costBasisHistory);
+  }
+
+  @Override
+  protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile) throws FileNotFoundException {
+    return new HashMap<>();
+  }
+
+  @Override
+  protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile) throws FileNotFoundException {
+    return new HashMap<>();
   }
 
   @Override

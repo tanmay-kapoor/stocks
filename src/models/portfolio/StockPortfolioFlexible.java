@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,42 +35,38 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     super(portfolioName, stocks, path, api, costBasisHistory);
   }
 
-
-  //can do return err msg
   protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {
     double sellQty = details.getQuantity();
     LocalDate sellDate = details.getPurchaseDate();
-
     Log log = stocks.get(ticker);
 
-    //this never gets executed
-    if(log.getLastSoldDate() != null &&
+    if (log.getLastSoldDate() != null &&
             log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
       throw new IllegalArgumentException("Please choose a time later than or equal to " + log.getLastSoldDate());
     }
 
     Set<Details> detailsSet = log.getDetailsSet();
-    double sharesAvailable = getShareQuantityTillDate(detailsSet, sellDate);
+    double sharesAvailable = 0;
+    boolean sharesBoughtOnSellDay = false;
 
-    if (sharesAvailable < sellQty) {
-      throw  new IllegalArgumentException("You cannot sell more stock than available. Current quantity: " + sharesAvailable);
-    }
-
-    List<Details> detailsToRemove = new ArrayList<>();
-
-    for(Details d : detailsSet) {
-      if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
-        d.setQuantity(d.getQuantity() - sellQty);
-
-        //causes concurrent modification error
-        if(d.getQuantity() == 0) {
-          detailsToRemove.add(d);
+    for (Details d : detailsSet) {
+      if (d.getPurchaseDate().compareTo(sellDate) < 0) {
+        sharesAvailable = d.getQuantity();
+      } else {
+        if (sharesAvailable < 0) {
+          throw new IllegalArgumentException("You cannot sell more stock than available. Current quantity: " + sharesAvailable);
         }
+
+        if (d.getPurchaseDate().compareTo(sellDate) == 0) {
+          sharesBoughtOnSellDay = true;
+        }
+        d.setQuantity(d.getQuantity() - sellQty);
       }
     }
 
-    for (Details value : detailsToRemove) {
-      detailsSet.remove(value);
+    //doing this so that we can store interim changes in share quantity
+    if (!sharesBoughtOnSellDay) {
+      detailsSet.add(new Details(sharesAvailable - details.getQuantity(), details.getPurchaseDate()));
     }
 
     log.setDetailsSet(detailsSet);
@@ -83,21 +77,21 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
   protected void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn) {
     double txnCost = 0;
-    if(txn == Sell) {
+    if (txn == Sell) {
       txnCost = commissionFee;
-    }
-    else if(txn == Buy) {
+    } else if (txn == Buy) {
       txnCost = getTxnCost(ticker, details, commissionFee);
+    } else {
+      // here if other txn type, just adding for special sell cases
     }
 
     double costBasisTillNow = 0;
-    for(LocalDate date : this.costBasisHistory.keySet()) {
+    for (LocalDate date : this.costBasisHistory.keySet()) {
       System.out.println("Date: " + date);
-      if(details.getPurchaseDate().compareTo(date) >= 0) {
+      if (details.getPurchaseDate().compareTo(date) >= 0) {
         System.out.println("Date entered is future.");
         costBasisTillNow = costBasisHistory.get(date);
-      }
-      else {
+      } else {
         //adding txn cost to all the future dates
         costBasisHistory.put(date, costBasisHistory.get(date) + txnCost);
       }
@@ -105,19 +99,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     System.out.println("Cost basis till now: " + costBasisTillNow);
     costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + txnCost);
     saveCostBasisLog();
-  }
-
-  private double getShareQuantityTillDate(Set<Details> detailsSet, LocalDate date) {
-    double qtyAvailable = 0;
-
-    for(Details details: detailsSet) {
-      if(details.getPurchaseDate().compareTo(date) > 0) {
-        break;
-      }
-      qtyAvailable = details.getQuantity();
-    }
-
-    return qtyAvailable;
   }
 
   protected void saveLastSoldLog() {
@@ -178,6 +159,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private double getTxnCost(String ticker, Details details, double commissionFee) {
     Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
     double price = shareDetails.get("close");
-    return  price * details.getQuantity() + commissionFee;
+    return price * details.getQuantity() + commissionFee;
   }
 }

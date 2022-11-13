@@ -1,7 +1,13 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 import models.Details;
 import models.Log;
@@ -93,5 +99,38 @@ public class StockControllerFlexible extends AbstractController {
       }
     } while (commissionPercent < 0.0 || commissionPercent > 100.0);
     return commissionPercent;
+  }
+
+  protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
+          throws FileNotFoundException {
+    Scanner csvReader = new Scanner(logFile);
+    csvReader.nextLine();
+
+    Map<String, LocalDate> lastDateSoldList = new HashMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      if (Objects.equals(vals[1], "null")) {
+        lastDateSoldList.put(vals[0], null);
+      } else {
+        lastDateSoldList.put(vals[0], LocalDate.parse(vals[1]));
+      }
+    }
+    return lastDateSoldList;
+  }
+
+  protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
+          throws FileNotFoundException {
+    Scanner csvReader = new Scanner(costBasisFile);
+    csvReader.nextLine();
+
+    Map<LocalDate, Double> costBasisHistory = new TreeMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      costBasisHistory.put(LocalDate.parse(vals[0]), Double.parseDouble(vals[1]));
+    }
+
+    return costBasisHistory;
   }
 }
