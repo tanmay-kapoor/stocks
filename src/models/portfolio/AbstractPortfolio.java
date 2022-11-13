@@ -23,16 +23,16 @@ import models.api.ShareApi;
 abstract class AbstractPortfolio implements Portfolio {
   protected final String portfolioName;
   protected Map<String, Log> stocks;
-  private final ShareApi api;
+  protected final ShareApi api;
   final String path;
   protected Map<LocalDate, Double> costBasisHistory;
 
-  abstract boolean portfolioBasedSell(String ticker, Details details, double commissionFee);
-  abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
-  abstract void saveLastSoldLog();
-  abstract void changePurchaseDateIfApplicable(Details details);
-  abstract double changeCommissionFeeIfApplicable(double commissionFee);
-  abstract LocalDate getSpecificDate(LocalDate date);
+  protected abstract boolean portfolioBasedSell(String ticker, Details details, double commissionFee);
+  protected abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
+  protected abstract void saveLastSoldLog();
+  protected abstract void changePurchaseDateIfApplicable(Details details);
+  protected abstract double changeCommissionFeeIfApplicable(double commissionFee);
+  protected abstract LocalDate getSpecificDate(LocalDate date);
 
   /**
    * Constructor for the class that initializes the name of the portfolio,
@@ -138,7 +138,7 @@ abstract class AbstractPortfolio implements Portfolio {
         quantity = d.getQuantity();
       }
       Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-      totalValue += shareDetails.get("close") * quantity;
+      totalValue = shareDetails.get("close") * quantity;
     }
 
     return totalValue;

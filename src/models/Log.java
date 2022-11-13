@@ -12,19 +12,19 @@ public class Log {
     this.lastSoldDate = lastSoldDate;
   }
 
-  public void setDetailsSet(Set<Details> detailsSet) {
-    this.detailsSet = detailsSet;
-  }
-
   public Set<Details> getDetailsSet() {
     return this.detailsSet;
   }
 
-  public void setLastSoldDate(LocalDate lastSoldDate) {
-    this.lastSoldDate = lastSoldDate;
-  }
-
   public LocalDate getLastSoldDate() {
     return this.lastSoldDate;
+  }
+
+  public void setDetailsSet(Set<Details> detailsSet) {
+    this.detailsSet = detailsSet;
+  }
+
+  public void setLastSoldDate(LocalDate lastSoldDate) {
+    this.lastSoldDate = lastSoldDate;
   }
 }

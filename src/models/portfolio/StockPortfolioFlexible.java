@@ -12,6 +12,7 @@ import java.util.Set;
 
 import models.Details;
 import models.Log;
+import models.api.AlphaVantage;
 import models.api.ShareApi;
 import models.api.StockApi;
 
@@ -175,7 +176,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
   private double getTxnCost(String ticker, Details details, double commissionFee) {
-    ShareApi api = new StockApi();
     Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
     double price = shareDetails.get("close");
     return  price * details.getQuantity() + commissionFee;

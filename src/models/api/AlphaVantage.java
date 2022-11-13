@@ -31,7 +31,7 @@ public class AlphaVantage implements ShareApi {
     try {
       url = new URL("https://www.alphavantage"
               + ".co/query?function=TIME_SERIES_DAILY"
-              + "&outputsize=compact"
+              + "&outputsize=full"
               + "&symbol"
               + "=" + tickerSymbol + "&apikey=" + apiKey + "&datatype=csv");
     } catch (MalformedURLException e) {
