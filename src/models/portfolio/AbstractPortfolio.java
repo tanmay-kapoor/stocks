@@ -128,6 +128,8 @@ abstract class AbstractPortfolio implements Portfolio {
       throw new IllegalArgumentException("Cannot get value for a future date.");
     }
 
+    date = getSpecificDate(date);
+
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Log log = stocks.get(tickerSymbol);
@@ -135,10 +137,21 @@ abstract class AbstractPortfolio implements Portfolio {
       Set<Details> detailsSet = log.getDetailsSet();
       double quantity = 0.0;
       for (Details d : detailsSet) {
-        quantity = d.getQuantity();
+        if(d.getPurchaseDate().compareTo(date) <= 0) {
+          quantity = d.getQuantity();
+        } else {
+          break;
+        }
       }
-      Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-      totalValue = shareDetails.get("close") * quantity;
+
+      if(quantity != 0.0) {
+        try {
+          Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
+          totalValue += (shareDetails.get("close") * quantity);
+        } catch(IllegalArgumentException e) {
+          totalValue += 0;
+        }
+      }
     }
 
     return totalValue;

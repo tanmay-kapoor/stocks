@@ -18,6 +18,9 @@ abstract class AbstractStockMenuTest {
   protected abstract String getMainMenuExpected();
   protected abstract String getBuySellChoiceExpected();
   protected abstract String getCommissionPercentExpected();
+  protected abstract Menu createObject(InputStream in, PrintStream out);
+  protected abstract void getAssertStatementForBuySell(char c);
+  protected abstract void getAssertStatementForCommission(double c);
 
   @Before
   public void setUp() {
@@ -86,7 +89,7 @@ abstract class AbstractStockMenuTest {
     generateInputStream("45.7\n");
     double quantity = menu.getQuantity();
     assertEquals(45.7, quantity, 0);
-    String expected = "Enter the number of shares you would like to add : ";
+    String expected = "Enter the number of shares : ";
     assertEquals(expected, bytes.toString());
   }
 
@@ -108,7 +111,7 @@ abstract class AbstractStockMenuTest {
     generateInputStream("2022-10-10\n");
     String date = menu.getDateForValue();
     assertEquals("2022-10-10", date);
-    String expected = "\nEnter date in YYYY-MM-DD format : ";
+    String expected = "Enter date in YYYY-MM-DD format : ";
     assertEquals(expected, bytes.toString());
   }
 
@@ -126,9 +129,9 @@ abstract class AbstractStockMenuTest {
 
   @Test
   public void getBuySellChoice() {
-    generateInputStream("p\n");
+    generateInputStream("2\n");
     char c = menu.getBuySellChoice();
-    assertEquals('q', c);
+    getAssertStatementForBuySell(c);
     String expected = getBuySellChoiceExpected();
     assertEquals(expected, bytes.toString());
   }
@@ -137,13 +140,13 @@ abstract class AbstractStockMenuTest {
   public void getCommissionPercent() {
     generateInputStream("44.0\n");
     double c = menu.getCommissionPercent();
-    assertEquals(0.0, c, 0);
+    getAssertStatementForCommission(c);
     String expected = getCommissionPercentExpected();
     assertEquals(expected, bytes.toString());
   }
 
   private void generateInputStream(String input) {
     InputStream in = new ByteArrayInputStream(input.getBytes());
-    menu = new StockMenuInflexible(in, out);
+    menu = createObject(in, out);
   }
 }

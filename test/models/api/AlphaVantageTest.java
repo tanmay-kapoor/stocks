@@ -62,7 +62,11 @@ public class AlphaVantageTest {
                 LocalDate.parse("2001-05-19"));
         fail("Should have failed with too old of a date but did not");
       } catch (RuntimeException e2) {
-        // passes
+        try {
+          api.getShareDetails("META", LocalDate.parse("1900-01-01"));
+        } catch(IllegalArgumentException e) {
+          // passes
+        }
       }
     }
   }
