@@ -469,6 +469,7 @@ abstract class AbstractController implements SpecificController {
         }
       } while (!shouldExit);
     } catch (RuntimeException e) {
+      System.out.println("no price found error");
       menu.printMessage("\n" + e.getMessage());
     }
   }

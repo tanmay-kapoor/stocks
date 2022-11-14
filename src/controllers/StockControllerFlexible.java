@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+import models.Details;
 import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
@@ -62,7 +63,9 @@ public class StockControllerFlexible extends AbstractController {
           try {
             ticker = menu.getTickerSymbol().toUpperCase();
             api.getShareDetails(ticker, LocalDate.now());
-            portfolio.buy(ticker, getDetails(), getCommissionFee());
+            Details details = getDetails();
+            api.getShareDetails(ticker, details.getPurchaseDate());
+            portfolio.buy(ticker, details, getCommissionFee());
             portfolioComposition = portfolio.getComposition();
             shouldSave = true;
           } catch (IllegalArgumentException e) {
