@@ -173,7 +173,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
   protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to) {
-    System.out.println("start");
     long days = ChronoUnit.DAYS.between(from, to);
 
     if(days < 5) {
@@ -183,14 +182,13 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     Map<LocalDate, Double> performance = new TreeMap<>();
     int n = 29;
     long intervals = days < n ? 1 : (days / (n-1));
-    System.out.println(intervals);
+
     LocalDate i;
     int total = 1;
     double min = Double.MAX_VALUE;
     double max = Double.MIN_NORMAL;
 
     for(i = from; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
-      System.out.println(i + "   record num:   " + total);
       performance.put(i, getValue(i));
       min = Double.min(min, performance.get(i));
       max = Double.max(max, performance.get(i));
@@ -199,7 +197,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       performance.put(to, scaleBetween(getValue(to), min, max));
     }
 
-    System.out.println("end");
     return performance;
   }
 
