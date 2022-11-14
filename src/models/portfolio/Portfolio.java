@@ -11,10 +11,26 @@ import models.Log;
  * portfolio, crypto portfolio, mutual fund portfolio, etc.).
  */
 public interface Portfolio {
+  /**
+   * Buy a share of a stock and stores it in the portfolio.
+   *
+   * @param ticker   symbol of the stock to purchase.
+   * @param quantity number of shares to buy.
+   */
   void buy(String ticker, double quantity);
+
 
   void buy(String ticker, Details details, double commissionFee);
 
+  /**
+   * A method to sell a stock present in the portfolio.
+   * Sell transactions fails if no shares are present for the stock user wants to sell.
+   *
+   * @param ticker        symbol of the company
+   * @param details       `Details` object containing details about the stocks
+   * @param commissionFee fee to be charged by the broker for the transaction.
+   * @return true is sold successfully, or false sell fails.
+   */
   boolean sell(String ticker, Details details, double commissionFee);
 
   /**
@@ -42,10 +58,16 @@ public interface Portfolio {
   /**
    * Shows the distribution of the shares and their quantity in a portfolio.
    *
-   * @return quantity of shares next to their ticker symbols.
+   * @return hashmap containing stocks and Log object associated with the stock.
    */
   Map<String, Log> getComposition();
 
+  /**
+   * Shows the distribution of the shares and their quantity in a portfolio.
+   *
+   * @param date Date requested by the user.
+   * @return hashmap containing stocks and Log object associated with the stock.
+   */
   Map<String, Log> getComposition(LocalDate date);
 
   /**
@@ -56,4 +78,6 @@ public interface Portfolio {
   boolean savePortfolio();
 
   Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to);
+
+  double getCostBasis(LocalDate date);
 }

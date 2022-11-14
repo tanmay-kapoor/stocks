@@ -17,19 +17,33 @@ import models.api.ShareApi;
 import static models.portfolio.Txn.Buy;
 import static models.portfolio.Txn.Sell;
 
+/**
+ * A class for flexible portfolio. A flexible portfolio has the ability to buy and sell shares
+ * after its creation.
+ */
 public class StockPortfolioFlexible extends AbstractPortfolio {
+
   /**
    * Constructor for the class that initializes the name of the portfolio,
    * date it was created and the API that it is supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
-   * @param path
+   * @param path          path of where the file is stored.
    * @param api           API is meant to be used.
    */
   public StockPortfolioFlexible(String portfolioName, String path, ShareApi api) {
     super(portfolioName, path, api);
   }
 
+  /**
+   * A constructor that initializes the object attributes of the portfolio when it is created.
+   *
+   * @param portfolioName    name of portfolio.
+   * @param stocks           stocks to include in the portfolio.
+   * @param path             path of where the portfolio is stored.
+   * @param api              API used for fetching the data.
+   * @param costBasisHistory cost based history log of the portfolio.
+   */
   public StockPortfolioFlexible(String portfolioName, Map<String, Log> stocks, String path,
                                 ShareApi api, Map<LocalDate, Double> costBasisHistory) {
     super(portfolioName, stocks, path, api, costBasisHistory);
@@ -40,17 +54,18 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     LocalDate sellDate = details.getPurchaseDate();
     Log log = stocks.get(ticker);
 
-    if (log.getLastSoldDate() != null &&
-            log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
-      throw new IllegalArgumentException
-              ("Please choose a time later than or equal to " + log.getLastSoldDate());
+    if (log.getLastSoldDate() != null
+            && log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
+      throw new IllegalArgumentException ("Please choose a time later than or equal to "
+              + log.getLastSoldDate());
     }
 
     Set<Details> detailsSet = log.getDetailsSet();
 
     LocalDate firstPurchaseDate = detailsSet.iterator().next().getPurchaseDate();
-    if(detailsSet.size() == 0 || firstPurchaseDate.compareTo(details.getPurchaseDate()) > 0) {
-      throw new IllegalArgumentException("Cannot sell shares if they do not exist in the portfolio yet.");
+    if (detailsSet.size() == 0 || firstPurchaseDate.compareTo(details.getPurchaseDate()) > 0) {
+      throw new IllegalArgumentException("Cannot sell shares if they do not "
+              + "exist in the portfolio yet.");
     }
 
     double sharesAvailable = 0;
@@ -90,8 +105,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       txnCost = commissionFee;
     } else if (txn == Buy) {
       txnCost = getTxnCost(ticker, details, commissionFee);
-    } else {
-      // here if other txn type, just adding for special sell cases
     }
 
     double costBasisTillNow = 0;
@@ -145,6 +158,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     return date;
   }
 
+
   private void saveCostBasisLog() {
     try {
       String pathCostBasis = this.path + "costbasis/";
@@ -172,7 +186,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     return price * details.getQuantity() + commissionFee;
   }
 
-  protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to) {
+  protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from,
+                                                                       LocalDate to) {
     long days = ChronoUnit.DAYS.between(from, to);
 
     if(days < 5) {
@@ -203,7 +218,10 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private double scaleBetween(double x, double min, double max) {
     double minAllowed = 1;
     double maxAllowed = 50;
+    double scaled = (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
 
-    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
+    System.out.println(scaled);
+
+    return scaled;
   }
 }

@@ -33,12 +33,14 @@ public class StockControllerInflexible extends AbstractController {
   }
 
   @Override
-  protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile) throws FileNotFoundException {
+  protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
+          throws FileNotFoundException {
     return new HashMap<>();
   }
 
   @Override
-  protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile) throws FileNotFoundException {
+  protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
+          throws FileNotFoundException {
     return new HashMap<>();
   }
 

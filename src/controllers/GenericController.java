@@ -5,7 +5,6 @@ import java.io.PrintStream;
 
 import models.api.AlphaVantage;
 import models.api.ShareApi;
-import models.api.StockApi;
 import views.StockMenuFlexible;
 import views.MainMenu;
 import views.MainMenuImpl;

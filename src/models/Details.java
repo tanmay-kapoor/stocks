@@ -13,7 +13,7 @@ public class Details {
   /**
    * constructor that initializes the quantity and creation date.
    *
-   * @param quantity    number of shares.
+   * @param quantity     number of shares.
    * @param purchaseDate date it was added to the portfolio.
    */
   public Details(double quantity, LocalDate purchaseDate) {
@@ -39,10 +39,20 @@ public class Details {
     return this.purchaseDate;
   }
 
+  /**
+   * sets the quantity of the stock in the portfolio.
+   *
+   * @param quantity quantity to set.
+   */
   public void setQuantity(double quantity) {
     this.quantity = quantity;
   }
 
+  /**
+   * sets the date of purchase of a particular stock.
+   *
+   * @param purchaseDate date to purchase to set.
+   */
   public void setPurchaseDate(LocalDate purchaseDate) {
     this.purchaseDate = purchaseDate;
   }

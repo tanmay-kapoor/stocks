@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 /**
  * An API by Alpha Vantage that is used to get necessary data points about stocks which are
- * registered on the NASDAQ. It is primarily used to fetch stock's OHCL and its traded
+ * registered on the NASDAQ. It is primarily used to fetch stock's OHLC and its traded
  * volume on a particular date.
  */
 public class AlphaVantage implements ShareApi {

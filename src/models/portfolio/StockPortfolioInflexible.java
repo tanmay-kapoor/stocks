@@ -2,6 +2,7 @@ package models.portfolio;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.TreeMap;
 
 import models.Details;
 import models.Log;
@@ -13,8 +14,8 @@ import models.api.ShareApi;
  */
 public class StockPortfolioInflexible extends AbstractPortfolio {
   /**
-   * Constructor for the class that initializes the name of the portfolio,
-   * date it was created and the API that it is supposed to use for the fetching relevant data.
+   * Constructor for the class that initializes the name of the portfolio, and the API that it is
+   * supposed to use for the fetching relevant data.
    *
    * @param portfolioName name of the portfolio.
    * @param api           API is meant to be used.
@@ -23,6 +24,16 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     super(portfolioName, path, api);
   }
 
+  /**
+   * Constructor for the class that initializes the name of the portfolio, stocks in them,
+   * the cost basis history and the API that it is supposed to use for the fetching relevant data.
+   *
+   * @param portfolioName    name of the portfolio
+   * @param stocks           initial stock in the portfolio
+   * @param path             path where its stored
+   * @param api              api to be used
+   * @param costBasisHistory cost basis for the portfolio.
+   */
   public StockPortfolioInflexible(String portfolioName, Map<String, Log> stocks, String path,
                                   ShareApi api, Map<LocalDate, Double> costBasisHistory) {
     super(portfolioName, stocks, path, api, costBasisHistory);
@@ -52,8 +63,9 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
     return LocalDate.now();
   }
 
-  protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to) {
-    throw new RuntimeException("not allowed for inflexible portfolio");
-//    return new TreeMap<>();
+  protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from,
+                                                                       LocalDate to) {
+    // throw new RuntimeException("not allowed for inflexible portfolio");
+    return new TreeMap<>();
   }
 }

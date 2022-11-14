@@ -27,9 +27,11 @@ abstract class AbstractPortfolio implements Portfolio {
   final String path;
   protected Map<LocalDate, Double> costBasisHistory;
 
-  protected abstract boolean portfolioBasedSell(String ticker, Details details, double commissionFee);
+  protected abstract boolean portfolioBasedSell(String ticker, Details details,
+                                                double commissionFee);
 
-  protected abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
+  protected abstract void storeCostBasis(String ticker, Details details,
+                                         double commissionFee, Txn txn);
 
   protected abstract void saveLastSoldLog();
 
@@ -39,7 +41,8 @@ abstract class AbstractPortfolio implements Portfolio {
 
   protected abstract LocalDate getSpecificDate(LocalDate date);
 
-  protected abstract Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to);
+  protected abstract Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from,
+                                                                                LocalDate to);
 
   /**
    * Constructor for the class that initializes the name of the portfolio,
@@ -108,7 +111,8 @@ abstract class AbstractPortfolio implements Portfolio {
       }
 
       if (!haveBoughtBefore) {
-        detailsSet.add(new Details(details.getQuantity() + prevRowQty, details.getPurchaseDate()));
+        detailsSet.add(new
+                Details(details.getQuantity() + prevRowQty, details.getPurchaseDate()));
       }
 
       log.setDetailsSet(detailsSet);
@@ -120,6 +124,25 @@ abstract class AbstractPortfolio implements Portfolio {
   @Override
   public boolean sell(String ticker, Details details, double commissionFee) {
     return portfolioBasedSell(ticker, details, commissionFee);
+  }
+
+  /**
+   * Gives the most basis of the portfolio till the requested date.
+   *
+   * @param dateReq date requested.
+   * @return value of cost basis.
+   */
+  @Override
+  public double getCostBasis(LocalDate dateReq) {
+    double costBasis = 0.0;
+    for (LocalDate date : this.costBasisHistory.keySet()) {
+      if (date.compareTo(dateReq) > 0) {
+        break;
+      }
+      costBasis = costBasisHistory.get(date);
+    }
+
+    return costBasis;
   }
 
 
@@ -229,9 +252,6 @@ abstract class AbstractPortfolio implements Portfolio {
     }
   }
 
-  private void getCostBasis(LocalDate date) {
-//    for()
-  }
 
 }
 

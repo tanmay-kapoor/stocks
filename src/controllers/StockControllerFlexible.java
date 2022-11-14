@@ -189,12 +189,12 @@ public class StockControllerFlexible extends AbstractController {
         switch (ch) {
           case '1':
             date = LocalDate.now();
-//            portfolio.getCostBasis(date);
+            portfolio.getCostBasis(date);
             break;
 
           case '2':
             date = LocalDate.parse(menu.getDateForValue());
-//            portfolio.getCostBasis(date);
+            portfolio.getCostBasis(date);
             break;
 
           default:
