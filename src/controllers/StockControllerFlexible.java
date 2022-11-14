@@ -40,7 +40,7 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected char getLastOption() {
-    return '5';
+    return '6';
   }
 
   @Override
@@ -97,6 +97,7 @@ public class StockControllerFlexible extends AbstractController {
     } while (ch >= '1' && ch <= '2');
   }
 
+  @Override
   protected double getCommissionFee() {
     double commissionFee;
     do {
@@ -108,6 +109,7 @@ public class StockControllerFlexible extends AbstractController {
     return commissionFee;
   }
 
+  @Override
   protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
           throws FileNotFoundException {
     Scanner csvReader = new Scanner(logFile);
@@ -126,6 +128,7 @@ public class StockControllerFlexible extends AbstractController {
     return lastDateSoldList;
   }
 
+  @Override
   protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
           throws FileNotFoundException {
     Scanner csvReader = new Scanner(costBasisFile);
@@ -141,6 +144,7 @@ public class StockControllerFlexible extends AbstractController {
     return costBasisHistory;
   }
 
+  @Override
   protected void handleGetPortfolioPerformanceOption() {
     commonStuff(Function.SeePerformance);
   }
@@ -157,16 +161,50 @@ public class StockControllerFlexible extends AbstractController {
       to = getDate("End Date (Should be at least 5 days ahead of the start date)");
       isValidGap = true;
       try {
-        menu.printMessage("\nPlease wait while performance report is being generated!\n");
+        menu.printMessage("\nPlease wait while performance report is being generated! This may take some time..\n");
         performance = portfolio.getPortfolioPerformance(from, to);
         for (LocalDate date : performance.keySet()) {
           System.out.println(date + " " + performance.get(date));
         }
-      } catch(IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
         isValidGap = false;
         menu.printMessage(e.getMessage());
       }
-    } while(!isValidGap);
+    } while (!isValidGap);
+  }
+
+  @Override
+  protected void handleGetCostBasisOption() {
+    commonStuff(Function.CostBasis);
+  }
+
+  @Override
+  protected void handleGetCostBasis(Portfolio portfolio) {
+    char ch = menu.getDateChoice();
+    LocalDate date;
+    boolean isProblematic;
+    do {
+      isProblematic = false;
+      try {
+        switch (ch) {
+          case '1':
+            date = LocalDate.now();
+//            portfolio.getCostBasis(date);
+            break;
+
+          case '2':
+            date = LocalDate.parse(menu.getDateForValue());
+//            portfolio.getCostBasis(date);
+            break;
+
+          default:
+            break;
+        }
+      } catch (DateTimeParseException e) {
+        isProblematic = true;
+        menu.printMessage("\nInvalid date format");
+      }
+    } while (isProblematic);
   }
 
   private LocalDate getDate(String msg) {
