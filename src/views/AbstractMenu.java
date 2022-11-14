@@ -21,7 +21,7 @@ abstract class AbstractMenu implements Menu {
 
   protected abstract void displayManyMenuOptions();
   protected abstract char getBuySellChoiceIfApplicable();
-  protected abstract double getCommissionPercentIfApplicable();
+  protected abstract double getCommissionFeeIfApplicable();
 
   @Override
   public char getMainMenuChoice() {
@@ -106,8 +106,8 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public double getCommissionPercent() {
-    return getCommissionPercentIfApplicable();
+  public double getCommissionFee() {
+    return getCommissionFeeIfApplicable();
   }
 
   protected void print(String msg) {

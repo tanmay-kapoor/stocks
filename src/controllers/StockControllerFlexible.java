@@ -63,7 +63,7 @@ public class StockControllerFlexible extends AbstractController {
           try {
             ticker = menu.getTickerSymbol().toUpperCase();
             api.getShareDetails(ticker, LocalDate.now());
-            portfolio.buy(ticker, getDetails(), getCommissionPercent());
+            portfolio.buy(ticker, getDetails(), getCommissionFee());
             portfolioComposition = portfolio.getComposition();
             shouldSave = true;
           } catch (IllegalArgumentException e) {
@@ -77,7 +77,7 @@ public class StockControllerFlexible extends AbstractController {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
             try {
-              portfolio.sell(ticker, getDetails(), getCommissionPercent());
+              portfolio.sell(ticker, getDetails(), getCommissionFee());
               portfolioComposition = portfolio.getComposition();
               shouldSave = true;
             } catch (IllegalArgumentException e) {
@@ -95,15 +95,15 @@ public class StockControllerFlexible extends AbstractController {
     } while (ch >= '1' && ch <= '2');
   }
 
-  protected double getCommissionPercent() {
-    double commissionPercent;
+  protected double getCommissionFee() {
+    double commissionFee;
     do {
-      commissionPercent = menu.getCommissionPercent();
-      if (commissionPercent < 0.0 || commissionPercent > 100.0) {
-        menu.printMessage("\nCommission percentage must be between 0 and 100%");
+      commissionFee = menu.getCommissionFee();
+      if (commissionFee < 0.0) {
+        menu.printMessage("\nCommission fee must be non-negative");
       }
-    } while (commissionPercent < 0.0 || commissionPercent > 100.0);
-    return commissionPercent;
+    } while (commissionFee < 0.0);
+    return commissionFee;
   }
 
   protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)

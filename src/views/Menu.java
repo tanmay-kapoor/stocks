@@ -69,5 +69,5 @@ public interface Menu {
 
   char getPortfolioCompositionOption();
   char getBuySellChoice();
-  double getCommissionPercent();
+  double getCommissionFee();
 }

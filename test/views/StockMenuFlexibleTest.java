@@ -27,7 +27,7 @@ public class StockMenuFlexibleTest extends AbstractStockMenuTest {
             "Enter your choice : ";
   }
 
-  protected String getCommissionPercentExpected() {
+  protected String getCommissionFeeExpected() {
     return "Enter the commission % you want to charge for this transaction : ";
   }
 

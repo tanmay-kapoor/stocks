@@ -55,7 +55,7 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract void handleBuySellInPortfolio(String name);
 
-  protected abstract double getCommissionPercent();
+  protected abstract double getCommissionFee();
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -451,8 +451,7 @@ abstract class AbstractController implements SpecificController {
           LocalDate purchaseDate = getPurchaseDate();
           Details details = new Details(quantity, purchaseDate);
           api.getShareDetails(tickerSymbol, purchaseDate);
-          System.out.println("before buy");
-          portfolio.buy(tickerSymbol, details, getCommissionPercent());
+          portfolio.buy(tickerSymbol, details, getCommissionFee());
           menu.printMessage("\nSuccess!");
         } catch (DateTimeParseException e) {
           shouldExit = false;
