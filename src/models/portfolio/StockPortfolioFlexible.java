@@ -180,7 +180,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
 
     Map<LocalDate, Double> performance = new TreeMap<>();
-    int n = 29;
+    int n = 14;
     long intervals = days < n ? 1 : (days / (n-1));
 
     LocalDate i;

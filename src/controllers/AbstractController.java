@@ -112,8 +112,11 @@ abstract class AbstractController implements SpecificController {
           handleBuySellOption();
           break;
 
-        default:
+        case '5':
           handleGetPortfolioPerformanceOption();
+          break;
+
+        default:
           break;
       }
     }

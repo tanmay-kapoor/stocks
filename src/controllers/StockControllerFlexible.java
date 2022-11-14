@@ -144,13 +144,26 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected void handleGetPortfolioPerformance(Portfolio portfolio) {
-    LocalDate from = getDate("Start Date");
-    LocalDate to = getDate("End Date");
-    Map<LocalDate, Double> performance = portfolio.getPortfolioPerformance(from, to);
+    LocalDate from;
+    LocalDate to;
+    Map<LocalDate, Double> performance;
+    boolean isValidGap;
 
-    for (LocalDate date : performance.keySet()) {
-      System.out.println(date + " " + performance.get(date));
-    }
+    do {
+      from = getDate("Start Date");
+      to = getDate("End Date (Should be at least 5 days ahead of the start date)");
+      isValidGap = true;
+      try {
+        menu.printMessage("\nPlease wait while performance report is being generated!\n");
+        performance = portfolio.getPortfolioPerformance(from, to);
+        for (LocalDate date : performance.keySet()) {
+          System.out.println(date + " " + performance.get(date));
+        }
+      } catch(IllegalArgumentException e) {
+        isValidGap = false;
+        menu.printMessage(e.getMessage());
+      }
+    } while(!isValidGap);
   }
 
   private LocalDate getDate(String msg) {
