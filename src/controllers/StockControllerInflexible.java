@@ -21,6 +21,7 @@ public class StockControllerInflexible extends AbstractController {
     super(menu, api, path);
   }
 
+  @Override
   protected Portfolio createPortfolio(String portfolioName) {
     return new StockPortfolioInflexible(portfolioName, path, api);
   }
@@ -73,6 +74,16 @@ public class StockControllerInflexible extends AbstractController {
 
   @Override
   protected void handleGetPortfolioPerformance(Portfolio portfolio) {
+    return;
+  }
+
+  @Override
+  protected void handleGetCostBasisOption() {
+    return;
+  }
+
+  @Override
+  protected void handleGetCostBasis(Portfolio portfolio) {
     return;
   }
 }

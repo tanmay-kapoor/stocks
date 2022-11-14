@@ -59,6 +59,8 @@ abstract class AbstractController implements SpecificController {
   protected abstract void handleGetPortfolioPerformance(Portfolio portfolio);
 
   protected abstract double getCommissionFee();
+  protected abstract void handleGetCostBasisOption();
+  protected abstract void handleGetCostBasis(Portfolio portfolio);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -113,8 +115,15 @@ abstract class AbstractController implements SpecificController {
           handleBuySellOption();
           break;
 
-        default:
+        case '5':
           handleGetPortfolioPerformanceOption();
+          break;
+
+        case '6':
+          handleGetCostBasisOption();
+          break;
+
+        default:
           break;
       }
     }
@@ -268,6 +277,10 @@ abstract class AbstractController implements SpecificController {
 
           case SeePerformance:
             handleGetPortfolioPerformance(portfolio);
+            break;
+
+          case CostBasis:
+            handleGetCostBasis(portfolio);
             break;
 
           default:
@@ -471,6 +484,7 @@ abstract class AbstractController implements SpecificController {
         }
       } while (!shouldExit);
     } catch (RuntimeException e) {
+      System.out.println("no price found error");
       menu.printMessage("\n" + e.getMessage());
     }
   }

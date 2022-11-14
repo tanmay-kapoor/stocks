@@ -77,7 +77,7 @@ abstract class AbstractPortfolio implements Portfolio {
     changePurchaseDateIfApplicable(details);
 
     if (details.getQuantity() < 0.0) {
-      throw new IllegalArgumentException("Quantity should be grater than 0.");
+      throw new IllegalArgumentException("Quantity should be greater than 0.");
     }
     ticker = ticker.toUpperCase();
     //if ticker doesn't exist in the portfolio just add it

@@ -176,11 +176,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     long days = ChronoUnit.DAYS.between(from, to);
 
     if(days < 5) {
-      throw new IllegalArgumentException("Please enter a longer timespan with atleast 5 days.");
+      throw new IllegalArgumentException("Please enter a longer timespan with at least 5 days.");
     }
 
     Map<LocalDate, Double> performance = new TreeMap<>();
-    int n = 29;
+    int n = 9;
     long intervals = days < n ? 1 : (days / (n-1));
 
     LocalDate i;
