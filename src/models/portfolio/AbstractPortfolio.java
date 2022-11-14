@@ -195,15 +195,19 @@ abstract class AbstractPortfolio implements Portfolio {
     Map<LocalDate, Double> performance = new TreeMap<>();
     int n = 29;
     long intervals = days > n ? 1 : (days / (n-1));
+
     LocalDate i = from;
     int total = 1;
+    double min = Double.MAX_VALUE;
+    double max = Double.MIN_NORMAL;
 
     for(; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
       performance.put(i, getValue(i));
-      System.out.println(i);
+      min = Double.min(min, performance.get(i));
+      max = Double.max(max, performance.get(i));
     }
     if(!performance.containsKey(to)) {
-      performance.put(i, getValue(to));
+      performance.put(i, scaleBetween(getValue(to), min, max));
     }
 
     return performance;
@@ -241,6 +245,13 @@ abstract class AbstractPortfolio implements Portfolio {
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong!");
     }
+  }
+
+  private double scaleBetween(double x, double min, double max) {
+    double minAllowed = 1;
+    double maxAllowed = 50;
+
+    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
 
   private void getCostBasis(LocalDate date) {

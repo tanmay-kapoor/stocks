@@ -171,6 +171,7 @@ abstract class AbstractController implements SpecificController {
       shouldContinue = true;
 
       String filePath = menu.getFilePath();
+      System.out.println(filePath);
       try {
         Paths.get(filePath);
         File file = new File(filePath);
