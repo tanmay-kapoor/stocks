@@ -54,4 +54,6 @@ public interface Portfolio {
    * @return true if the portfolio is saved successfully, false if not saved.
    */
   boolean savePortfolio();
+
+  Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to);
 }

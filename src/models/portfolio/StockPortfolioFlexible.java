@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import models.Details;
 import models.Log;
@@ -168,5 +170,39 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     double price = shareDetails.get("close");
     System.out.println(price);
     return price * details.getQuantity() + commissionFee;
+  }
+
+  protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to) {
+    long days = ChronoUnit.DAYS.between(from, to);
+    if(days < 5) {
+      throw new IllegalArgumentException("Please enter a longer timespan with atleast 5 days.");
+    }
+
+    Map<LocalDate, Double> performance = new TreeMap<>();
+    int n = 29;
+    long intervals = days > n ? 1 : (days / (n-1));
+
+    LocalDate i = from;
+    int total = 1;
+    double min = Double.MAX_VALUE;
+    double max = Double.MIN_NORMAL;
+
+    for(; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
+      performance.put(i, getValue(i));
+      min = Double.min(min, performance.get(i));
+      max = Double.max(max, performance.get(i));
+    }
+    if(!performance.containsKey(to)) {
+      performance.put(i, scaleBetween(getValue(to), min, max));
+    }
+
+    return performance;
+  }
+
+  private double scaleBetween(double x, double min, double max) {
+    double minAllowed = 1;
+    double maxAllowed = 50;
+
+    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
 }

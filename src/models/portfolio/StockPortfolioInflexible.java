@@ -51,4 +51,9 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
   protected LocalDate getSpecificDate(LocalDate date) {
     return LocalDate.now();
   }
+
+  protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to) {
+    throw new RuntimeException("not allowed for inflexible portfolio");
+//    return new TreeMap<>();
+  }
 }

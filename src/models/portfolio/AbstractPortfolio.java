@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,11 +28,18 @@ abstract class AbstractPortfolio implements Portfolio {
   protected Map<LocalDate, Double> costBasisHistory;
 
   protected abstract boolean portfolioBasedSell(String ticker, Details details, double commissionFee);
+
   protected abstract void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn);
+
   protected abstract void saveLastSoldLog();
+
   protected abstract void changePurchaseDateIfApplicable(Details details);
+
   protected abstract double changeCommissionFeeIfApplicable(double commissionFee);
+
   protected abstract LocalDate getSpecificDate(LocalDate date);
+
+  protected abstract Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to);
 
   /**
    * Constructor for the class that initializes the name of the portfolio,
@@ -91,14 +97,12 @@ abstract class AbstractPortfolio implements Portfolio {
 
       for (Details d : detailsSet) {
 
-        if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) < 0) {
+        if (d.getPurchaseDate().compareTo(details.getPurchaseDate()) < 0) {
           prevRowQty = d.getQuantity();
-        }
-        else if(d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
+        } else if (d.getPurchaseDate().compareTo(details.getPurchaseDate()) == 0) {
           haveBoughtBefore = true;
           d.setQuantity(d.getQuantity() + details.getQuantity());
-        }
-        else {
+        } else {
           d.setQuantity(d.getQuantity() + details.getQuantity());
         }
       }
@@ -126,7 +130,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public double getValue(LocalDate date) throws RuntimeException {
-    if(date.compareTo(LocalDate.now()) > 0) {
+    if (date.compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot get value for a future date.");
     }
 
@@ -139,18 +143,18 @@ abstract class AbstractPortfolio implements Portfolio {
       Set<Details> detailsSet = log.getDetailsSet();
       double quantity = 0.0;
       for (Details d : detailsSet) {
-        if(d.getPurchaseDate().compareTo(date) <= 0) {
+        if (d.getPurchaseDate().compareTo(date) <= 0) {
           quantity = d.getQuantity();
         } else {
           break;
         }
       }
 
-      if(quantity != 0.0) {
+      if (quantity != 0.0) {
         try {
           Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
           totalValue += (shareDetails.get("close") * quantity);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
           totalValue += 0;
         }
       }
@@ -169,15 +173,15 @@ abstract class AbstractPortfolio implements Portfolio {
     date = getSpecificDate(date);
 
     Map<String, Log> filteredStocks = new HashMap<>();
-    for(String stock : stocks.keySet()) {
+    for (String stock : stocks.keySet()) {
       Log log = stocks.get(stock);
       Set<Details> d = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
-      for(Details details : log.getDetailsSet()) {
-        if(details.getPurchaseDate().compareTo(date) <= 0) {
+      for (Details details : log.getDetailsSet()) {
+        if (details.getPurchaseDate().compareTo(date) <= 0) {
           d.add(details);
         }
       }
-      if(d.size() > 0) {
+      if (d.size() > 0) {
         Log logCopy = new Log(d, log.getLastSoldDate());
         filteredStocks.put(stock, logCopy);
       }
@@ -186,31 +190,9 @@ abstract class AbstractPortfolio implements Portfolio {
     return filteredStocks;
   }
 
+  @Override
   public Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to) {
-    long days = ChronoUnit.DAYS.between(from, to);
-    if(days < 5) {
-      throw new IllegalArgumentException("Please enter a longer timespan with atleast 5 days.");
-    }
-
-    Map<LocalDate, Double> performance = new TreeMap<>();
-    int n = 29;
-    long intervals = days > n ? 1 : (days / (n-1));
-
-    LocalDate i = from;
-    int total = 1;
-    double min = Double.MAX_VALUE;
-    double max = Double.MIN_NORMAL;
-
-    for(; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
-      performance.put(i, getValue(i));
-      min = Double.min(min, performance.get(i));
-      max = Double.max(max, performance.get(i));
-    }
-    if(!performance.containsKey(to)) {
-      performance.put(i, scaleBetween(getValue(to), min, max));
-    }
-
-    return performance;
+    return getPortfolioPerformanceIfApplicable(from, to);
   }
 
   @Override
@@ -245,13 +227,6 @@ abstract class AbstractPortfolio implements Portfolio {
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong!");
     }
-  }
-
-  private double scaleBetween(double x, double min, double max) {
-    double minAllowed = 1;
-    double maxAllowed = 50;
-
-    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
 
   private void getCostBasis(LocalDate date) {
