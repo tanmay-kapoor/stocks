@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -183,7 +184,9 @@ abstract class AbstractController implements SpecificController {
         if (dotIndex == -1) {
           menu.printMessage("\nInvalid file. Please use a csv file");
         } else {
+          //can use split here
           String portfolioName = fileName.substring(0, dotIndex);
+          //last index already stored in variable
           String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
           if (!extension.equals("csv")) {
             menu.printMessage("\nInvalid file. Please use a csv file.");
@@ -193,7 +196,7 @@ abstract class AbstractController implements SpecificController {
                     + "and try again!", portfolioName));
           } else {
             //need to pass correct files in 3rd and 4th argument.
-            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file, file, file);
+            Portfolio portfolio = createPortfolioFromCsv(portfolioName, file);
             savePortfolio(portfolioName, portfolio);
             shouldContinue = false;
           }
@@ -202,6 +205,8 @@ abstract class AbstractController implements SpecificController {
         menu.printMessage("\nInvalid file path.");
       } catch (FileNotFoundException | NullPointerException e) {
         menu.printMessage("\nFile not found. Please enter file with proper path.");
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
     }
     while (shouldContinue);
@@ -470,6 +475,16 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
+  private Portfolio createPortfolioFromCsv(String pName, File file) throws IOException {
+    //creating log file
+    File logFile = createCsvFile(pName, FileType.LogFile );
+
+    //creating costBasis file
+    File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
+
+    return createPortfolioFromCsv(pName, file, logFile, costBasisFile);
+  }
+
   private Portfolio createPortfolioFromCsv(String pName, File file, File logFile,
                                            File costBasisFile) throws FileNotFoundException {
     //implement try catch here
@@ -513,6 +528,23 @@ abstract class AbstractController implements SpecificController {
     }
     csvReader.close();
     return stocks;
+  }
+
+  private File createCsvFile(String name, FileType type) throws IOException {
+    String subFolder = type == FileType.CostBasisFile ? "costbasis/" : "logs/";
+    String creationPath = this.path + subFolder;
+    Files.createDirectories(Paths.get(creationPath));
+    String fileName = String.format(creationPath + "%s.csv", name);
+    FileWriter csvWriter = new FileWriter(fileName);
+    csvWriter.append(
+            type == FileType.CostBasisFile ? "Date, CostBasis\n" : "Date, lastSellDate\n"
+    );
+    csvWriter.close();
+
+    String createdFilePath = creationPath + name + ".csv";
+    System.out.println(createdFilePath);
+
+    return new File(createdFilePath);
   }
 
 
