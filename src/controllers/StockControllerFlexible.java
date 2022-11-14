@@ -3,13 +3,13 @@ package controllers;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import models.Details;
 import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
@@ -39,7 +39,7 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected char getLastOption() {
-    return '4';
+    return '5';
   }
 
   @Override
@@ -48,8 +48,7 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   @Override
-  protected void handleBuySellInPortfolio(String name) {
-    Portfolio portfolio = allPortfolioObjects.get(name);
+  protected void handleBuySellInPortfolio(Portfolio portfolio) {
     Map<String, Log> portfolioComposition = portfolio.getComposition();
 
     char ch;
@@ -87,7 +86,7 @@ public class StockControllerFlexible extends AbstractController {
           break;
 
         default:
-          if(shouldSave) {
+          if (shouldSave) {
             portfolio.savePortfolio();
           }
           break;
@@ -137,5 +136,39 @@ public class StockControllerFlexible extends AbstractController {
     }
 
     return costBasisHistory;
+  }
+
+  protected void handleGetPortfolioPerformanceOption() {
+    commonStuff(Function.SeePerformance);
+  }
+
+  @Override
+  protected void handleGetPortfolioPerformance(Portfolio portfolio) {
+    LocalDate from = getDate("Start Date");
+    LocalDate to = getDate("End Date");
+    Map<LocalDate, Double> performance = portfolio.getPortfolioPerformance(from, to);
+
+    for (LocalDate date : performance.keySet()) {
+      System.out.println(date + " " + performance.get(date));
+    }
+  }
+
+  private LocalDate getDate(String msg) {
+    LocalDate date;
+    boolean isValidDate;
+
+    do {
+      date = LocalDate.now();
+      isValidDate = true;
+      try {
+        menu.printMessage("\n" + msg);
+        date = LocalDate.parse(menu.getDateForValue());
+      } catch (DateTimeParseException e) {
+        isValidDate = false;
+        menu.printMessage("\nInvalid Date. Please enter again.");
+      }
+    } while (!isValidDate);
+
+    return date;
   }
 }

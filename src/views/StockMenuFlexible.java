@@ -13,6 +13,7 @@ public class StockMenuFlexible extends AbstractMenu {
             + "2. See portfolio composition.\n"
             + "3. Check portfolio value.\n"
             + "4. Buy/Sell shares from a portfolio.\n"
+            + "5. See portfolio performance.\n"
             + "Press any other key to go back.\n"
             + "\nEnter your choice : ");
   }

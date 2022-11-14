@@ -173,6 +173,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
   protected Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from, LocalDate to) {
+    System.out.println("start");
     long days = ChronoUnit.DAYS.between(from, to);
     if(days < 5) {
       throw new IllegalArgumentException("Please enter a longer timespan with atleast 5 days.");
@@ -196,6 +197,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       performance.put(i, scaleBetween(getValue(to), min, max));
     }
 
+    System.out.println("end");
     return performance;
   }
 

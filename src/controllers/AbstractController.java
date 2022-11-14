@@ -50,10 +50,12 @@ abstract class AbstractController implements SpecificController {
   protected abstract LocalDate getPurchaseDate();
 
   protected abstract void handleBuySellOption();
+  protected abstract void handleGetPortfolioPerformanceOption();
 
   protected abstract char getLastOption();
 
-  protected abstract void handleBuySellInPortfolio(String name);
+  protected abstract void handleBuySellInPortfolio(Portfolio portfolio);
+  protected abstract void handleGetPortfolioPerformance(Portfolio portfolio);
 
   protected abstract double getCommissionFee();
 
@@ -111,6 +113,7 @@ abstract class AbstractController implements SpecificController {
           break;
 
         default:
+          handleGetPortfolioPerformanceOption();
           break;
       }
     }
@@ -255,7 +258,11 @@ abstract class AbstractController implements SpecificController {
             break;
 
           case BuySell:
-            handleBuySellInPortfolio(name);
+            handleBuySellInPortfolio(portfolio);
+            break;
+
+          case SeePerformance:
+            handleGetPortfolioPerformance(portfolio);
             break;
 
           default:
