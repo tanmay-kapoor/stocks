@@ -27,11 +27,11 @@ public class MainMenuImpl implements MainMenu {
 
   @Override
   public char getPortfolioType() {
-    this.out.print("\nWork with:\n" +
-            "1. Flexible Portfolio\n" +
-            "2. Inflexible Portfolio\n" +
-            "Press any other key to exit.\n" +
-            "\nEnter your choice : ");
+    this.out.print("\nWork with:\n"
+            + "1. Flexible Portfolio\n"
+            + "2. Inflexible Portfolio\n"
+            + "Press any other key to exit.\n"
+            + "\nEnter your choice : ");
     return sc.next().charAt(0);
   }
 }

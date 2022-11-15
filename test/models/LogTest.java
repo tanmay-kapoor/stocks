@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class LogTest {
   private Log log;
+
   @Before
   public void setup() {
     LocalDate lastSoldDate = LocalDate.now();
