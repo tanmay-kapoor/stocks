@@ -5,6 +5,9 @@ import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * A test class to check the methods view shared by different portfolios of the program.
+ */
 public class StockMenuFlexibleTest extends AbstractStockMenuTest {
 
   protected Menu createObject(InputStream in, PrintStream out) {
@@ -21,10 +24,10 @@ public class StockMenuFlexibleTest extends AbstractStockMenuTest {
   }
 
   protected String getBuySellChoiceExpected() {
-    return "\n1. Buy a stock\n" +
-            "2. Sell a stock\n" +
-            "Press any other key to go back.\n\n" +
-            "Enter your choice : ";
+    return "\n1. Buy a stock\n"
+            + "2. Sell a stock\n"
+            + "Press any other key to go back.\n\n"
+            + "Enter your choice : ";
   }
 
   protected String getCommissionFeeExpected() {
