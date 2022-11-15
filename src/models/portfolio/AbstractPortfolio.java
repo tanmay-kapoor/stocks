@@ -126,6 +126,17 @@ abstract class AbstractPortfolio implements Portfolio {
     return portfolioBasedSell(ticker, details, commissionFee);
   }
 
+
+  /**
+   * Gives the most basis of the portfolio till the requested date.
+   * @return value of cost basis till present date.
+   */
+  @Override
+  public double getCostBasis() {
+    return getCostBasis(LocalDate.now());
+  }
+
+
   /**
    * Gives the most basis of the portfolio till the requested date.
    *
