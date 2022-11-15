@@ -3,6 +3,11 @@ package views;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+/**
+ * View that is meant to specifically deal with menu while interacting with user about
+ * flexible stock portfolio. This has the ability to ask user the type of transaction they
+ * would like to perform on the stocks present in the portfolio.
+ */
 public class StockMenuFlexible extends AbstractMenu {
   public StockMenuFlexible(InputStream in, PrintStream out) {
     super(in, out);

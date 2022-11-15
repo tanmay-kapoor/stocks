@@ -162,7 +162,8 @@ public class StockControllerFlexible extends AbstractController {
       to = getDate("End Date (Should be at least 5 days ahead of the start date)");
       isValidGap = true;
       try {
-        menu.printMessage("\nPlease wait while performance report is being generated! This may take some time..\n");
+        menu.printMessage("\nPlease wait while performance report is being generated! "
+                + "This may take some time..\n");
         performance = portfolio.getPortfolioPerformance(from, to);
 
         //scale performance
