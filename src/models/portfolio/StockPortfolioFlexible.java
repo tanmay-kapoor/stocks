@@ -205,11 +205,9 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     for(i = from; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
       performance.put(i, getValue(i));
-      min = Double.min(min, performance.get(i));
-      max = Double.max(max, performance.get(i));
     }
     if(!performance.containsKey(to)) {
-      performance.put(to, scaleBetween(getValue(to), min, max));
+      performance.put(i, getValue(i));
     }
 
     return performance;
@@ -218,10 +216,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private double scaleBetween(double x, double min, double max) {
     double minAllowed = 1;
     double maxAllowed = 50;
-    double scaled = (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
 
-    System.out.println(scaled);
-
-    return scaled;
+    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
 }

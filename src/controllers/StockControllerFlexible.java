@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -163,8 +164,16 @@ public class StockControllerFlexible extends AbstractController {
       try {
         menu.printMessage("\nPlease wait while performance report is being generated! This may take some time..\n");
         performance = portfolio.getPortfolioPerformance(from, to);
+
+        //scale performance
+        Double min = Collections.min(performance.values());
+        Double max = Collections.max(performance.values());
+
         for (LocalDate date : performance.keySet()) {
-          System.out.println(date + " " + performance.get(date));
+          double scaled = scaleBetween(performance.get(date), min, max);
+          menu.printMessage(date + ": \t Valuation: "
+                  + String.format("%.2f", performance.get(date)) + "\t\t"
+                  + "*".repeat((int) Math.round(scaled)));
         }
       } catch (IllegalArgumentException e) {
         isValidGap = false;
@@ -182,6 +191,7 @@ public class StockControllerFlexible extends AbstractController {
   protected void handleGetCostBasis(Portfolio portfolio) {
     char ch = menu.getDateChoice();
     LocalDate date;
+    double costBasis;
     boolean isProblematic;
     do {
       isProblematic = false;
@@ -189,12 +199,14 @@ public class StockControllerFlexible extends AbstractController {
         switch (ch) {
           case '1':
             date = LocalDate.now();
-            portfolio.getCostBasis(date);
+            costBasis = portfolio.getCostBasis(date);
+            menu.printMessage("Cost Basis on " + date + " = " + costBasis);
             break;
 
           case '2':
             date = LocalDate.parse(menu.getDateForValue());
-            portfolio.getCostBasis(date);
+            costBasis = portfolio.getCostBasis(date);
+            menu.printMessage("Cost Basis on " + date + " = " + costBasis);
             break;
 
           default:
@@ -224,5 +236,12 @@ public class StockControllerFlexible extends AbstractController {
     } while (!isValidDate);
 
     return date;
+  }
+
+  private double scaleBetween(double x, double min, double max) {
+    double minAllowed = 1;
+    double maxAllowed = 50;
+
+    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
 }
