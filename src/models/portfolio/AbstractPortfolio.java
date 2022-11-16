@@ -130,6 +130,10 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public boolean sell(String ticker, Details details, double commissionFee) {
+    if(commissionFee < 0.0) {
+      throw  new IllegalArgumentException("Commission Fee cannot be negative.");
+    }
+
     if(details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot sell shares on future dates.");
     }

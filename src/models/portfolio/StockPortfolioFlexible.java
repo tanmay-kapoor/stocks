@@ -185,7 +185,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private double getTxnCost(String ticker, Details details, double commissionFee) {
     Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
     double price = shareDetails.get("close");
-    System.out.println(price + "  quantity: " + details.getQuantity() + "     Fee:  " + commissionFee);
+
     return price * details.getQuantity() + commissionFee;
   }
 
