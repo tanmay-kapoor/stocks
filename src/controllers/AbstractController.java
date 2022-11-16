@@ -187,7 +187,6 @@ abstract class AbstractController implements SpecificController {
       shouldContinue = true;
 
       String filePath = menu.getFilePath();
-      System.out.println(filePath);
       try {
         Paths.get(filePath);
         File file = new File(filePath);
@@ -488,7 +487,6 @@ abstract class AbstractController implements SpecificController {
       }
       while (!shouldExit);
     } catch (RuntimeException e) {
-      System.out.println("no price found error");
       menu.printMessage("\n" + e.getMessage());
     }
   }
@@ -559,7 +557,6 @@ abstract class AbstractController implements SpecificController {
     csvWriter.close();
 
     String createdFilePath = creationPath + name + ".csv";
-    System.out.println(createdFilePath);
 
     return new File(createdFilePath);
   }

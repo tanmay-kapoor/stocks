@@ -75,7 +75,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       if (d.getPurchaseDate().compareTo(sellDate) < 0) {
         sharesAvailable = d.getQuantity();
       } else {
-        if (sharesAvailable < 0) {
+        if (d.getPurchaseDate().compareTo(sellDate) == 0) {
+          sharesAvailable = d.getQuantity();
+        }
+
+        if (sellQty > sharesAvailable) {
           throw new IllegalArgumentException("You cannot sell more stock than available. "
                   + "Current quantity: " + sharesAvailable);
         }
@@ -84,13 +88,13 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
           sharesBoughtOnSellDay = true;
         }
         d.setQuantity(d.getQuantity() - sellQty);
+        System.out.println(d.getPurchaseDate() + "  " + d.getQuantity());
       }
     }
 
     //doing this so that we can store interim changes in share quantity
     if (!sharesBoughtOnSellDay) {
-      detailsSet.add(new Details(sharesAvailable - details.getQuantity(),
-              details.getPurchaseDate()));
+      detailsSet.add(new Details(sharesAvailable - sellQty, sellDate));
     }
 
     log.setDetailsSet(detailsSet);
@@ -109,16 +113,15 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     double costBasisTillNow = 0;
     for (LocalDate date : this.costBasisHistory.keySet()) {
-      System.out.println("Date: " + date);
+
       if (details.getPurchaseDate().compareTo(date) >= 0) {
-        System.out.println("Date entered is future.");
         costBasisTillNow = costBasisHistory.get(date);
       } else {
         //adding txn cost to all the future dates
         costBasisHistory.put(date, costBasisHistory.get(date) + txnCost);
       }
     }
-    System.out.println("Cost basis till now: " + costBasisTillNow);
+
     costBasisHistory.put(details.getPurchaseDate(), costBasisTillNow + txnCost);
     saveCostBasisLog();
   }
@@ -182,7 +185,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private double getTxnCost(String ticker, Details details, double commissionFee) {
     Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
     double price = shareDetails.get("close");
-    System.out.println(price);
     return price * details.getQuantity() + commissionFee;
   }
 
@@ -207,10 +209,4 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     return performance;
   }
 
-  private double scaleBetween(double x, double min, double max) {
-    double minAllowed = 1;
-    double maxAllowed = 50;
-
-    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
-  }
 }

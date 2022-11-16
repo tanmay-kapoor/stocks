@@ -163,64 +163,65 @@ public class StockControllerFlexible extends AbstractController {
 
     do {
       from = getDate("Choose a start date");
-      to = getDate("Choose an end date (Should be at least 5 days ahead of the start date)");
+      to = getDate("Choose an end date");
       long days = ChronoUnit.DAYS.between(from, to);
 
       isValidGap = true;
 
-      if (to.compareTo(LocalDate.now()) > 0) {
+      if (to.compareTo(from) < 0) {
+        menu.printMessage("Please choose a date later than start date.");
+        isValidGap = false;
+      }
+      else if (to.compareTo(LocalDate.now()) > 0) {
         menu.printMessage("You cannot choose a future date. Please choose today's or a date "
                 + "from the past.");
         isValidGap = false;
-      } else if (days < 5) {
-        menu.printMessage("Please choose a dates with atleast 5 days between them.");
-        isValidGap = false;
-      } else {
-        try {
-          menu.printMessage("\nPlease wait while performance report is being generated! "
-                  + "This may take some time..\n");
-          performance = portfolio.getPortfolioPerformance(from, to);
+      }
+      else {
 
-          //scale performance
-          Double min = Collections.min(performance.values());
-          Double max = Collections.max(performance.values());
+        menu.printMessage("\nPlease wait while performance report is being generated! "
+                + "This may take some time..\n");
+        performance = portfolio.getPortfolioPerformance(from, to);
 
-          int count = 0;
-          double prevVal = 0.00;
-          int prevStars = 0;
-          double valueDiffSum = 0;
+        //scale performance
+        Double min = Collections.min(performance.values());
+        Double max = Collections.max(performance.values());
 
-          menu.printMessage("Date\t\t\t\tPortfolio Valuation\t\t");
+        int count = 0;
+        double prevVal = 0.00;
+        int prevStars = 0;
+        double valueDiffSum = 0;
 
-          for (LocalDate date : performance.keySet()) {
-            double valueOnDate = performance.get(date);
-            int stars = (int) round(scaleBetween(valueOnDate, min, max));
-            if (prevStars != 0) {
-              int starDiff = abs(stars - prevStars);
-              if (starDiff != 0) {
+        menu.printMessage("Date\t\t\t\tPortfolio Valuation\t\t");
+
+        for (LocalDate date : performance.keySet()) {
+          double valueOnDate = performance.get(date);
+          int scaled = (int) round(scaleBetween(valueOnDate, min, max));
+          int stars = scaled == 0 ? 1 : scaled;
+//          System.out.println(stars);
+          if (prevStars != 0) {
+            int starDiff = abs(stars - prevStars);
+            if (starDiff != 0) {
 //              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
-                double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
-                valueDiffSum += avg_star_val;
+              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
+              valueDiffSum += avg_star_val;
 //              count += stars;
-                count++;
-              }
+              count++;
             }
-
-            prevVal = valueOnDate;
-            prevStars = stars;
-
-            menu.printMessage(date + "\t\t\t\t"
-                    + String.format("%.2f", performance.get(date)) + "\t\t\t\t\t\t"
-                    + "*".repeat(stars));
-
           }
 
-          menu.printMessage("\nScale: * ~ " + String.format("%.2f", valueDiffSum / count)
-                  + " relative to the base value of " + min + "\n");
-        } catch (IllegalArgumentException e) {
-          isValidGap = false;
-          menu.printMessage(e.getMessage());
+          prevVal = valueOnDate;
+          prevStars = stars;
+
+          menu.printMessage(date + "\t\t\t\t"
+                  + String.format("%.2f", performance.get(date)) + "\t\t\t\t\t\t"
+                  + "*".repeat(stars));
+
         }
+        Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
+        menu.printMessage("\nScale: * ~ " + String.format("%.2f", scale_val)
+                + " relative to the base value of " + min + "\n");
+
       }
     } while (!isValidGap);
   }
