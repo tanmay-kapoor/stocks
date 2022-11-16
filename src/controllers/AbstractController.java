@@ -49,10 +49,6 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract LocalDate getPurchaseDate();
 
-  protected abstract void handleBuySellOption();
-
-  protected abstract void handleGetPortfolioPerformanceOption();
-
   protected abstract char getLastOption();
 
   protected abstract void handleBuySellInPortfolio(Portfolio portfolio);
@@ -61,9 +57,11 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract double getCommissionFee();
 
-  protected abstract void handleGetCostBasisOption();
-
   protected abstract void handleGetCostBasis(Portfolio portfolio);
+
+  protected abstract void filterBasedOnFunction(Function function);
+
+  protected abstract void handleMenuOptions(Portfolio portfolio, Function function);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -107,23 +105,23 @@ abstract class AbstractController implements SpecificController {
           break;
 
         case '2':
-          handleExistingPortfoliosOption();
+          filterBasedOnFunction(Function.Composition);
           break;
 
         case '3':
-          handlePortfolioValueOption();
+          filterBasedOnFunction(Function.GetValue);
           break;
 
         case '4':
-          handleBuySellOption();
+          filterBasedOnFunction(Function.BuySell);
           break;
 
         case '5':
-          handleGetPortfolioPerformanceOption();
+          filterBasedOnFunction(Function.SeePerformance);
           break;
 
         case '6':
-          handleGetCostBasisOption();
+          filterBasedOnFunction(Function.CostBasis);
           break;
 
         default:
@@ -197,6 +195,7 @@ abstract class AbstractController implements SpecificController {
         } else {
           //can use split here
           String portfolioName = fileName.substring(0, dotIndex);
+
           //last index already stored in variable
           String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
           if (!extension.equals("csv")) {
@@ -223,78 +222,53 @@ abstract class AbstractController implements SpecificController {
     while (shouldContinue);
   }
 
-  private void handleExistingPortfoliosOption() {
-    commonStuff(Function.Composition);
-  }
-
-  private void handlePortfolioValueOption() {
-    commonStuff(Function.GetValue);
-  }
-
   protected void commonStuff(Function function) {
     if (allPortfolios.size() == 0) {
       menu.printMessage("\nNo existing portfolios.");
     } else {
-      StringBuilder portfolioNames = new StringBuilder("\nAll existing portfolios :");
-      for (String existingPortfolio : allPortfolios) {
-        portfolioNames.append("\n").append(existingPortfolio);
-      }
-      menu.printMessage(portfolioNames.toString());
-      String name = menu.getPortfolioName();
-
-      Portfolio portfolio = null;
-      if (allPortfolioObjects.containsKey(name)
-              || allPortfolioObjects.containsKey(name.toLowerCase())
-              || allPortfolioObjects.containsKey(name.toUpperCase())) {
-        portfolio = allPortfolioObjects.get(name);
-      } else {
-        if (allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
-          try {
-            String logPath = this.path + "logs/";
-            String costBasisPath = this.path + "costbasis/";
-            portfolio = createPortfolioFromCsv(name,
-                    new File(String.format("%s%s.csv", this.path, name)),
-                    new File(String.format("%s%s.csv", logPath, name)),
-                    new File(String.format("%s%s.csv", costBasisPath, name)));
-            allPortfolioObjects.put(name, portfolio);
-          } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-          }
-        }
-      }
-
+      Portfolio portfolio = findPortfolio();
       if (portfolio != null) {
-        switch (function) {
-          case Composition:
-            handleGetPortfolioComposition(portfolio);
-            break;
-
-          case GetValue:
-            handleGetPortfolioValue(portfolio);
-            break;
-
-          case BuySell:
-            handleBuySellInPortfolio(portfolio);
-            break;
-
-          case SeePerformance:
-            handleGetPortfolioPerformance(portfolio);
-            break;
-
-          case CostBasis:
-            handleGetCostBasis(portfolio);
-            break;
-
-          default:
-            throw new IllegalArgumentException("Illegal value");
-        }
-      } else {
-        menu.printMessage(String.format("\n\"%s\" named portfolio does not exist.", name));
+        handleMenuOptions(portfolio, function);
       }
     }
   }
 
-  private void handleGetPortfolioComposition(Portfolio portfolio) {
+  protected Portfolio findPortfolio() {
+    StringBuilder portfolioNames = new StringBuilder("\nAll existing portfolios :");
+    for (String existingPortfolio : allPortfolios) {
+      portfolioNames.append("\n").append(existingPortfolio);
+    }
+    menu.printMessage(portfolioNames.toString());
+    String name = menu.getPortfolioName();
+
+    Portfolio portfolio = null;
+    if (allPortfolioObjects.containsKey(name)
+            || allPortfolioObjects.containsKey(name.toLowerCase())
+            || allPortfolioObjects.containsKey(name.toUpperCase())) {
+      portfolio = allPortfolioObjects.get(name);
+    } else {
+      if (allPortfolios.stream().anyMatch(name::equalsIgnoreCase)) {
+        try {
+          String logPath = this.path + "logs/";
+          String costBasisPath = this.path + "costbasis/";
+          portfolio = createPortfolioFromCsv(name,
+                  new File(String.format("%s%s.csv", this.path, name)),
+                  new File(String.format("%s%s.csv", logPath, name)),
+                  new File(String.format("%s%s.csv", costBasisPath, name)));
+          allPortfolioObjects.put(name, portfolio);
+        } catch (FileNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+
+    if (portfolio == null) {
+      menu.printMessage(String.format("\n\"%s\" named portfolio does not exist.", name));
+    }
+    return portfolio;
+  }
+
+  protected void handleGetPortfolioComposition(Portfolio portfolio) {
     char choice = menu.getPortfolioCompositionOption();
     switch (choice) {
       case '1':
@@ -310,7 +284,7 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
-  private void handleGetPortfolioValue(Portfolio portfolio) {
+  protected void handleGetPortfolioValue(Portfolio portfolio) {
     boolean shouldContinue;
     do {
       shouldContinue = false;
@@ -536,5 +510,4 @@ abstract class AbstractController implements SpecificController {
 
     return new File(createdFilePath);
   }
-
 }

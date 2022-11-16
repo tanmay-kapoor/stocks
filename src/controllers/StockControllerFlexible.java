@@ -49,11 +49,6 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   @Override
-  protected void handleBuySellOption() {
-    commonStuff(Function.BuySell);
-  }
-
-  @Override
   protected void handleBuySellInPortfolio(Portfolio portfolio) {
     Map<String, Log> portfolioComposition = portfolio.getComposition();
 
@@ -150,11 +145,6 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   @Override
-  protected void handleGetPortfolioPerformanceOption() {
-    commonStuff(Function.SeePerformance);
-  }
-
-  @Override
   protected void handleGetPortfolioPerformance(Portfolio portfolio) {
     LocalDate from;
     LocalDate to;
@@ -224,11 +214,6 @@ public class StockControllerFlexible extends AbstractController {
 
       }
     } while (!isValidGap);
-  }
-
-  @Override
-  protected void handleGetCostBasisOption() {
-    commonStuff(Function.CostBasis);
   }
 
   @Override
@@ -303,5 +288,38 @@ public class StockControllerFlexible extends AbstractController {
 
     LocalDate purchaseDate = getDate("");
     return new Details(quantity, purchaseDate);
+  }
+
+  @Override
+  protected void filterBasedOnFunction(Function function) {
+    commonStuff(function);
+  }
+
+  @Override
+  protected void handleMenuOptions(Portfolio portfolio, Function function) {
+    switch(function) {
+      case Composition:
+        handleGetPortfolioComposition(portfolio);
+        break;
+
+      case GetValue:
+        handleGetPortfolioValue(portfolio);
+        break;
+
+      case BuySell:
+        handleBuySellInPortfolio(portfolio);
+        break;
+
+      case SeePerformance:
+        handleGetPortfolioPerformance(portfolio);
+        break;
+
+      case CostBasis:
+        handleGetCostBasis(portfolio);
+        break;
+
+      default:
+        throw new IllegalArgumentException("Illegal value");
+    }
   }
 }

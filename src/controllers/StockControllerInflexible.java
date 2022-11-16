@@ -55,11 +55,6 @@ public class StockControllerInflexible extends AbstractController {
   }
 
   @Override
-  protected void handleBuySellOption() {
-    return;
-  }
-
-  @Override
   protected void handleBuySellInPortfolio(Portfolio portfolio) {
     return;
   }
@@ -70,22 +65,41 @@ public class StockControllerInflexible extends AbstractController {
   }
 
   @Override
-  protected void handleGetPortfolioPerformanceOption() {
-    return;
-  }
-
-  @Override
   protected void handleGetPortfolioPerformance(Portfolio portfolio) {
-    return;
-  }
-
-  @Override
-  protected void handleGetCostBasisOption() {
     return;
   }
 
   @Override
   protected void handleGetCostBasis(Portfolio portfolio) {
     return;
+  }
+
+  @Override
+  protected void filterBasedOnFunction(Function function) {
+    switch (function) {
+      case Composition:
+      case GetValue:
+        commonStuff(function);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  protected void handleMenuOptions(Portfolio portfolio, Function function) {
+    switch (function) {
+      case Composition:
+        handleGetPortfolioComposition(portfolio);
+        break;
+
+      case GetValue:
+        handleGetPortfolioValue(portfolio);
+        break;
+
+      default:
+        throw new IllegalArgumentException("Illegal Value");
+    }
   }
 }
