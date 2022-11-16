@@ -64,6 +64,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     check2(ticker, quantity, purchaseDate, commission, detailsSet, expected);
   }
 
+
   @Test
   public void getValueSpecificDate() {
     portfolio.buy("META", new Details(22, LocalDate.parse("2022-10-10")), 10);
@@ -113,7 +114,8 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
   protected void deleteLogAndCostBasisIfRequired() {
     File logFile = new File(this.directory + "logs/" + this.portfolioName + ".csv");
-    File costBasisFile = new File(this.directory + "costbasis/" + this.portfolioName + ".csv");
+    File costBasisFile = new File(this.directory + "costbasis/"
+            + this.portfolioName + ".csv");
 
     try {
       Scanner csvReader = new Scanner(logFile);
@@ -129,14 +131,15 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
         csvReader.nextLine();
       }
       if (!costBasisFile.delete()) {
-        fail("Could not delete costbasis csv but should be able to.");
+        fail("Could not delete cost basis csv but should be able to.");
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void check2(String ticker, double quantity, LocalDate purchaseDate, double commission, Set<Details> detailsSet, Map<String, Log> expected) {
+  private void check2(String ticker, double quantity, LocalDate purchaseDate, double commission,
+                      Set<Details> detailsSet, Map<String, Log> expected) {
     Details details = new Details(quantity, purchaseDate);
     portfolio.buy(ticker, details, commission);
     Map<String, Log> composition = portfolio.getComposition();

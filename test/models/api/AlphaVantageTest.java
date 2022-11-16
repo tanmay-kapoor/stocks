@@ -89,4 +89,25 @@ public class AlphaVantageTest {
       }
     }
   }
+
+  @Test
+  public void getShareDetailsFuture() {
+    try {
+      api.getShareDetails("AApL",
+              LocalDate.parse("2023-10-10"));
+      fail("Should have failed with future date but did not");
+    } catch (IllegalArgumentException e1) {
+      try {
+        api.getShareDetails("MSFT",
+                LocalDate.parse("3022-05-19"));
+        fail("Should have failed with future date but did not");
+      } catch (RuntimeException e2) {
+        try {
+          api.getShareDetails("META", LocalDate.parse("2900-01-01"));
+        } catch (IllegalArgumentException e) {
+          // passes
+        }
+      }
+    }
+  }
 }

@@ -39,7 +39,8 @@
 
 ## Features specific to Flexible Portfolio
 
-- User can buy stocks (provided that their data is accessible by the AlphaVantage API) on any date as provided by the user. 
+- User can buy stocks (provided that their data is accessible by the AlphaVantage API) on any date 
+as provided by the user. We do not allow to buy shares on any future dates.
 
 
 - Sell any stocks that is present in the portfolio. There are however, some constrains while

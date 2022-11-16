@@ -77,9 +77,27 @@ public interface Portfolio {
    */
   boolean savePortfolio();
 
+  /**
+   * Gives a map that states the valuation of the portfolio across a range of dates to
+   * understand the variation of the value through time.
+   *
+   * @param from start date of performance.
+   * @param to   end date of the performance.
+   * @return map of dates and the corresponding valuations of the portfolio.
+   */
   Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to);
 
+  /**
+   * A method to get the cost basis till current date.
+   *
+   * @return cost basis of the portfolio.
+   */
   double getCostBasis();
 
+  /**
+   * A method to get the cost basis till requested date.
+   *
+   * @return cost basis of the portfolio.
+   */
   double getCostBasis(LocalDate date);
 }

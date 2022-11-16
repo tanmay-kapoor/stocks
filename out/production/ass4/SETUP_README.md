@@ -35,4 +35,4 @@ Follow the steps mentioned below to add 3 stocks to the portfolio.
 
 Follow the steps mentioned below to query the portfolio's value and cost basis on 2 different dates.
 
-1. 
+1. Check the valuation of the portfolio by selecting 
