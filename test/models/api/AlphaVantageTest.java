@@ -51,6 +51,25 @@ public class AlphaVantageTest {
   }
 
   @Test
+  public void testGetShareDetailsDateAbsent() {
+    Map<String, Double> output = api.getShareDetails("meta",
+            LocalDate.parse("2021-11-07"));
+    assertNotEquals(null, output);
+    Map<String, Double> expected = api.getShareDetails("meta",
+            LocalDate.parse("2021-11-05"));
+
+    output = api.getShareDetails("meta",
+            LocalDate.parse("2021-11-06"));
+    assertNotEquals(null, output);
+    expected = api.getShareDetails("meta",
+            LocalDate.parse("2021-11-05"));
+
+    for (String key : expected.keySet()) {
+      assertEquals(expected.get(key), output.get(key));
+    }
+  }
+
+  @Test
   public void getShareDetailsInvalid() {
     try {
       api.getShareDetails("ajbs",

@@ -188,9 +188,6 @@ abstract class AbstractPortfolio implements Portfolio {
       if (quantity != 0.0) {
         try {
           Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-          if(tickerSymbol.equals("META") && date.equals(LocalDate.parse("2021-11-07"))) {
-            System.out.println(shareDetails);
-          }
           totalValue += (shareDetails.get("close") * quantity);
         } catch (IllegalArgumentException e) {
           totalValue += 0;
