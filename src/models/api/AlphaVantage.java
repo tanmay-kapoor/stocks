@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 /**
  * An API by Alpha Vantage that is used to get necessary data points about stocks which are
  * registered on the NASDAQ. It is primarily used to fetch stock's OHLC and its traded
@@ -16,14 +18,14 @@ import java.util.Scanner;
  */
 public class AlphaVantage implements ShareApi {
   private final String apiKey;
-//  private final Map<String, Map<LocalDate, Map<String, Double>>> tickerDetails;
+  private final Map<String, Map<LocalDate, Map<String, Double>>> tickerDetails;
 
   /**
    * The API key that is going to be used by the API.
    */
   public AlphaVantage() {
     this.apiKey = "XXT841KPRC9FYXD1";
-//    this.tickerDetails = new HashMap<>();
+    this.tickerDetails = new HashMap<>();
   }
 
   @Override
@@ -33,11 +35,11 @@ public class AlphaVantage implements ShareApi {
       throw new IllegalArgumentException("Cannot get value for a future date!");
     }
 
-//    if (tickerDetails.containsKey(tickerSymbol)) {
-//      if (tickerDetails.get(tickerSymbol).containsKey(dateAsked)) {
-//        return tickerDetails.get(tickerSymbol).get(dateAsked);
-//      }
-//    }
+    if (tickerDetails.containsKey(tickerSymbol)) {
+      if (tickerDetails.get(tickerSymbol).containsKey(dateAsked)) {
+        return tickerDetails.get(tickerSymbol).get(dateAsked);
+      }
+    }
 
     URL url;
 
@@ -73,49 +75,51 @@ public class AlphaVantage implements ShareApi {
       keys = lines[0].split(",");
 
       boolean found = false;
-      for (int i = 0; i < lines.length; i++) {
+      String prevLine = null;
+      for (int i = 1; i < lines.length; i++) {
         String line = lines[i];
         String[] vals = line.split(",");
-        if (!vals[0].equals("timestamp")) {
-          record = line;
-          LocalDate rowDate = LocalDate.parse(vals[0]);
-//          if (tickerDetails.containsKey(tickerSymbol) && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
-//            continue;
-//          }
-//
-//          Map<String, Double> values = new HashMap<>();
-//          assignValues(vals, values);
-//          Map<LocalDate, Map<String, Double>> allDates;
-//          if (tickerDetails.containsKey(tickerSymbol)) {
-//            allDates = tickerDetails.get(tickerSymbol);
-//          } else {
-//            allDates = new HashMap<>();
-//          }
-//          allDates.put(rowDate, values);
-//          tickerDetails.put(tickerSymbol, allDates);
-
-          int diff = rowDate.compareTo(dateAsked);
-
-//          if (diff < 0) {
-//            int j = i + 1;
-//            rowDate = rowDate.plusDays(1);
-//            while (rowDate.compareTo(dateAsked) <= 0) {
-//              line = lines[j];
-//              vals = line.split(",");
-//              values = new HashMap<>();
-//              assignValues(vals, values);
-//              allDates = tickerDetails.get(tickerSymbol);
-//              allDates.put(rowDate, values);
-//              tickerDetails.put(tickerSymbol, allDates);
-//              rowDate = rowDate.plusDays(1);
-//            }
-//          }
-
-          if (diff <= 0) {
+        record = line;
+        LocalDate rowDate = LocalDate.parse(vals[0]);
+        if (tickerDetails.containsKey(tickerSymbol) && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
+          if (i == 1 && rowDate.compareTo(dateAsked) < 0) {
             found = true;
             break;
           }
+          continue;
         }
+
+        Map<String, Double> values = new HashMap<>();
+        assignValues(vals, values);
+        Map<LocalDate, Map<String, Double>> allDates;
+        if (tickerDetails.containsKey(tickerSymbol)) {
+          allDates = tickerDetails.get(tickerSymbol);
+        } else {
+          allDates = new HashMap<>();
+        }
+        allDates.put(rowDate, values);
+        tickerDetails.put(tickerSymbol, allDates);
+
+        int diff = rowDate.compareTo(dateAsked);
+
+        if (prevLine != null) {
+          String[] v = prevLine.split(",");
+          LocalDate prevDate = LocalDate.parse(v[0]);
+          if (DAYS.between(rowDate, prevDate) > 1) {
+            LocalDate curr = rowDate.plusDays(1);
+            while (!curr.equals(prevDate)) {
+              allDates.put(curr, values);
+              curr = curr.plusDays(1);
+            }
+            tickerDetails.put(tickerSymbol, allDates);
+          }
+        }
+
+        if (diff <= 0) {
+          found = true;
+          break;
+        }
+        prevLine = line;
       }
       if (!found) {
         throw new IllegalArgumentException("No price data found for " + dateAsked);
@@ -127,10 +131,6 @@ public class AlphaVantage implements ShareApi {
       for (int i = 1; i < details.length; i++) {
         shareDetails.put(keys[i], Double.parseDouble(details[i]));
       }
-
-//      if(tickerSymbol.equals("META") && dateAsked.equals(LocalDate.parse("2021-11-07"))) {
-//        System.out.println(details[0]);
-//      }
 
       return shareDetails;
     } catch (IOException e) {
