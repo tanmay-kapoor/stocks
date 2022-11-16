@@ -244,4 +244,16 @@ public class StockControllerFlexible extends AbstractController {
 
     return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
+
+  private Details getDetails() {
+    boolean isValid;
+    double quantity;
+    do {
+      quantity = menu.getQuantity();
+      isValid = this.validateQuantity(quantity);
+    } while (!isValid);
+
+    LocalDate purchaseDate = getDate("");
+    return new Details(quantity, purchaseDate);
+  }
 }
