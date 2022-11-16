@@ -129,6 +129,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
   /**
    * Gives the most basis of the portfolio till the requested date.
+   *
    * @return value of cost basis till present date.
    */
   @Override

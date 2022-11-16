@@ -14,10 +14,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import models.Details;
@@ -42,6 +40,7 @@ abstract class AbstractController implements SpecificController {
   protected abstract Portfolio createPortfolio(String portfolioName,
                                                Map<String, Log> stocks,
                                                Map<LocalDate, Double> costBasisHistory);
+
   protected abstract Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
           throws FileNotFoundException;
 
@@ -51,15 +50,19 @@ abstract class AbstractController implements SpecificController {
   protected abstract LocalDate getPurchaseDate();
 
   protected abstract void handleBuySellOption();
+
   protected abstract void handleGetPortfolioPerformanceOption();
 
   protected abstract char getLastOption();
 
   protected abstract void handleBuySellInPortfolio(Portfolio portfolio);
+
   protected abstract void handleGetPortfolioPerformance(Portfolio portfolio);
 
   protected abstract double getCommissionFee();
+
   protected abstract void handleGetCostBasisOption();
+
   protected abstract void handleGetCostBasis(Portfolio portfolio);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
@@ -369,7 +372,7 @@ abstract class AbstractController implements SpecificController {
 
   private String getPortfolioContents(Portfolio portfolio) {
     Map<String, Log> portfolioContent = portfolio.getComposition(getPurchaseDate());
-    StringBuilder composition = new StringBuilder("\nshare\t\tquantity\t\tpurchaseDate");
+    StringBuilder composition = new StringBuilder("\nshare\t\tquantity");
 
     for (String ticker : portfolioContent.keySet()) {
       Log log = portfolioContent.get(ticker);
@@ -383,9 +386,7 @@ abstract class AbstractController implements SpecificController {
               .append("\n")
               .append(ticker)
               .append("\t\t")
-              .append(quantity)
-              .append("\t\t\t")
-              .append("IDK WHAT DATE TO PUT HERE!!");
+              .append(quantity);
     }
     return composition.toString();
   }
@@ -491,7 +492,7 @@ abstract class AbstractController implements SpecificController {
 
   private Portfolio createPortfolioFromCsv(String pName, File file) throws IOException {
     //creating log file
-    File logFile = createCsvFile(pName, FileType.LogFile );
+    File logFile = createCsvFile(pName, FileType.LogFile);
 
     //creating costBasis file
     File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
@@ -508,7 +509,6 @@ abstract class AbstractController implements SpecificController {
 
     return createPortfolio(pName, stocks, costBasisHistory);
   }
-
 
 
   private Map<String, Log> readStocksFromCsv(File file, Map<String, LocalDate> lastSoldDateList)

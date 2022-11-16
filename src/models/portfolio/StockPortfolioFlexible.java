@@ -56,7 +56,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     if (log.getLastSoldDate() != null
             && log.getLastSoldDate().compareTo(details.getPurchaseDate()) > 0) {
-      throw new IllegalArgumentException ("Please choose a time later than or equal to "
+      throw new IllegalArgumentException("Please choose a time later than or equal to "
               + log.getLastSoldDate());
     }
 
@@ -190,21 +190,17 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
                                                                        LocalDate to) {
     long days = ChronoUnit.DAYS.between(from, to);
 
-    if(days < 5) {
-      throw new IllegalArgumentException("Please enter a longer timespan with at least 5 days.");
-    }
-
     Map<LocalDate, Double> performance = new TreeMap<>();
     int n = 9;
-    long intervals = days < n ? 1 : (days / (n-1));
+    long intervals = days < n ? 1 : (days / (n - 1));
 
     LocalDate i;
     int total = 1;
 
-    for(i = from; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
+    for (i = from; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
       performance.put(i, getValue(i));
     }
-    if(!performance.containsKey(to)) {
+    if (!performance.containsKey(to)) {
       performance.put(to, getValue(to));
     }
 
