@@ -109,6 +109,12 @@ public class StockControllerInflexibleTest {
     }
 
     @Override
+    public double getCostBasis() {
+      log.append("Inside getCostBasis()\n");
+      return 2.2;
+    }
+
+    @Override
     public double getCostBasis(LocalDate date) {
       log.append("Inside getCostBasis(date) Date : ").append(date).append("\n");
       return 1.1;

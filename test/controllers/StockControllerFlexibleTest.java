@@ -109,6 +109,12 @@ public class StockControllerFlexibleTest {
     }
 
     @Override
+    public double getCostBasis() {
+      log.append("Inside getCostBasis()\n");
+      return 2.2;
+    }
+
+    @Override
     public double getCostBasis(LocalDate date) {
       log.append("Inside getCostBasis(date) Date : ").append(date).append("\n");
       return 1.1;
@@ -243,10 +249,10 @@ public class StockControllerFlexibleTest {
     protected void handleGetCostBasis(Portfolio portfolio) {
       log.append("Inside handleGetCostBasis()\n");
       char ch = menu.getDateChoice();
-      switch(ch) {
+      switch (ch) {
         case '1':
           log.append("Today chosen\n");
-          portfolio.getCostBasis(LocalDate.now());
+          portfolio.getCostBasis();
           break;
 
         case '2':
@@ -304,12 +310,11 @@ public class StockControllerFlexibleTest {
 
   @Test
   public void testStart() {
-    generateStream("1\n1\nidk\n1\nAAPL\n38\nx\nx\n");
-    String expected = "Portfolio name : idk\n" +
-            "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+    generateStream("1\n1\nfff\n1\nAAPL\n38\nx\nx\n");
+    String expected = "Portfolio name : fff\n" +
+            "Inside get share details AAPL 2022-11-16\n" +
+            "Inside get share details AAPL 2022-11-16\n" +
+            "Inside getCommissionFee()\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -317,7 +322,7 @@ public class StockControllerFlexibleTest {
   @Test
   public void testStart2() {
     try {
-      generateStream("1\n1\nrandom\nx\nx\n");
+      generateStream("1\n1\nidk\nx\nx\n");
       fail("Should throw exception if portfolio already exists");
     } catch (Exception e) {
       // passes
@@ -326,12 +331,11 @@ public class StockControllerFlexibleTest {
 
   @Test
   public void testStart3() {
-    generateStream("1\n1\nrandom\nxyz\n1\nAAPL\n22\nx\nx\n");
+    generateStream("1\n1\nidk\nxyz\n1\nAAPL\n22\nx\nx\n");
     String expected = "Portfolio name : xyz\n" +
-            "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside get share details AAPL 2022-11-16\n" +
+            "Inside get share details AAPL 2022-11-16\n" +
+            "Inside getCommissionFee()\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -342,16 +346,15 @@ public class StockControllerFlexibleTest {
     String expected = "Portfolio name : xx\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside getCommissionFee()\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetComposition() {
-    generateStream("2\nrandom\n1\nx\n");
-    String expected = "Portfolio name mult : random\n" +
+    generateStream("2\nidk\n1\nx\nx\n");
+    String expected = "Portfolio name mult : idk\n" +
             "Inside getComposition(date) Received : " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
   }
@@ -364,16 +367,16 @@ public class StockControllerFlexibleTest {
 
   @Test
   public void testGetComposition3() {
-    generateStream("2\nrandom\n2\nx\n");
-    String expected = "Portfolio name mult : random\n" +
+    generateStream("2\nidk\n2\nx\n");
+    String expected = "Portfolio name mult : idk\n" +
             "Inside getComposition(date) Received : " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetValue() {
-    generateStream("3\nrandom\n2\n2022-10-10\nq\n");
-    String expected = "Portfolio name mult : random\n"
+    generateStream("3\nidk\n2\n2022-10-10\nq\n");
+    String expected = "Portfolio name mult : idk\n"
             + "Inside getValue(date) Received : 2022-10-10\n";
     assertEquals(expected, log.toString());
   }
@@ -386,16 +389,16 @@ public class StockControllerFlexibleTest {
 
   @Test
   public void testGetValue3() {
-    generateStream("3\nwfw\n3\nrandom\n2\n2022-10-10\nx\n");
-    String expected = "Portfolio name mult : random\n" +
+    generateStream("3\nwfw\n3\nidk\n2\n2022-10-10\nx\n");
+    String expected = "Portfolio name mult : idk\n" +
             "Inside getValue(date) Received : 2022-10-10\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetValue4() {
-    generateStream("3\nrandom\n1\nx\n");
-    String expected = "Portfolio name mult : random\n" +
+    generateStream("3\nidk\n1\nx\n");
+    String expected = "Portfolio name mult : idk\n" +
             "Inside getValue\n";
     assertEquals(expected, log.toString());
   }
@@ -408,7 +411,7 @@ public class StockControllerFlexibleTest {
             "Inside handleBuySellInPortfolio()\n" +
             "Inside getComposition()\n" +
             "Inside buy\n" +
-            "Inside get share details AAPL 2022-11-15\n" +
+            "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL 2020-10-10\n" +
             "Inside getCommissionFee()\n" +
             "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 20.0 Purchase Date : 2020-10-10 Commission Fee : 20.6\n" +
@@ -435,7 +438,7 @@ public class StockControllerFlexibleTest {
             "Portfolio name mult : idk\n" +
             "Inside handleGetCostBasis()\n" +
             "Today chosen\n" +
-            "Inside getCostBasis(date) Date : 2022-11-15\n";
+            "Inside getCostBasis()\n";
     assertEquals(expected, log.toString());
 
     generateStream("6\nidk\n2\n2022-01-01\nx\n");
