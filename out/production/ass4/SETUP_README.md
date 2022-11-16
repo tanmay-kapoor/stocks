@@ -20,7 +20,7 @@ _If you wish to not use the jar file, you can also run the program from the `Pro
 in the `src` folder._
 
 
-### _Initial inputs for the program._
+## _Initial inputs for the program._
 
 Follow the steps mentioned below to add 3 stocks to the portfolio.
 
@@ -33,6 +33,19 @@ Follow the steps mentioned below to add 3 stocks to the portfolio.
 7. Repeat step 5 and 6, but instead of Apple, enter `MSFT` as the stock to purchase. Buy 25 shares on `2022-05-01` with a commission fee of 0.
 
 
-Follow the steps mentioned below to query the portfolio's value and cost basis on 2 different dates.
+Follow the steps mentioned below to query the portfolio's value on 2 different dates.
 
-1. Check the valuation of the portfolio by selecting 
+1. Check the valuation of the portfolio by selecting Option `3` of Flexible portfolio. 
+2. Choose `Today` option to get the portfolio's value as of the current date.
+3. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
+4. Choose the date `2012-04-11`. You should see the value : `SOme value`.
+5. Repeat the same process for custom date and this time, enter `2022-01-01`. YOu should get the value of `Some other value`.
+
+Follow the steps mentioned below to query the portfolio's cost basis on 2 different dates.
+
+1. Check the cost of the portfolio by selecting Option `6` of Flexible portfolio.
+2. Enter the name of the portfolio that you created. 
+3. Choose `Today` option to get the portfolio's cost basis till the current date.
+4. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
+5. Choose the date `Date1`. You should see the cost basis value : `SOme value`.
+6. Repeat the same process for custom date and this time, enter `Date2`. YOu should get the cost basis value of `Some other value`.

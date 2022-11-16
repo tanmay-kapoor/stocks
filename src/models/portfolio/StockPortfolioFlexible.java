@@ -106,7 +106,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   protected void storeCostBasis(String ticker, Details details, double commissionFee, Txn txn) {
     double txnCost = 0;
     if (txn == Sell) {
-      txnCost = details.getQuantity() * commissionFee;
+      txnCost = commissionFee;
     } else if (txn == Buy) {
       txnCost = getTxnCost(ticker, details, commissionFee);
     }

@@ -194,13 +194,48 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
   public void testCostBasis() {
     Details details = new Details(22, LocalDate.parse("2021-01-01"));
     portfolio.buy("META", details, 10);
-    assertEquals(6019.52, portfolio.getCostBasis(), 0);
+
+    details = new Details(66, LocalDate.parse("2021-12-12"));
+    portfolio.buy("GOOG", details, 44.7);
+
+    details = new Details(22, LocalDate.parse("2022-10-10"));
+    portfolio.buy("AAPL", details, 29);
 
     details = new Details(2, LocalDate.parse("2021-05-05"));
     portfolio.sell("META", details, 5.2);
+
+    assertEquals(0, portfolio.getCostBasis(LocalDate.parse("1900-01-01")), 0);
+    assertEquals(0, portfolio.getCostBasis(LocalDate.parse("2000-01-01")), 0);
+    assertEquals(6019.52, portfolio.getCostBasis(LocalDate.parse("2021-01-01")), 0);
+    assertEquals(6019.52, portfolio.getCostBasis(LocalDate.parse("2021-04-04")), 0);
+    assertEquals(6024.72, portfolio.getCostBasis(LocalDate.parse("2021-05-05")), 0);
+    assertEquals(6024.72, portfolio.getCostBasis(LocalDate.parse("2021-11-11")), 0);
+    assertEquals(202320.42, portfolio.getCostBasis(LocalDate.parse("2021-12-12")), 0);
+    assertEquals(202320.42, portfolio.getCostBasis(LocalDate.parse("2022-09-09")), 0);
+    assertEquals(205438.66, portfolio.getCostBasis(LocalDate.parse("2022-10-10")), 0);
+    assertEquals(205438.66, portfolio.getCostBasis(LocalDate.parse("2022-11-11")), 0);
+
+    try {
+      portfolio.sell("META", details, -5.2);
+      fail("Should fail for negative commission but did not");
+    } catch(IllegalArgumentException e) {
+      // passes
+    }
   }
 
-  protected void addValueToDetailsSet (Map<String, Log> expected) {
+  @Test
+  public void testCostBasisInvalid() {
+    Details details = new Details(22, LocalDate.parse("2021-01-01"));
+    portfolio.buy("META", details, 10);
+
+    try {
+      portfolio.getCostBasis(LocalDate.parse("2028-10-10"));
+    } catch(IllegalArgumentException e1) {
+      assertEquals(0, portfolio.getCostBasis(LocalDate.parse("1900-10-10")), 0);
+    }
+  }
+
+  protected void addValueToDetailsSet(Map<String, Log> expected) {
     Map<String, Log> test = portfolio.getComposition();
     Set<Details> detailsSet = newTreeSet();
     detailsSet.add(new Details(50, now));
