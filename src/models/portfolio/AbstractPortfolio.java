@@ -79,6 +79,10 @@ abstract class AbstractPortfolio implements Portfolio {
       throw new IllegalArgumentException("Cannot buy shares on future date.");
     }
 
+    if(details.getQuantity() < 0) {
+      throw  new IllegalArgumentException("Quantity cannot be negative.");
+    }
+
     if(commissionFee < 0.0) {
       throw  new IllegalArgumentException("Commission Fee cannot be negative.");
     }
@@ -130,6 +134,10 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public boolean sell(String ticker, Details details, double commissionFee) {
+    if(details.getQuantity() < 0) {
+      throw  new IllegalArgumentException("Quantity cannot be negative.");
+    }
+
     if(commissionFee < 0.0) {
       throw  new IllegalArgumentException("Commission Fee cannot be negative.");
     }

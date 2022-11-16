@@ -199,10 +199,17 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     LocalDate i;
     int total = 1;
-
+    LocalDate lastDateTillNow = from;
     for (i = from; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
+      lastDateTillNow = i;
       performance.put(i, getValue(i));
     }
+
+    long day_diff = ChronoUnit.DAYS.between(i, to);
+    if(day_diff < intervals) {
+      performance.remove(lastDateTillNow);
+    }
+
     if (!performance.containsKey(to)) {
       performance.put(to, getValue(to));
     }
