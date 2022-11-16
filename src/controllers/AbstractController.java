@@ -347,30 +347,6 @@ abstract class AbstractController implements SpecificController {
     while (shouldContinue);
   }
 
-  protected Details getDetails() {
-    boolean isValid;
-    double quantity;
-    do {
-      quantity = menu.getQuantity();
-      isValid = this.validateQuantity(quantity);
-    }
-    while (!isValid);
-
-    LocalDate purchaseDate;
-    do {
-      isValid = true;
-      purchaseDate = LocalDate.now();
-      try {
-        purchaseDate = LocalDate.parse(menu.getDateForValue());
-      } catch (DateTimeParseException e) {
-        isValid = false;
-        menu.printMessage("Invalid date format\n");
-      }
-    }
-    while (!isValid);
-    return new Details(quantity, purchaseDate);
-  }
-
   private String getPortfolioContents(Portfolio portfolio) {
     Map<String, Log> portfolioContent = portfolio.getComposition(getPurchaseDate());
     StringBuilder composition = new StringBuilder("\nshare\t\tquantity");
@@ -450,8 +426,8 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
-  private boolean validateQuantity(double quantity) {
-    if (quantity < 0 || (quantity - Math.floor(quantity) != 0.0)) {
+  protected boolean validateQuantity(double quantity) {
+    if (quantity - Math.floor(quantity) != 0.0) {
       menu.printMessage("\nNumber of shares must be an integer > 0.\n");
       return false;
     }
