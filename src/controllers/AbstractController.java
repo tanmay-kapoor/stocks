@@ -51,13 +51,7 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract char getLastOption();
 
-  protected abstract void handleBuySellInPortfolio(Portfolio portfolio);
-
-  protected abstract void handleGetPortfolioPerformance(Portfolio portfolio);
-
   protected abstract double getCommissionFee();
-
-  protected abstract void handleGetCostBasis(Portfolio portfolio);
 
   protected abstract void filterBasedOnFunction(Function function);
 
