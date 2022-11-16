@@ -10,6 +10,9 @@ import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Test to check main menu view of the program.
+ */
 public class MainMenuImplTest {
   private ByteArrayOutputStream bytes;
   private PrintStream out;
@@ -20,11 +23,11 @@ public class MainMenuImplTest {
   public void setUp() {
     bytes = new ByteArrayOutputStream();
     out = new PrintStream(bytes);
-    str = "\nWork with:\n" +
-            "1. Flexible Portfolio\n" +
-            "2. Inflexible Portfolio\n" +
-            "Press any other key to exit.\n" +
-            "\nEnter your choice : ";
+    str = "\nWork with:\n"
+            + "1. Flexible Portfolio\n"
+            + "2. Inflexible Portfolio\n"
+            + "Press any other key to exit.\n"
+            + "\nEnter your choice : ";
   }
 
   @Test

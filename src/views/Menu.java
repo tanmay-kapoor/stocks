@@ -34,8 +34,16 @@ public interface Menu {
    */
   char getCreatePortfolioThroughWhichMethod();
 
+  /**
+   * Take the choice that determines the kind of portfolio the user wants to work with.
+   * @return choice of the user.
+   */
   char getAddToPortfolioChoice();
 
+  /**
+   * Take filepath form the user.
+   * @return file path of the csv file.
+   */
   String getFilePath();
 
   /**
@@ -67,7 +75,21 @@ public interface Menu {
    */
   String getDateForValue();
 
+  /**
+   * Choose the type of composition from the user.
+   * @return User's choice.
+   */
   char getPortfolioCompositionOption();
+
+  /**
+   * Choose the type of transaction from the user.
+   * @return user's choice.
+   */
   char getBuySellChoice();
+
+  /**
+   * get commission fee from the broker.
+   * @return brokers fee form the user.
+   */
   double getCommissionFee();
 }

@@ -79,5 +79,7 @@ public interface Portfolio {
 
   Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to);
 
+  double getCostBasis();
+
   double getCostBasis(LocalDate date);
 }

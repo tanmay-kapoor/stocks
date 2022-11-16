@@ -10,8 +10,12 @@ import java.util.TreeSet;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Test class to check the methods implemented in Log class.
+ */
 public class LogTest {
   private Log log;
+
   @Before
   public void setup() {
     LocalDate lastSoldDate = LocalDate.now();

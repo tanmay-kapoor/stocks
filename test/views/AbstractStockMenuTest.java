@@ -16,10 +16,15 @@ abstract class AbstractStockMenuTest {
   private Menu menu;
 
   protected abstract String getMainMenuExpected();
+
   protected abstract String getBuySellChoiceExpected();
+
   protected abstract String getCommissionFeeExpected();
+
   protected abstract Menu createObject(InputStream in, PrintStream out);
+
   protected abstract void getAssertStatementForBuySell(char c);
+
   protected abstract void getAssertStatementForCommission(double c);
 
   @Before

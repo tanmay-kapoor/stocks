@@ -20,7 +20,9 @@ abstract class AbstractMenu implements Menu {
   }
 
   protected abstract void displayManyMenuOptions();
+
   protected abstract char getBuySellChoiceIfApplicable();
+
   protected abstract double getCommissionFeeIfApplicable();
 
   @Override

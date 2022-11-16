@@ -64,7 +64,7 @@ public class AlphaVantageTest {
       } catch (RuntimeException e2) {
         try {
           api.getShareDetails("META", LocalDate.parse("1900-01-01"));
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
           // passes
         }
       }

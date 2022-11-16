@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,9 @@ import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
 import views.Menu;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 public class StockControllerFlexible extends AbstractController {
   protected StockControllerFlexible(Menu menu, ShareApi api, String path) {
@@ -158,26 +162,67 @@ public class StockControllerFlexible extends AbstractController {
     boolean isValidGap;
 
     do {
-      from = getDate("Start Date");
-      to = getDate("End Date (Should be at least 5 days ahead of the start date)");
+      from = getDate("Choose a start date");
+      to = getDate("Choose an end date (Should be at least 5 days ahead of the start date)");
+      long days = ChronoUnit.DAYS.between(from, to);
+
       isValidGap = true;
-      try {
-        menu.printMessage("\nPlease wait while performance report is being generated! This may take some time..\n");
-        performance = portfolio.getPortfolioPerformance(from, to);
 
-        //scale performance
-        Double min = Collections.min(performance.values());
-        Double max = Collections.max(performance.values());
-
-        for (LocalDate date : performance.keySet()) {
-          double scaled = scaleBetween(performance.get(date), min, max);
-          menu.printMessage(date + ": \t Valuation: "
-                  + String.format("%.2f", performance.get(date)) + "\t\t"
-                  + "*".repeat((int) Math.round(scaled)));
-        }
-      } catch (IllegalArgumentException e) {
+      if(to.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("You cannot choose a future date. Please choose today's or a date "
+                + "from the past.");
         isValidGap = false;
-        menu.printMessage(e.getMessage());
+      }
+      else if(days < 5) {
+        menu.printMessage("Please choose a dates with atleast 5 days between them.");
+        isValidGap = false;
+      }
+      else {
+        try {
+          menu.printMessage("\nPlease wait while performance report is being generated! "
+                  + "This may take some time..\n");
+          performance = portfolio.getPortfolioPerformance(from, to);
+
+          //scale performance
+          Double min = Collections.min(performance.values());
+          Double max = Collections.max(performance.values());
+
+          int count = 0;
+          double prevVal = 0.00;
+          int prevStars = 0;
+          double valueDiffSum = 0;
+
+          menu.printMessage("Date\t\t\t\tPortfolio Valuation\t\t");
+
+          for (LocalDate date : performance.keySet()) {
+            double valueOnDate = performance.get(date);
+            int stars = (int) round(scaleBetween(valueOnDate, min, max));
+            if (prevStars != 0) {
+              int starDiff = abs(stars - prevStars);
+              if (starDiff != 0) {
+//              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
+                double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
+                valueDiffSum += avg_star_val;
+//              count += stars;
+                count++;
+              }
+            }
+
+            prevVal = valueOnDate;
+            prevStars = stars;
+
+            menu.printMessage(date + "\t\t\t\t"
+                    + String.format("%.2f", performance.get(date)) + "\t\t\t\t\t\t"
+                    + "*".repeat(stars));
+
+          }
+
+          menu.printMessage("\nScale: * = " + valueDiffSum / count
+                  + " relative to the base value of " + min + "\n");
+        } catch (IllegalArgumentException e) {
+          isValidGap = false;
+          menu.printMessage(e.getMessage());
+        }
       }
     } while (!isValidGap);
   }
@@ -198,9 +243,8 @@ public class StockControllerFlexible extends AbstractController {
       try {
         switch (ch) {
           case '1':
-            date = LocalDate.now();
-            costBasis = portfolio.getCostBasis(date);
-            menu.printMessage("Cost Basis on " + date + " = " + costBasis);
+            costBasis = portfolio.getCostBasis();
+            menu.printMessage("Cost Basis on " + LocalDate.now() + " = " + costBasis);
             break;
 
           case '2':
