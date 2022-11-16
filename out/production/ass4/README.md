@@ -57,10 +57,12 @@ stored in the cost basis of the portfolio if the transaction goes through succes
 - Everytime a transaction (buy/sell) is successfully executed, the cost basis of the portfolio
   is updated for the date of transaction. The updated cost basis is also reflected on the future
   dates since we allow some operation such as buy, and sell in specific cases to be out of 
-  chronological order.
+  chronological order. If user tries to get costBasis for a date when there were no stocks in the portfolio, The requested value would be 0.
+  Requesting cost basis for future dates not allowed by the program.
   
 
-- User can now view the performance of the portfolio between the dates specified by the user.
+- User can now view the performance of the portfolio between the dates specified by the user. 
+  User cannot choose future dates as nor price data would exist for those requests.
 
 
 ## Features specific to Inflexible Portfolio
