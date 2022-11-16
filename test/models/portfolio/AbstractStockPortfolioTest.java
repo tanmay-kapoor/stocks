@@ -39,7 +39,8 @@ abstract class AbstractStockPortfolioTest {
   protected String directory;
   protected ShareApi api;
 
-  protected abstract Portfolio createPortfolio(String portfolioName, String directory, ShareApi api);
+  protected abstract Portfolio createPortfolio(String portfolioName, String directory,
+                                               ShareApi api);
 
   protected abstract void deleteLogAndCostBasisIfRequired();
 
@@ -52,7 +53,8 @@ abstract class AbstractStockPortfolioTest {
     String rootPath = System.getProperty("user.dir");
     String[] temp = rootPath.split("/");
 
-    directory = !temp[temp.length - 1].equals("res") ? rootPath + "/test/models/portfolio/" : "../src/test/models/portfolio/";
+    directory = !temp[temp.length - 1].equals("res") ? rootPath
+            + "/test/models/portfolio/" : "../src/test/models/portfolio/";
     portfolioName = "test";
     now = LocalDate.now();
     api = new AlphaVantage();
@@ -170,6 +172,12 @@ abstract class AbstractStockPortfolioTest {
         }
       }
     }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void buyOnFutureDate() {
+    LocalDate purchaseDate = LocalDate.parse("2027-10-07");
+    portfolio.buy("META", new Details(22, purchaseDate), 10);
   }
 
   @Test

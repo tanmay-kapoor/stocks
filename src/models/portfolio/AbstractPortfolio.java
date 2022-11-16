@@ -75,6 +75,10 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public void buy(String ticker, Details details, double commissionFee) {
+    if(details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("Cannot buy shares on future date.");
+    }
+
     commissionFee = changeCommissionFeeIfApplicable(commissionFee);
     changePurchaseDateIfApplicable(details);
 
@@ -129,23 +133,12 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
 
-  /**
-   * Gives the most basis of the portfolio till the requested date.
-   *
-   * @return value of cost basis till present date.
-   */
   @Override
   public double getCostBasis() {
     return getCostBasis(LocalDate.now());
   }
 
 
-  /**
-   * Gives the most basis of the portfolio till the requested date.
-   *
-   * @param dateReq date requested.
-   * @return value of cost basis.
-   */
   @Override
   public double getCostBasis(LocalDate dateReq) {
     if(dateReq.compareTo(LocalDate.now()) > 0) {
