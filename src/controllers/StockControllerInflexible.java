@@ -55,23 +55,8 @@ public class StockControllerInflexible extends AbstractController {
   }
 
   @Override
-  protected void handleBuySellInPortfolio(Portfolio portfolio) {
-    return;
-  }
-
-  @Override
   protected double getCommissionFee() {
     return 0.0;
-  }
-
-  @Override
-  protected void handleGetPortfolioPerformance(Portfolio portfolio) {
-    return;
-  }
-
-  @Override
-  protected void handleGetCostBasis(Portfolio portfolio) {
-    return;
   }
 
   @Override

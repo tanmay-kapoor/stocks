@@ -48,8 +48,7 @@ public class StockControllerFlexible extends AbstractController {
     return '6';
   }
 
-  @Override
-  protected void handleBuySellInPortfolio(Portfolio portfolio) {
+  private void handleBuySellInPortfolio(Portfolio portfolio) {
     Map<String, Log> portfolioComposition = portfolio.getComposition();
 
     char ch;
@@ -144,8 +143,7 @@ public class StockControllerFlexible extends AbstractController {
     return costBasisHistory;
   }
 
-  @Override
-  protected void handleGetPortfolioPerformance(Portfolio portfolio) {
+  private void handleGetPortfolioPerformance(Portfolio portfolio) {
     LocalDate from;
     LocalDate to;
     Map<LocalDate, Double> performance;
@@ -216,8 +214,7 @@ public class StockControllerFlexible extends AbstractController {
     } while (!isValidGap);
   }
 
-  @Override
-  protected void handleGetCostBasis(Portfolio portfolio) {
+  private void handleGetCostBasis(Portfolio portfolio) {
     char ch = menu.getDateChoice();
     LocalDate date;
     double costBasis;
