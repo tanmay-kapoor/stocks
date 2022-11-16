@@ -187,6 +187,16 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     checkHashMapEquality(expected, shareDetails);
   }
 
+  @Test
+  public void testCostBasis() {
+    Details details = new Details(22, LocalDate.parse("2021-01-01"));
+    portfolio.buy("META", details, 10);
+    assertEquals(6019.52, portfolio.getCostBasis(), 0);
+
+    details = new Details(2, LocalDate.parse("2021-05-05"));
+    portfolio.sell("META", details, 5.2);
+  }
+
   protected void addValueToDetailsSet (Map<String, Log> expected) {
     Map<String, Log> test = portfolio.getComposition();
     Set<Details> detailsSet = newTreeSet();

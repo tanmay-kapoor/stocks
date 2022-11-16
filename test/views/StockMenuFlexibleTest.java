@@ -33,7 +33,7 @@ public class StockMenuFlexibleTest extends AbstractStockMenuTest {
   }
 
   protected String getCommissionFeeExpected() {
-    return "Enter the commission fee you want to charge for this transaction : ";
+    return "Enter the commission fee ($) you want to charge for this transaction : ";
   }
 
   @Override
