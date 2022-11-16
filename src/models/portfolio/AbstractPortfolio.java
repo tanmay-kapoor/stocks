@@ -79,6 +79,10 @@ abstract class AbstractPortfolio implements Portfolio {
       throw new IllegalArgumentException("Cannot buy shares on future date.");
     }
 
+    if(commissionFee < 0.0) {
+      throw  new IllegalArgumentException("Commission Fee cannot be negative.");
+    }
+
     commissionFee = changeCommissionFeeIfApplicable(commissionFee);
     changePurchaseDateIfApplicable(details);
 

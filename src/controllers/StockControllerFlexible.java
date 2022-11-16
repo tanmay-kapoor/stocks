@@ -180,7 +180,7 @@ public class StockControllerFlexible extends AbstractController {
         int prevStars = 0;
         double valueDiffSum = 0;
 
-        menu.printMessage("Date\t\t\t\tPortfolio Valuation\t\t");
+        menu.printMessage("Date\t\t\t\tPortfolio Valuation ($)\t\t\t\t\tRelative Change");
 
         for (LocalDate date : performance.keySet()) {
           double valueOnDate = performance.get(date);
@@ -190,11 +190,11 @@ public class StockControllerFlexible extends AbstractController {
           if (prevStars != 0) {
             int starDiff = abs(stars - prevStars);
             if (starDiff != 0) {
-//              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
-              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
+              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
+//              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
               valueDiffSum += avg_star_val;
-//              count += stars;
-              count++;
+              count += stars;
+//              count++;
             }
           }
 
@@ -207,8 +207,8 @@ public class StockControllerFlexible extends AbstractController {
 
         }
         Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
-        menu.printMessage("\nScale: * ~ " + String.format("%.2f", scale_val)
-                + " relative to the base value of " + min + "\n");
+        menu.printMessage("\nScale: * ~ $" + String.format("%.2f", scale_val)
+                + " relative to the base value of $" + String.format("%.2f", min) + "\n");
 
       }
     } while (!isValidGap);

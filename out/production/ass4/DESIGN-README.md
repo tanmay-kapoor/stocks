@@ -1,5 +1,20 @@
+# Design changes from previous iteration of the project. 
 
-# Design of the project
+### View Changes
+**No changes in the package structure.** 
+
+We have just added menu classes to support the flexible portfolios. 
+
+
+### Model Changes
+1. In `AbstractPortfolio`, Instead of storing a map of `Details` object of each stock, we now store `Log` object of each stock. 
+
+
+
+### Controller Changes
+
+
+# Design of the current project
 
 
 ## The design of the program is divided into 3 segments, namely, model, view, and controller.
@@ -24,7 +39,14 @@ The structure of the view in the project folder is as follows:
    crypto/mutual fund portfolio which will share common methods.
 
 3. `StockMenuInflexible` (concrete class) is meant to specifically deal with menu while interacting with
-   user about stock portfolio.
+   user about inflexible stock portfolio.
+
+4. `StockMenuFlexible` (concrete class) is meant to specifically deal with menu while interacting with
+   user about flexible stock portfolio.
+
+5. `MainMenu` interface that state the methods to be implemented in classes that implement it.
+
+6. `MainMenuImpl` which can be used for choosing either to work with `Flexible` or `Inflexible`.
 
 
 ### Model
@@ -51,7 +73,7 @@ The structure of the model in the project folder is as follows:
 
    - `supported_stocs` directory, that contains all the stocks that are supported by the program.
      This directory stores the csv files of individual stock's data. This is done to make the
-     application independent of any third party api.
+     application independent of any third party api. These are the only stocks accessible by the `StockAPI`
 
 2. `portfolio` package which contains:
    - `Portfolio` (Interface) that states the methods that are expected from any kind of portfolio.
@@ -62,6 +84,17 @@ The structure of the model in the project folder is as follows:
 
    - `StockPortfolioInflexible` (Class) that is an extension of Portfolio class. This class specifically
      deals with the portfolio that stores shares supported by our program. 
+
+   - `StockPortfolioFlexible` (Class) that is an extension of Portfolio class. This class specifically
+     deals with the portfolio that stores shares supported out APIs. This type of portfolio has the ability to sell stocks, store cost basis,
+     and get the performance of the portfolio over a time period. 
+
+   - `Txn` (Enum)  to restrict types of transactions to only Buy or Sell. In the future, the transaction types like
+     lending, borrowing could be accommodated if required.
+
+3. `Details` (Class) that stores the quantity and the date of purchase of a particular share.
+
+4. `Log` (Class) that stores the `Details` and `lastSoldDate` of a particular share in the portfolio.
 
 ### Controller
 

@@ -63,7 +63,9 @@ stored in the cost basis of the portfolio if the transaction goes through succes
   
 
 - User can now view the performance of the portfolio between the dates specified by the user. 
-  User cannot choose future dates as nor price data would exist for those requests.
+  User cannot choose future dates as nor price data would exist for those requests. The scale of the performance is relative,
+  i.e. if one has "\*" and the next has "\***" with scale of ~ $100 and base value: $50,000. THen the first row 
+  represent $50,000 and the second row represents 50,000 + (100 \* 2) = $50,200. 
 
 
 ## Features specific to Inflexible Portfolio
