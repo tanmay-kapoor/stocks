@@ -122,6 +122,9 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public boolean sell(String ticker, Details details, double commissionFee) {
+    if(details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("Cannot sell shares on future dates.");
+    }
     return portfolioBasedSell(ticker, details, commissionFee);
   }
 
@@ -145,6 +148,10 @@ abstract class AbstractPortfolio implements Portfolio {
    */
   @Override
   public double getCostBasis(LocalDate dateReq) {
+    if(dateReq.compareTo(LocalDate.now()) > 0) {
+      throw  new IllegalArgumentException("Cannot request cost basis for future dates.");
+    }
+
     double costBasis = 0.0;
     for (LocalDate date : this.costBasisHistory.keySet()) {
       if (date.compareTo(dateReq) > 0) {
