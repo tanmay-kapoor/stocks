@@ -1,21 +1,23 @@
 # Design changes from previous iteration of the project. 
 
 ### View Changes
-**No changes in the package structure.** 
+**No changes in the existing package structure.** 
 
-We have just added menu classes to support the flexible portfolios. 
+Added `MainMenu`, `MainMenuImpl` and `StockPortfolioFelxible` to accommodate the workings of both
+flexible and inflexible portfolio. Find more details about these classes below.
 
 
 ### Model Changes
 1. In `AbstractPortfolio`, Instead of storing a map of `Details` object of each stock, we now store `Log` object of each stock. 
 
-
+Added `Log` and `Txn` to better streamline the features of different type of portfolio.
 
 ### Controller Changes
 
 
-# Design of the current project
 
+
+# Design of the current project
 
 ## The design of the program is divided into 3 segments, namely, model, view, and controller.
 
