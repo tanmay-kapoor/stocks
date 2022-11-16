@@ -354,7 +354,8 @@ abstract class AbstractController implements SpecificController {
     do {
       quantity = menu.getQuantity();
       isValid = this.validateQuantity(quantity);
-    } while (!isValid);
+    }
+    while (!isValid);
 
     LocalDate purchaseDate;
     do {
@@ -366,7 +367,8 @@ abstract class AbstractController implements SpecificController {
         isValid = false;
         menu.printMessage("Invalid date format\n");
       }
-    } while (!isValid);
+    }
+    while (!isValid);
     return new Details(quantity, purchaseDate);
   }
 
@@ -483,7 +485,8 @@ abstract class AbstractController implements SpecificController {
           shouldExit = false;
           menu.printMessage("\nInvalid date format");
         }
-      } while (!shouldExit);
+      }
+      while (!shouldExit);
     } catch (RuntimeException e) {
       System.out.println("no price found error");
       menu.printMessage("\n" + e.getMessage());
