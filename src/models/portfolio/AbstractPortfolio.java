@@ -242,7 +242,16 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to) {
+    if (to.compareTo(from) < 0) {
+      throw new IllegalArgumentException("Please choose a date later than start date.");
+    }
+    else if (to.compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("You cannot choose a future date. Please choose today's or a date "
+              + "from the past.");
+    }
+
     return getPortfolioPerformanceIfApplicable(from, to);
+
   }
 
   @Override

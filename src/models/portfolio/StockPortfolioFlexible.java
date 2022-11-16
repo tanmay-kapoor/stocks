@@ -206,7 +206,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
 
     long day_diff = ChronoUnit.DAYS.between(i, to);
-    if(day_diff < intervals) {
+    if(day_diff < intervals / 2) {
       performance.remove(lastDateTillNow);
     }
 

@@ -156,17 +156,7 @@ public class StockControllerFlexible extends AbstractController {
 
       isValidGap = true;
 
-      if (to.compareTo(from) < 0) {
-        menu.printMessage("Please choose a date later than start date.");
-        isValidGap = false;
-      }
-      else if (to.compareTo(LocalDate.now()) > 0) {
-        menu.printMessage("You cannot choose a future date. Please choose today's or a date "
-                + "from the past.");
-        isValidGap = false;
-      }
-      else {
-
+      try {
         menu.printMessage("\nPlease wait while performance report is being generated! "
                 + "This may take some time..\n");
         performance = portfolio.getPortfolioPerformance(from, to);
@@ -209,8 +199,10 @@ public class StockControllerFlexible extends AbstractController {
         Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
         menu.printMessage("\nScale: * ~ $" + String.format("%.2f", scale_val)
                 + " relative to the base value of $" + String.format("%.2f", min) + "\n");
-
+      } catch (IllegalArgumentException e) {
+        menu.printMessage(e.getMessage());
       }
+
     } while (!isValidGap);
   }
 
