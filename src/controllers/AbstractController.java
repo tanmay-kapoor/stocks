@@ -461,7 +461,8 @@ abstract class AbstractController implements SpecificController {
           shouldExit = false;
           menu.printMessage("\nInvalid date format");
         }
-      } while (!shouldExit);
+      }
+      while (!shouldExit);
     } catch (RuntimeException e) {
       System.out.println("no price found error");
       menu.printMessage("\n" + e.getMessage());

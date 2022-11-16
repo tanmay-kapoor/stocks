@@ -11,12 +11,25 @@ import views.MainMenuImpl;
 import views.Menu;
 import views.StockMenuInflexible;
 
+/**
+ * A class that decides weather to create a Portfolio object for Flexible portfolio or
+ * inflexible portfolio. It is also the initial controller that `ProgramRunner` uses to start
+ * the program.
+ */
 public class GenericController implements Controller {
   private final InputStream in;
   private final PrintStream out;
   private Menu menu;
   private final String commonPath;
 
+  /**
+   * A controller for the class to initialize input and output streams and path where all the
+   * portfolio files are going to be accessed and saved.
+   *
+   * @param in         Input Stream
+   * @param out        Output Stream
+   * @param commonPath path to access and store portfolio files.
+   */
   public GenericController(InputStream in, PrintStream out, String commonPath) {
     this.in = in;
     this.out = out;
@@ -51,6 +64,7 @@ public class GenericController implements Controller {
         default:
           break;
       }
-    } while (choice >= '1' && choice <= '2');
+    }
+    while (choice >= '1' && choice <= '2');
   }
 }

@@ -168,16 +168,14 @@ public class StockControllerFlexible extends AbstractController {
 
       isValidGap = true;
 
-      if(to.compareTo(LocalDate.now()) > 0) {
+      if (to.compareTo(LocalDate.now()) > 0) {
         menu.printMessage("You cannot choose a future date. Please choose today's or a date "
                 + "from the past.");
         isValidGap = false;
-      }
-      else if(days < 5) {
+      } else if (days < 5) {
         menu.printMessage("Please choose a dates with atleast 5 days between them.");
         isValidGap = false;
-      }
-      else {
+      } else {
         try {
           menu.printMessage("\nPlease wait while performance report is being generated! "
                   + "This may take some time..\n");
@@ -217,7 +215,7 @@ public class StockControllerFlexible extends AbstractController {
 
           }
 
-          menu.printMessage("\nScale: * = " + valueDiffSum / count
+          menu.printMessage("\nScale: * ~ " + String.format("%.2f", valueDiffSum / count)
                   + " relative to the base value of " + min + "\n");
         } catch (IllegalArgumentException e) {
           isValidGap = false;
