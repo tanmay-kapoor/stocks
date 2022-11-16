@@ -225,6 +225,7 @@ abstract class AbstractStockPortfolioTest {
     // automatically changes date to curr date and commission to 0
   }
 
+
   @Test
   public void getComposition() {
     Map<String, Log> expected = new HashMap<>();

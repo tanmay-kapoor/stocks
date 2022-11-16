@@ -64,6 +64,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     check2(ticker, quantity, purchaseDate, commission, detailsSet, expected);
   }
 
+
   @Test
   public void getValueSpecificDate() {
     portfolio.buy("META", new Details(22, LocalDate.parse("2022-10-10")), 10);

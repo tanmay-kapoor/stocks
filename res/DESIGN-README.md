@@ -1,5 +1,23 @@
+# Design changes from previous iteration of the project. 
 
-# Design of the project
+### View Changes
+**No changes in the package structure.** 
+
+We have just added menu classes to support the flexible portfolios. 
+
+Additionally, we have added a menu to the user (`MainMenuImpl.java`), which can be used for choosing either to work with `Flexible` or `Inflexible`. 
+
+### Model Changes
+1. In `AbstractPortfolio`, Instead of storing a map of `Details` object of each stock, we now store `Log` object of each stock. 
+
+We have added a `Txn.java` Enum to restrict types of transactions to only Buy or Sell.
+Added a `Log.java` class that stores the `Details` and `lastSoldDate` of a particular stock in the portfolio.
+Added `StockPoerfolioFlexible.java` to accommodate the methods that are to be implemented by a flexible portfolio.
+
+### Controller Changes
+
+
+# Design of the current project
 
 
 ## The design of the program is divided into 3 segments, namely, model, view, and controller.
@@ -24,7 +42,15 @@ The structure of the view in the project folder is as follows:
    crypto/mutual fund portfolio which will share common methods.
 
 3. `StockMenuInflexible` (concrete class) is meant to specifically deal with menu while interacting with
-   user about stock portfolio.
+   user about inflexible stock portfolio.
+
+4. `StockMenuFlexible` (concrete class) is meant to specifically deal with menu while interacting with
+   user about flexible stock portfolio.
+
+5. `MainMenu` interface that state the methods to be implemented in classes that implement it.
+
+6. `MainMenuImpl` class that specifies the options stating the main features provided by the type 
+   of portfolio as determined by the user.
 
 
 ### Model
