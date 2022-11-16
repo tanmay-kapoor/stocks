@@ -274,7 +274,7 @@ public class StockControllerFlexible extends AbstractController {
         date = LocalDate.parse(menu.getDateForValue());
 
         if(date.compareTo(LocalDate.now()) > 0) {
-          menu.printMessage("\nFuture data not allowed.");
+          menu.printMessage("\nFuture date not allowed. Please try again with another date");
           isValidDate = false;
         }
       } catch (DateTimeParseException e) {
