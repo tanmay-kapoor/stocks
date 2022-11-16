@@ -200,14 +200,12 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     LocalDate i;
     int total = 1;
-    double min = Double.MAX_VALUE;
-    double max = Double.MIN_VALUE;
 
     for(i = from; i.compareTo(to) <= 0; i = i.plusDays(intervals), total++) {
       performance.put(i, getValue(i));
     }
     if(!performance.containsKey(to)) {
-      performance.put(i, getValue(i));
+      performance.put(to, getValue(to));
     }
 
     return performance;

@@ -35,8 +35,33 @@
   `files/stocks` directory.
 
 
+## Features specific to Flexible Portfolio
 
-_**For now, out program supports the use of only the following stocks listed below. If the user 
+- User can buy stocks (provided that their data is accessible by the AlphaVantage API)
+  on any date as provided by the user. 
+
+
+- Sell any stocks that is present in the portfolio. There are however, some constrains while selling the stock in portfolio.
+  The user cannot sell more stocks than the available quantity in the portfolio. For example, if the portfolio  
+  has 100 shares of Google, selling 101 shares of the same stocks is not possible. Furthermore, we have restricted
+  selling stocks before it has already been sold once. For instance, if you have sold 10 shares of google on 10th of January 2020,
+  you can sell those share again only on or after the last sold date (i.e. 10 Jan 2020). Selling share of google on 
+  9th Jan, 2020 or earlier would now be prohibited. 
+
+
+- For every transaction, user can now charge a commission fee of their choice that gets added and 
+  stored in the cost basis of the portfolio if the transaction goes through successfully.
+
+
+- Everytime a transaction (buy/sell) is successfully executed, the cost basis of the portfolio is updated for the date of transaction. 
+  
+
+
+- User can now view the performance of the portfolio throughout its creation, or between the dates specifies by the user.
+
+## Features specific to Inflexible Portfolio
+
+_**For now, a flexible portfolio supports the use of only the following stocks listed below. If the user 
 choose a share of stock from outside this list, they'll get an error.**_
 
 | SR no. | Corporation                             | Ticker |

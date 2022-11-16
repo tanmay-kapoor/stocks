@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -17,6 +19,9 @@ import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
 import views.Menu;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 public class StockControllerFlexible extends AbstractController {
   protected StockControllerFlexible(Menu menu, ShareApi api, String path) {
@@ -170,12 +175,35 @@ public class StockControllerFlexible extends AbstractController {
         Double min = Collections.min(performance.values());
         Double max = Collections.max(performance.values());
 
+        int count = 0;
+        double prevVal = 0.00;
+        int prevStars = 0;
+        double valueDiffSum = 0;
         for (LocalDate date : performance.keySet()) {
-          double scaled = scaleBetween(performance.get(date), min, max);
+          double valueOnDate = performance.get(date);
+          int stars = (int) round(scaleBetween(valueOnDate, min, max));
+          if(prevStars != 0) {
+            int starDiff = abs(stars - prevStars);
+            if(starDiff != 0) {
+//              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
+              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
+              valueDiffSum += avg_star_val;
+//              count += stars;
+              count++;
+            }
+          }
+
+          prevVal = valueOnDate;
+          prevStars = stars;
+
           menu.printMessage(date + ": \t Valuation: "
-                  + String.format("%.2f", performance.get(date)) + "\t\t"
-                  + "*".repeat((int) Math.round(scaled)));
+                  + String.format("%.2f", performance.get(date)) + "\t\t\t\t\t\t"
+                  + "*".repeat(stars));
+
         }
+
+        menu.printMessage("\nScale: * = " + valueDiffSum / count
+                + " relative to the base value of " + min + "\n");
       } catch (IllegalArgumentException e) {
         isValidGap = false;
         menu.printMessage(e.getMessage());
