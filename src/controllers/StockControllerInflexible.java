@@ -8,6 +8,7 @@ import java.util.Map;
 
 import models.Log;
 import models.api.ShareApi;
+import models.portfolio.Composition;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioInflexible;
 import views.Menu;
@@ -88,5 +89,11 @@ public class StockControllerInflexible extends AbstractController {
       default:
         throw new IllegalArgumentException("Illegal Value");
     }
+  }
+
+  @Override
+  protected boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option) {
+    getCompositionForToday(portfolio, option);
+    return true;
   }
 }

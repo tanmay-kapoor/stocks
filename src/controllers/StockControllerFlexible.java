@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import models.Details;
 import models.Log;
 import models.api.ShareApi;
+import models.portfolio.Composition;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
 import views.Menu;
@@ -44,7 +45,20 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected LocalDate getPurchaseDate() {
-    return LocalDate.parse(menu.getDateForValue());
+    LocalDate date = null;
+    boolean isValidDate;
+
+    do {
+      isValidDate = true;
+      try {
+        date = LocalDate.parse(menu.getDateForValue());
+      } catch (DateTimeParseException e) {
+        isValidDate = false;
+        menu.printMessage("\nInvalid Date format\n");
+      }
+    } while (!isValidDate);
+
+    return date;
   }
 
   @Override
@@ -339,6 +353,54 @@ public class StockControllerFlexible extends AbstractController {
 
       default:
         throw new IllegalArgumentException("Illegal value");
+    }
+  }
+
+  @Override
+  protected boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option) {
+    char ch = menu.getDateChoice();
+    boolean isFutureDate;
+
+    switch (ch) {
+      case '1':
+        getCompositionForToday(portfolio, option);
+        return true;
+
+      case '2':
+        LocalDate date;
+        switch (option) {
+          case Contents:
+            do {
+              isFutureDate = false;
+              try {
+                date = getPurchaseDate();
+                menu.printMessage(getPortfolioContents(portfolio, date));
+              } catch (IllegalArgumentException e) {
+                isFutureDate = true;
+                menu.printMessage("\n" + e.getMessage() + "\n");
+              }
+            } while (isFutureDate);
+            return true;
+
+          case Weightage:
+            do {
+              isFutureDate = false;
+              try {
+                date = getPurchaseDate();
+                menu.printMessage(getPortfolioWeightage(portfolio, date));
+              } catch (IllegalArgumentException e) {
+                isFutureDate = true;
+                menu.printMessage("\n" + e.getMessage() + "\n");
+              }
+            } while (isFutureDate);
+            return true;
+
+          default:
+            return false;
+        }
+
+      default:
+        return false;
     }
   }
 }

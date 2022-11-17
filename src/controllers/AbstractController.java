@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import models.Details;
 import models.Log;
 import models.api.ShareApi;
+import models.portfolio.Composition;
 import models.portfolio.Portfolio;
 import views.Menu;
 
@@ -56,6 +57,8 @@ abstract class AbstractController implements SpecificController {
   protected abstract void filterBasedOnFunction(Function function);
 
   protected abstract void handleMenuOptions(Portfolio portfolio, Function function);
+
+  protected abstract boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option);
 
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
@@ -263,19 +266,24 @@ abstract class AbstractController implements SpecificController {
   }
 
   protected void handleGetPortfolioComposition(Portfolio portfolio) {
-    char choice = menu.getPortfolioCompositionOption();
-    switch (choice) {
-      case '1':
-        menu.printMessage(getPortfolioContents(portfolio));
-        break;
+    boolean didPerform;
 
-      case '2':
-        menu.printMessage(getPortfolioWeightage(portfolio));
-        break;
+    do {
+      char choice = menu.getPortfolioCompositionOption();
+      switch (choice) {
+        case '1':
+          didPerform = giveDateOptionsIfApplicable(portfolio, Composition.Contents);
+          break;
 
-      default:
-        break;
-    }
+        case '2':
+          didPerform = giveDateOptionsIfApplicable(portfolio, Composition.Weightage);
+          break;
+
+        default:
+          didPerform = true;
+          break;
+      }
+    } while (!didPerform);
   }
 
   protected void handleGetPortfolioValue(Portfolio portfolio) {
@@ -315,20 +323,22 @@ abstract class AbstractController implements SpecificController {
     while (shouldContinue);
   }
 
-  private String getPortfolioContents(Portfolio portfolio) {
-    LocalDate date;
-    boolean isValidDate;
+  protected void getCompositionForToday(Portfolio portfolio, Composition option) {
+    switch (option) {
+      case Contents:
+        menu.printMessage(getPortfolioContents(portfolio, LocalDate.now()));
+        break;
 
-    do {
-      isValidDate = true;
-      date = getPurchaseDate();
-      if (date.compareTo(LocalDate.now()) > 0) {
-        isValidDate = false;
-        menu.printMessage("\nDate cannot be in the future");
-      }
+      case Weightage:
+        menu.printMessage(getPortfolioWeightage(portfolio, LocalDate.now()));
+        break;
+
+      default:
+        break;
     }
-    while (!isValidDate);
+  }
 
+  protected String getPortfolioContents(Portfolio portfolio, LocalDate date) {
     Map<String, Log> portfolioContent = portfolio.getComposition(date);
     StringBuilder composition = new StringBuilder();
 
@@ -355,8 +365,7 @@ abstract class AbstractController implements SpecificController {
     return composition.toString();
   }
 
-  private String getPortfolioWeightage(Portfolio portfolio) {
-    LocalDate date = getPurchaseDate();
+  protected String getPortfolioWeightage(Portfolio portfolio, LocalDate date) {
     Map<String, Log> portfolioContent = portfolio.getComposition(date);
     StringBuilder composition = new StringBuilder();
 

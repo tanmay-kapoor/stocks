@@ -245,6 +245,25 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     }
   }
 
+  @Test
+  public void testSellInvalidateFutureTransactions() {
+    Details details = new Details(5, LocalDate.parse("2014-05-05"));
+    portfolio.buy("GOOG", details, 20.1);
+    details = new Details(10, LocalDate.parse("2014-04-01"));
+    portfolio.buy("AAPL", details, 10);
+    details = new Details(25, LocalDate.parse("2022-05-01"));
+    portfolio.buy("AAPL", details, 10.2);
+    details = new Details(30, LocalDate.parse("2022-05-05"));
+    portfolio.sell("AAPL", details, 35.3);
+    try {
+      details = new Details(10, LocalDate.parse("2022-05-04"));
+      portfolio.sell("AAPL", details, 25.6);
+      fail("Should fail for sell in date that invalidates future transactions but did not.");
+    } catch (IllegalArgumentException e) {
+      // passes
+    }
+  }
+
   protected void addValueToDetailsSet(Map<String, Log> expected) {
     Map<String, Log> test = portfolio.getComposition();
     Set<Details> detailsSet = newTreeSet();
