@@ -8,8 +8,23 @@ import java.util.Map;
  * A share can be of type stock, crypto, forex, commodity, etc.
  */
 public interface ShareApi {
+  /**
+   * Check if ticker already exists in tbe portfolio.
+   *
+   * @param ticker ticker symbol of company.
+   * @return boolean value indicating presence of ticker.
+   */
   boolean isTickerPresent(String ticker);
+
+  /**
+   * Check if ticker has a price for the specified date.
+   *
+   * @param ticker ticker symbol of company.
+   * @param date   date at which to check price of ticker.
+   * @return boolean indicating presence of price for the ticker.
+   */
   boolean hasPrice(String ticker, LocalDate date);
+
   /**
    * This method gives the price of the share on a particular date asked by the client.
    *
