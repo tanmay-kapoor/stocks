@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import models.portfolio.Txn;
+
 /**
  * An Abstract class that will be used for providing views that will be common to other
  * menu classes.
@@ -40,6 +42,12 @@ abstract class AbstractMenu implements Menu {
   @Override
   public void printMessage(String msg) {
     this.print(msg + "\n");
+  }
+
+  @Override
+  public void successMessage(String ticker, double qty, Txn txn_type) {
+    String txn = txn_type == Txn.Buy ? "bought" : "sold";
+    this.print("Successfully " + txn + " " + qty + " shares of " + ticker.toUpperCase() + "\n");
   }
 
   @Override

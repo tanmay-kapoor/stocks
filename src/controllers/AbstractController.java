@@ -23,6 +23,7 @@ import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Composition;
 import models.portfolio.Portfolio;
+import models.portfolio.Txn;
 import views.Menu;
 
 /**
@@ -458,7 +459,7 @@ abstract class AbstractController implements SpecificController {
           Details details = new Details(quantity, purchaseDate);
           api.getShareDetails(tickerSymbol, purchaseDate);
           portfolio.buy(tickerSymbol, details, getCommissionFee());
-          menu.printMessage("\nSuccess!");
+          //menu.successMessage(tickerSymbol, details.getQuantity(), Txn.Buy);
         } catch (DateTimeParseException e) {
           shouldExit = false;
           menu.printMessage("\nInvalid date format");
