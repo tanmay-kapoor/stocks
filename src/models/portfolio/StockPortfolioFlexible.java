@@ -63,7 +63,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     Set<Details> detailsSet = log.getDetailsSet();
 
     LocalDate firstPurchaseDate = detailsSet.iterator().next().getPurchaseDate();
-    if (detailsSet.size() == 0 || firstPurchaseDate.compareTo(details.getPurchaseDate()) > 0) {
+    if (detailsSet.size() == 0 || firstPurchaseDate.compareTo(sellDate) > 0) {
       throw new IllegalArgumentException("Cannot sell shares if they do not "
               + "exist in the portfolio yet.");
     }
@@ -72,23 +72,23 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     boolean sharesBoughtOnSellDay = false;
 
     for (Details d : detailsSet) {
-      if (d.getPurchaseDate().compareTo(sellDate) < 0) {
+      if (d.getPurchaseDate().compareTo(sellDate) <= 0) {
         sharesAvailable = d.getQuantity();
       } else {
-        if (d.getPurchaseDate().compareTo(sellDate) == 0) {
-          sharesAvailable = d.getQuantity();
-        }
+        break;
+      }
+    }
+    if (sellQty > sharesAvailable) {
+      throw new IllegalArgumentException("You cannot sell more stock than available. "
+              + "Current quantity: " + sharesAvailable);
+    }
 
-        if (sellQty > sharesAvailable) {
-          throw new IllegalArgumentException("You cannot sell more stock than available. "
-                  + "Current quantity: " + sharesAvailable);
-        }
-
-        if (d.getPurchaseDate().compareTo(sellDate) == 0) {
-          sharesBoughtOnSellDay = true;
-        }
+    for(Details d : detailsSet) {
+      if (d.getPurchaseDate().compareTo(sellDate) == 0) {
+        sharesBoughtOnSellDay = true;
+      }
+      if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
         d.setQuantity(d.getQuantity() - sellQty);
-        System.out.println(d.getPurchaseDate() + "  " + d.getQuantity());
       }
     }
 
