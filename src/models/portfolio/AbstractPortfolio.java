@@ -75,16 +75,16 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public void buy(String ticker, Details details, double commissionFee) {
-    if(details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
+    if (details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot buy shares on future date.");
     }
 
-    if(details.getQuantity() < 0) {
-      throw  new IllegalArgumentException("Quantity cannot be negative.");
+    if (details.getQuantity() < 0) {
+      throw new IllegalArgumentException("Quantity cannot be negative.");
     }
 
-    if(commissionFee < 0.0) {
-      throw  new IllegalArgumentException("Commission Fee cannot be negative.");
+    if (commissionFee < 0.0) {
+      throw new IllegalArgumentException("Commission Fee cannot be negative.");
     }
 
     commissionFee = changeCommissionFeeIfApplicable(commissionFee);
@@ -134,15 +134,15 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public boolean sell(String ticker, Details details, double commissionFee) {
-    if(details.getQuantity() < 0) {
-      throw  new IllegalArgumentException("Quantity cannot be negative.");
+    if (details.getQuantity() < 0) {
+      throw new IllegalArgumentException("Quantity cannot be negative.");
     }
 
-    if(commissionFee < 0.0) {
-      throw  new IllegalArgumentException("Commission Fee cannot be negative.");
+    if (commissionFee < 0.0) {
+      throw new IllegalArgumentException("Commission Fee cannot be negative.");
     }
 
-    if(details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
+    if (details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot sell shares on future dates.");
     }
     return portfolioBasedSell(ticker, details, commissionFee);
@@ -157,8 +157,8 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public double getCostBasis(LocalDate dateReq) {
-    if(dateReq.compareTo(LocalDate.now()) > 0) {
-      throw  new IllegalArgumentException("Cannot request cost basis for future dates.");
+    if (dateReq.compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("Cannot request cost basis for future dates.");
     }
 
     double costBasis = 0.0;
@@ -244,9 +244,9 @@ abstract class AbstractPortfolio implements Portfolio {
   public Map<LocalDate, Double> getPortfolioPerformance(LocalDate from, LocalDate to) {
     if (to.compareTo(from) < 0) {
       throw new IllegalArgumentException("Please choose a date later than start date.");
-    }
-    else if (to.compareTo(LocalDate.now()) > 0) {
-      throw new IllegalArgumentException("You cannot choose a future date. Please choose today's or a date "
+    } else if (to.compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("You cannot choose a future date. "
+              + "Please choose today's or a date "
               + "from the past.");
     }
 

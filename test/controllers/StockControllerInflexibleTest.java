@@ -36,7 +36,9 @@ public class StockControllerInflexibleTest {
 
     @Override
     public Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked) {
-      log.append("Inside get share details ").append(tickerSymbol).append(" ").append(dateAsked).append("\n");
+      log.append("Inside get share details ")
+              .append(tickerSymbol).append(" ")
+              .append(dateAsked).append("\n");
       return new HashMap<>();
     }
   }
@@ -134,18 +136,21 @@ public class StockControllerInflexibleTest {
     }
 
     @Override
-    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks, Map<LocalDate, Double> costBasisHistory) {
+    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
+                                        Map<LocalDate, Double> costBasisHistory) {
       log = new StringBuilder("Portfolio name mult : " + portfolioName + "\n");
       return new MockStockPortfolio(log);
     }
 
     @Override
-    protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile) throws FileNotFoundException {
+    protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
+            throws FileNotFoundException {
       return new HashMap<>();
     }
 
     @Override
-    protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile) throws FileNotFoundException {
+    protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
+            throws FileNotFoundException {
       return new HashMap<>();
     }
 
@@ -167,7 +172,8 @@ public class StockControllerInflexibleTest {
 
     @Override
     protected void filterBasedOnFunction(Function function) {
-      log.append("Inside filterBasedOnFunction(Function function) Received : ").append(function).append("\n");
+      log.append("Inside filterBasedOnFunction(Function function) Received : ")
+              .append(function).append("\n");
       switch (function) {
         case BuySell:
         case SeePerformance:
@@ -214,7 +220,8 @@ public class StockControllerInflexibleTest {
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
+            "38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -236,7 +243,8 @@ public class StockControllerInflexibleTest {
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
+            "22.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -248,7 +256,8 @@ public class StockControllerInflexibleTest {
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
+            "-38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -323,8 +332,8 @@ public class StockControllerInflexibleTest {
   @Test
   public void testGetPerformance() {
     generateStream("5\nx\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : SeePerformance\n" +
-            "wont be calling commonStuff(function)\n";
+    String expected = "Inside filterBasedOnFunction(Function function) Received : SeePerformance\n"
+            + "wont be calling commonStuff(function)\n";
     assertEquals(expected, log.toString());
   }
 

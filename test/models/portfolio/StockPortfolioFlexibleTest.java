@@ -17,6 +17,9 @@ import models.api.ShareApi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+/**
+ * A test class that check the methods implemented foe flexible portfolio.
+ */
 public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
   protected Portfolio createPortfolio(String portfolioName, String directory, ShareApi api) {
     return new StockPortfolioFlexible(portfolioName, directory, api);
@@ -218,7 +221,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     try {
       portfolio.sell("META", details, -5.2);
       fail("Should fail for negative commission but did not");
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // passes
     }
   }
@@ -230,7 +233,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     try {
       portfolio.getCostBasis(LocalDate.parse("2028-10-10"));
-    } catch(IllegalArgumentException e1) {
+    } catch (IllegalArgumentException e1) {
       assertEquals(0, portfolio.getCostBasis(LocalDate.parse("1900-10-10")), 0);
     }
   }

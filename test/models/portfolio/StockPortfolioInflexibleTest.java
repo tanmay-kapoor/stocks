@@ -15,6 +15,9 @@ import models.api.ShareApi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+/**
+ * A test class that check the methods implemented foe inflexible portfolio.
+ */
 public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
   protected Portfolio createPortfolio(String portfolioName, String directory, ShareApi api) {
     return new StockPortfolioInflexible(portfolioName, directory, api);
@@ -71,7 +74,7 @@ public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
     checkHashMapEquality(expected, shareDetails);
   }
 
-  protected void addValueToDetailsSet (Map<String, Log> expected) {
+  protected void addValueToDetailsSet(Map<String, Log> expected) {
     Map<String, Log> test = portfolio.getComposition();
     Set<Details> detailsSet = newTreeSet();
     detailsSet.add(new Details(100, now));

@@ -9,7 +9,6 @@ import java.util.Scanner;
  */
 public class MainMenuImpl implements MainMenu {
 
-  private final InputStream in;
   private final PrintStream out;
   private final Scanner sc;
 
@@ -20,9 +19,8 @@ public class MainMenuImpl implements MainMenu {
    * @param out Output stream.
    */
   public MainMenuImpl(InputStream in, PrintStream out) {
-    this.in = in;
     this.out = out;
-    sc = new Scanner(this.in);
+    sc = new Scanner(in);
   }
 
   @Override

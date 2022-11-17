@@ -81,7 +81,8 @@ public class AlphaVantage implements ShareApi {
         String[] vals = line.split(",");
         record = line;
         LocalDate rowDate = LocalDate.parse(vals[0]);
-        if (tickerDetails.containsKey(tickerSymbol) && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
+        if (tickerDetails.containsKey(tickerSymbol)
+                && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
           if (i == 1 && rowDate.compareTo(dateAsked) < 0) {
             found = true;
             break;

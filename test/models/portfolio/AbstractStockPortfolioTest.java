@@ -45,8 +45,10 @@ abstract class AbstractStockPortfolioTest {
   protected abstract void deleteLogAndCostBasisIfRequired();
 
   protected abstract void getValueSomeStocksDifferently(double val);
+
   protected abstract LocalDate getPurchaseDate();
-  protected abstract void addValueToDetailsSet (Map<String, Log> expected);
+
+  protected abstract void addValueToDetailsSet(Map<String, Log> expected);
 
   @Before
   public void setUp() {
@@ -206,6 +208,7 @@ abstract class AbstractStockPortfolioTest {
 
   @Test
   public void getValueDateValidForSomeStocks() {
+    assertEquals(new HashMap<>(), portfolio.getComposition());
     portfolio.buy("AMZN", 27);
     portfolio.buy("NFLX", 18);
     double val = portfolio.getValue(LocalDate.parse("2001-07-15"));
@@ -308,9 +311,6 @@ abstract class AbstractStockPortfolioTest {
 
     portfolio.buy("gOoG", 34);
     expected.add(String.format("GOOG,34.0,%s", now));
-
-//    portfolio.buy("xyz", 33);
-//    expected.add(String.format("XYZ,33.0,%s", now));
 
     portfolio.buy("nflx", 299);
     expected.add(String.format("NFLX,299.0,%s", now));

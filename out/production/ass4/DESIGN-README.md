@@ -8,9 +8,12 @@ flexible and inflexible portfolio. Find more details about these classes below.
 
 
 ### Model Changes
-1. In `AbstractPortfolio`, Instead of storing a map of `Details` object of each stock, we now store `Log` object of each stock. 
+1. In `AbstractPortfolio`, Instead of storing a map of `Details` object of each stock, we now 
+store `Log` object of each stock. 
 
-Added `Log` and `Txn` to better streamline the features of different type of portfolio.
+Added `StockPortfolioFlexible`, `Log` and `Txn` to better streamline the features of different type of portfolio. 
+Find more details about these classes below.
+
 
 ### Controller Changes
 
