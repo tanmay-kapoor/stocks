@@ -185,34 +185,42 @@ public class StockControllerFlexible extends AbstractController {
           StringBuilder performanceReport = new StringBuilder();
           performanceReport.append("Date\t\t\t\tPortfolio Valuation ($)\t\t\t\t\tRelative Change");
 
-        for (LocalDate date : performance.keySet()) {
-          double valueOnDate = performance.get(date);
-          int scaled = (int) round(scaleBetween(valueOnDate, min, max));
-          int stars = scaled == 0 ? 1 : scaled;
+          for (LocalDate date : performance.keySet()) {
+            double valueOnDate = performance.get(date);
+            int scaled = (int) round(scaleBetween(valueOnDate, min, max));
+            int stars = scaled == 0 ? 1 : scaled;
 
-          if (prevStars != 0) {
-            int starDiff = abs(stars - prevStars);
-            if (starDiff != 0) {
-              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
-              // double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
-              valueDiffSum += avg_star_val;
-              count += stars;
-              // count++;
+            if (prevStars != 0) {
+              int starDiff = abs(stars - prevStars);
+              if (starDiff != 0) {
+                double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
+                // double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
+                valueDiffSum += avg_star_val;
+                count += stars;
+                // count++;
+              }
             }
-          }
 
             prevVal = valueOnDate;
             prevStars = stars;
+            String precisionAdjusted = String.format("%.2f", performance.get(date));
+            performanceReport
+                    .append("\n")
+                    .append(date)
+                    .append("\t\t\t\t")
+                    .append(precisionAdjusted)
+                    .append("\t\t\t\t\t")
+                    .append("*".repeat(stars));
 
-            performanceReport.append("\n").append(date).append("\t\t\t\t").append(String.format("%.2f", performance.get(date))).append("\t\t\t\t\t\t").append("*".repeat(stars));
           }
           Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
           performanceReport
-                  .append("\nScale: * ~ $")
+                  .append("\n\nScale: * ~ $")
                   .append(String.format("%.2f", scale_val))
                   .append(" relative to the base value of $")
                   .append(String.format("%.2f", min))
                   .append("\n");
+
 
           menu.printMessage(performanceReport.toString());
         } catch (IllegalArgumentException e) {
