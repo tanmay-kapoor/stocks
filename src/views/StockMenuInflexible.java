@@ -22,12 +22,16 @@ public class StockMenuInflexible extends AbstractMenu {
   }
 
   protected char getBuySellChoiceIfApplicable() {
-    print("\nNot allowed for inflexible portfolio\n");
+    printNotAllowed();
     return 'q';
   }
 
   protected double getCommissionFeeIfApplicable() {
-    print("\nNot allowed for inflexible portfolio\n");
+    printNotAllowed();
     return 0.0;
+  }
+
+  private void printNotAllowed() {
+    print("\nNot allowed for inflexible portfolio\n");
   }
 }

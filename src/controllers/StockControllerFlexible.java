@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -125,7 +124,7 @@ public class StockControllerFlexible extends AbstractController {
     do {
       commissionFee = menu.getCommissionFee();
       if (commissionFee < 0.0) {
-        menu.printMessage("\nCommission fee must be non-negative");
+        menu.printMessage("\nCommission fee must be non-negative\n");
       }
     }
     while (commissionFee < 0.0);
@@ -175,9 +174,11 @@ public class StockControllerFlexible extends AbstractController {
 
     do {
       isValidGap = true;
-      from = getDate("Choose a start date");
-      to = getDate("Choose an end date");
-      long days = ChronoUnit.DAYS.between(from, to);
+      menu.printMessage("\nChoose a start date");
+      from = getDate();
+
+      menu.printMessage("\nChoose an end date");
+      to = getDate();
 
       if (from.compareTo(to) > 0) {
         menu.printMessage("\nPlease choose a start date before the end date");
@@ -212,10 +213,8 @@ public class StockControllerFlexible extends AbstractController {
               int starDiff = abs(stars - prevStars);
               if (starDiff != 0) {
                 double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
-                // double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
                 valueDiffSum += avg_star_val;
                 count += stars;
-                // count++;
               }
             }
 
@@ -251,30 +250,33 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   private void handleGetCostBasis(Portfolio portfolio) {
-    char ch = menu.getDateChoice();
-    LocalDate date;
-    double costBasis;
     boolean isProblematic;
     do {
+      char ch = menu.getDateChoice();
+      LocalDate date;
+      double costBasis;
       isProblematic = false;
       try {
         switch (ch) {
           case '1':
             costBasis = portfolio.getCostBasis();
-            menu.printMessage("Cost Basis on " + LocalDate.now()
+            menu.printMessage("\nCost Basis on " + LocalDate.now()
                     + " = $" + String.format("%.2f", costBasis));
             break;
 
           case '2':
             date = LocalDate.parse(menu.getDateForValue());
             costBasis = portfolio.getCostBasis(date);
-            menu.printMessage("Cost Basis on " + date
+            menu.printMessage("\nCost Basis on " + date
                     + " = $" + String.format("%.2f", costBasis));
             break;
 
           default:
             break;
         }
+      } catch (IllegalArgumentException e) {
+        isProblematic = true;
+        menu.printMessage("\n" + e.getMessage());
       } catch (DateTimeParseException e) {
         isProblematic = true;
         menu.printMessage("\nInvalid date format");
@@ -283,7 +285,7 @@ public class StockControllerFlexible extends AbstractController {
     while (isProblematic);
   }
 
-  private LocalDate getDate(String msg) {
+  private LocalDate getDate() {
     LocalDate date;
     boolean isValidDate;
 
@@ -291,16 +293,15 @@ public class StockControllerFlexible extends AbstractController {
       date = LocalDate.now();
       isValidDate = true;
       try {
-        menu.printMessage("\n" + msg);
         date = LocalDate.parse(menu.getDateForValue());
 
         if (date.compareTo(LocalDate.now()) > 0) {
-          menu.printMessage("\nFuture dates are invalid.");
+          menu.printMessage("\nCannot perform action for a future date.\n");
           isValidDate = false;
         }
       } catch (DateTimeParseException e) {
         isValidDate = false;
-        menu.printMessage("\nInvalid Date. Please enter again.");
+        menu.printMessage("\nInvalid date format.\n");
       }
     }
     while (!isValidDate);
@@ -324,7 +325,7 @@ public class StockControllerFlexible extends AbstractController {
     }
     while (!isValid);
 
-    LocalDate purchaseDate = getDate("");
+    LocalDate purchaseDate = getDate();
     return new Details(quantity, purchaseDate);
   }
 
@@ -363,49 +364,49 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option) {
-    char ch = menu.getDateChoice();
     boolean isFutureDate;
 
-    switch (ch) {
-      case '1':
-        getCompositionForToday(portfolio, option);
-        return true;
+    do {
+      isFutureDate = false;
+      char ch = menu.getDateChoice();
 
-      case '2':
-        LocalDate date;
-        switch (option) {
-          case Contents:
-            do {
-              isFutureDate = false;
+      switch (ch) {
+        case '1':
+          getCompositionForToday(portfolio, option);
+          return true;
+
+        case '2':
+          LocalDate date;
+          switch (option) {
+            case Contents:
               try {
                 date = getPurchaseDate();
                 menu.printMessage(getPortfolioContents(portfolio, date));
               } catch (IllegalArgumentException e) {
                 isFutureDate = true;
-                menu.printMessage("\n" + e.getMessage() + "\n");
+                menu.printMessage("\n" + e.getMessage());
               }
-            } while (isFutureDate);
-            return true;
+              break;
 
-          case Weightage:
-            do {
-              isFutureDate = false;
+            case Weightage:
               try {
                 date = getPurchaseDate();
                 menu.printMessage(getPortfolioWeightage(portfolio, date));
               } catch (IllegalArgumentException e) {
                 isFutureDate = true;
-                menu.printMessage("\n" + e.getMessage() + "\n");
+                menu.printMessage("\n" + e.getMessage());
               }
-            } while (isFutureDate);
-            return true;
+              break;
 
-          default:
-            return false;
-        }
+            default:
+              return false;
+          }
+          break;
 
-      default:
-        return false;
-    }
+        default:
+          return false;
+      }
+    } while (isFutureDate);
+    return true;
   }
 }

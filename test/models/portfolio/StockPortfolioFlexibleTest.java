@@ -264,6 +264,44 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     }
   }
 
+  @Test
+  public void testPerformance() {
+    Details details = new Details(50, LocalDate.parse("2015-10-10"));
+    portfolio.buy("GOOG", details, 10);
+
+    LocalDate from = LocalDate.parse("2014-10-10");
+    LocalDate to = LocalDate.parse("2022-10-10");
+    Map<LocalDate, Double> performance = portfolio.getPortfolioPerformance(from, to);
+
+    Map<LocalDate, Double> expected = new HashMap<>();
+    expected.put(LocalDate.parse("2014-10-10"), 0.0);
+    expected.put(LocalDate.parse("2015-05-06"), 0.0);
+    expected.put(LocalDate.parse("2015-11-30"), 37130.0);
+    expected.put(LocalDate.parse("2016-06-25"), 33761.0);
+    expected.put(LocalDate.parse("2017-01-19"), 40108.75);
+    expected.put(LocalDate.parse("2017-08-15"), 46111.0);
+    expected.put(LocalDate.parse("2018-03-11"), 58002.0);
+    expected.put(LocalDate.parse("2018-10-05"), 57867.49999999999);
+    expected.put(LocalDate.parse("2019-05-01"), 58404.0);
+    expected.put(LocalDate.parse("2019-11-25"), 65334.5);
+    expected.put(LocalDate.parse("2020-06-20"), 71586.0);
+    expected.put(LocalDate.parse("2021-01-14"), 87009.0);
+    expected.put(LocalDate.parse("2021-08-10"), 138096.5);
+    expected.put(LocalDate.parse("2022-03-06"), 132122.0);
+    expected.put(LocalDate.parse("2022-10-10"), 4935.5);
+
+    assertEquals(expected, performance);
+
+    from = LocalDate.parse("2022-10-10");
+    to = LocalDate.parse("2021-10-10");
+    try {
+      portfolio.getPortfolioPerformance(from, to);
+      fail("Should fail for invalid from..to but did not");
+    } catch(IllegalArgumentException e) {
+      // passes
+    }
+  }
+
   protected void addValueToDetailsSet(Map<String, Log> expected) {
     Map<String, Log> test = portfolio.getComposition();
     Set<Details> detailsSet = newTreeSet();
