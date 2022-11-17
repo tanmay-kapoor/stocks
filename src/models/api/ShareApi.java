@@ -8,6 +8,8 @@ import java.util.Map;
  * A share can be of type stock, crypto, forex, commodity, etc.
  */
 public interface ShareApi {
+  boolean isTickerPresent(String ticker);
+  boolean hasPrice(String ticker, LocalDate date);
   /**
    * This method gives the price of the share on a particular date asked by the client.
    *

@@ -80,13 +80,19 @@ public class StockControllerFlexible extends AbstractController {
         case '1':
           try {
             ticker = menu.getTickerSymbol().toUpperCase();
-            api.getShareDetails(ticker, LocalDate.now());
+            if (!api.isTickerPresent(ticker)) {
+              api.getShareDetails(ticker, LocalDate.now());
+            }
+
             Details details = getDetails();
-            api.getShareDetails(ticker, details.getPurchaseDate());
-            portfolio.buy(ticker, details, getCommissionFee());
-            portfolioComposition = portfolio.getComposition();
-            shouldSave = true;
-            menu.successMessage(ticker, details, Txn.Buy);
+            if (api.hasPrice(ticker, details.getPurchaseDate())) {
+              portfolio.buy(ticker, details, getCommissionFee());
+              portfolioComposition = portfolio.getComposition();
+              shouldSave = true;
+              menu.successMessage(ticker, details, Txn.Buy);
+            } else {
+              menu.printMessage("\nNo price data found for " + details.getPurchaseDate());
+            }
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }

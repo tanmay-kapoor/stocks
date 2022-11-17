@@ -460,7 +460,6 @@ abstract class AbstractController implements SpecificController {
           Details details = new Details(quantity, purchaseDate);
           api.getShareDetails(tickerSymbol, purchaseDate);
           portfolio.buy(tickerSymbol, details, getCommissionFee());
-          menu.successMessage(tickerSymbol, details, Txn.Buy);
         } catch (DateTimeParseException e) {
           shouldExit = false;
           menu.printMessage("\nInvalid date format");

@@ -50,6 +50,16 @@ public class StockApi implements ShareApi {
   }
 
   @Override
+  public boolean isTickerPresent(String ticker) {
+    return false;
+  }
+
+  @Override
+  public boolean hasPrice(String ticker, LocalDate date) {
+    return false;
+  }
+
+  @Override
   public Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked) {
     String supportedTicker = null;
 

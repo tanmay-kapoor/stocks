@@ -29,6 +29,22 @@ public class AlphaVantage implements ShareApi {
   }
 
   @Override
+  public boolean isTickerPresent(String ticker) {
+    if (tickerDetails.containsKey(ticker.toUpperCase())) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean hasPrice(String ticker, LocalDate date) {
+    if(tickerDetails.get(ticker.toUpperCase()).containsKey(date)) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
   public Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked) {
 
     if (dateAsked.compareTo(LocalDate.now()) > 0) {
@@ -81,14 +97,14 @@ public class AlphaVantage implements ShareApi {
         String[] vals = line.split(",");
         record = line;
         LocalDate rowDate = LocalDate.parse(vals[0]);
-        if (tickerDetails.containsKey(tickerSymbol)
-                && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
-          if (i == 1 && rowDate.compareTo(dateAsked) < 0) {
-            found = true;
-            break;
-          }
-          continue;
-        }
+//        if (tickerDetails.containsKey(tickerSymbol)
+//                && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
+//          if (i == 1 && rowDate.compareTo(dateAsked) < 0) {
+//            found = true;
+//            break;
+//          }
+//          continue;
+//        }
 
         Map<String, Double> values = new HashMap<>();
         assignValues(vals, values);
@@ -100,8 +116,6 @@ public class AlphaVantage implements ShareApi {
         }
         allDates.put(rowDate, values);
         tickerDetails.put(tickerSymbol, allDates);
-
-        int diff = rowDate.compareTo(dateAsked);
 
         if (prevLine != null) {
           String[] v = prevLine.split(",");
@@ -116,24 +130,41 @@ public class AlphaVantage implements ShareApi {
           }
         }
 
-        if (diff <= 0) {
-          found = true;
-          break;
-        }
+//        int diff = rowDate.compareTo(dateAsked);
+//        if (diff <= 0) {
+//          found = true;
+//          break;
+//        }
         prevLine = line;
       }
-      if (!found) {
+
+      LocalDate now = LocalDate.now();;
+      LocalDate date = LocalDate.now();
+      Map<LocalDate, Map<String, Double>> allDates = tickerDetails.get(tickerSymbol);
+      while(!allDates.containsKey(date)) {
+        date = date.minusDays(1);
+      }
+      Map<String, Double> vals = allDates.get(date);
+      date = date.plusDays(1);
+      while(date.compareTo(now) <= 0) {
+        allDates.put(date, vals);
+        date = date.plusDays(1);
+      }
+      tickerDetails.put(tickerSymbol, allDates);
+
+      if (!allDates.containsKey(dateAsked)) {
         throw new IllegalArgumentException("No price data found for " + dateAsked);
       }
+      return allDates.get(dateAsked);
 
-      Map<String, Double> shareDetails = new HashMap<>();
-      String[] details = record.split(",");
-
-      for (int i = 1; i < details.length; i++) {
-        shareDetails.put(keys[i], Double.parseDouble(details[i]));
-      }
-
-      return shareDetails;
+//      Map<String, Double> shareDetails = new HashMap<>();
+//      String[] details = record.split(",");
+//
+//      for (int i = 1; i < details.length; i++) {
+//        shareDetails.put(keys[i], Double.parseDouble(details[i]));
+//      }
+//
+//      return shareDetails;
     } catch (IOException e) {
       throw new IllegalArgumentException("No price data found for " + tickerSymbol);
     }

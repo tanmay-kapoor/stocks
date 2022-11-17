@@ -37,6 +37,16 @@ public class StockControllerFlexibleTest {
   private class MockApi implements ShareApi {
 
     @Override
+    public boolean isTickerPresent(String ticker) {
+      return false;
+    }
+
+    @Override
+    public boolean hasPrice(String ticker, LocalDate date) {
+      return false;
+    }
+
+    @Override
     public Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked) {
       log.append("Inside get share details ")
               .append(tickerSymbol).append(" ")
