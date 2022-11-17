@@ -203,16 +203,24 @@ public class StockControllerFlexible extends AbstractController {
 
             prevVal = valueOnDate;
             prevStars = stars;
+            String precisionAdjusted = String.format("%.2f", performance.get(date));
+            performanceReport
+                    .append("\n")
+                    .append(date)
+                    .append("\t\t\t\t")
+                    .append(precisionAdjusted)
+                    .append("\t\t\t\t\t")
+                    .append("*".repeat(stars));
 
-            performanceReport.append("\n").append(date).append("\t\t\t\t").append(String.format("%.2f", performance.get(date))).append("\t\t\t\t\t\t").append("*".repeat(stars));
           }
           Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
           performanceReport
-                  .append("\nScale: * ~ $")
+                  .append("\n\nScale: * ~ $")
                   .append(String.format("%.2f", scale_val))
                   .append(" relative to the base value of $")
                   .append(String.format("%.2f", min))
                   .append("\n");
+
 
           menu.printMessage(performanceReport.toString());
         } catch (IllegalArgumentException e) {
