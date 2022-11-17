@@ -220,6 +220,10 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public Map<String, Log> getComposition(LocalDate date) {
+    if(date.compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("Cannot get composition of future dates.");
+    }
+
     date = getSpecificDate(date);
 
     Map<String, Log> filteredStocks = new HashMap<>();
