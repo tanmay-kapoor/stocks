@@ -48,4 +48,4 @@ Follow the steps mentioned below to query the portfolio's cost basis on 2 differ
 3. Choose `Today` option to get the portfolio's cost basis till the current date. The cost value should be `$12011.8`.
 4. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
 5. Choose the date `2017-10-10`. You should see the cost basis value : `$8070.54`.
-6. Repeat the same process for custom date and this time, enter `8070.54`. YOu should get the cost basis value of `Some other value`.
+6. Repeat the same process for custom date and this time, enter `2022-07-12`. YOu should get the cost basis value of `12011.8`.

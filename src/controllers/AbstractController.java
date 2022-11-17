@@ -316,7 +316,18 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    LocalDate date = getPurchaseDate();
+    LocalDate date;
+    boolean isValidDate;
+
+    do {
+      isValidDate = true;
+      date = getPurchaseDate();
+      if(date.compareTo(LocalDate.now()) > 0) {
+        isValidDate = false;
+        menu.printMessage("\nDate cannot be in the future");
+      }
+    } while(!isValidDate);
+
     Map<String, Log> portfolioContent = portfolio.getComposition(date);
     StringBuilder composition = new StringBuilder();
 

@@ -191,6 +191,13 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     detailsSet.add(new Details(100, LocalDate.parse("2021-10-10")));
     expected.put("META", newLog(detailsSet));
     checkHashMapEquality(expected, shareDetails);
+
+    try {
+      portfolio.getComposition(LocalDate.parse("2024-01-01"));
+      fail("should fail for future date but did not");
+    } catch (IllegalArgumentException e) {
+      // passes
+    }
   }
 
   @Test
