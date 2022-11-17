@@ -27,25 +27,25 @@ Follow the steps mentioned below to add 3 stocks to the portfolio.
 1. Start the program using the jar file as demonstrated above.
 2. Select Flexible portfolio option on the menu.
 3. Select the option to create a portfolio and choose to create it through the interface. Choose any name you like other than "qwerty". This is because we have already provided a portfolio named "qwerty" in our submission.
-4. Add 5 shares `GOOG` to add to your stock initially. Select date of purchase as `2014-04-05`. Select any quantity as 5 and enter commission fee as 10. 
-5. Now let us go back to the main menu and buy shares of 2 more companies. Choose the Buy/Sell (option 4) on the menu and then select the buy option. Enter the name of the portfolio you created. Stock bought would be added to this portfolio.
+4. Add 5 shares `GOOG` to your stock initially. Select date of purchase as `2014-04-05`. Select quantity as 5 and enter commission fee as 10. 
+5. Now let us go back to the main menu and buy shares of 2 more companies. Choose the Buy/Sell (option 4) on the menu and then select the buy option. Enter the name of the portfolio you created. Shares bought would be added to this portfolio.
 6. This time buy 10 shares of `MSFT` on `2014-04-01` with commission fee of 5.
 7. Repeat step 5 and 6, but instead of Apple, enter `AAPL` as the stock to purchase. Buy 25 shares on `2022-05-01` with a commission fee of 0.
 
 
 Follow the steps mentioned below to query the portfolio's value on 2 different dates.
 
-1. Check the valuation of the portfolio by selecting Option `3` of Flexible portfolio. Enter name of the portfolio that you just created.
-2. Choose `Today` option to get the portfolio's value as of the current date. The value should be `$5701.25`.
+1. Check the valuation of the portfolio by selecting Option `3` of Flexible portfolio's main menu. Enter name of the portfolio that you just created.
+2. Choose `Today` option to get the portfolio's value as of the current date.
 3. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
 4. Choose the date `2012-04-11`. You should see the value : `0.00`. This is because all stocks have been bought after this date.
-5. Repeat the same process for custom date and this time, enter `2022-01-01`. YOu should get the value of `$16243.65`.
+5. Repeat the same process for custom date and this time, enter `2022-01-01`. YOu should get the value of `$$17831.15`.
 
 Follow the steps mentioned below to query the portfolio's cost basis on 2 different dates.
 
 1. Check the cost of the portfolio by selecting Option `6` of Flexible portfolio.
 2. Enter the name of the portfolio that you created. 
-3. Choose `Today` option to get the portfolio's cost basis till the current date. The cost value should be `$12011.8`.
+3. Choose `Today` option to get the portfolio's cost basis till the current date. The cost value should be `$7086.15`.
 4. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
-5. Choose the date `2017-10-10`. You should see the cost basis value : `$8070.54`.
-6. Repeat the same process for custom date and this time, enter `2022-07-12`. YOu should get the cost basis value of `12011.8`.
+5. Choose the date `2017-10-10`. You should see the cost basis value : `$3144.89`.
+6. Repeat the same process for custom date and this time, enter `2022-07-12`. YOu should get the cost basis value of `7086.15`.

@@ -246,13 +246,15 @@ public class StockControllerFlexible extends AbstractController {
         switch (ch) {
           case '1':
             costBasis = portfolio.getCostBasis();
-            menu.printMessage("Cost Basis on " + LocalDate.now() + " = " + costBasis);
+            menu.printMessage("Cost Basis on " + LocalDate.now()
+                    + " = $" + String.format("%.2f", costBasis));
             break;
 
           case '2':
             date = LocalDate.parse(menu.getDateForValue());
             costBasis = portfolio.getCostBasis(date);
-            menu.printMessage("Cost Basis on " + date + " = " + costBasis);
+            menu.printMessage("Cost Basis on " + date
+                    + " = $" + String.format("%.2f", costBasis));
             break;
 
           default:
