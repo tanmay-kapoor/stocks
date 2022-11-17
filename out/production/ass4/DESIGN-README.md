@@ -47,19 +47,24 @@ The structure of the view in the project folder is as follows:
    the Menu class. The method signatures in it lists the functions that are going to be used to
    display the menu to the user.
 
+
 2. `AbstractMenu` (abstract class) that will be used for providing views that will be
    common to other menu classes. This is done because in the future we may include menu for
    crypto/mutual fund portfolio which will share common methods.
+
 
 3. `StockMenuInflexible` (concrete class) is meant to specifically deal with menu while interacting
    with
    user about inflexible stock portfolio.
 
+
 4. `StockMenuFlexible` (concrete class) is meant to specifically deal with menu while interacting
    with
    user about flexible stock portfolio.
 
+
 5. `MainMenu` interface that state the methods to be implemented in classes that implement it.
+
 
 6. `MainMenuImpl` which can be used for choosing either to work with `Flexible` or `Inflexible`.
 
@@ -91,6 +96,7 @@ The structure of the model in the project folder is as follows:
       application independent of any third party api. These are the only stocks accessible by
       the `StockAPI`
 
+
 2. `portfolio` package which contains:
     - `Portfolio` (Interface) that states the methods that are expected from any kind of portfolio.
       We make this an interface so that it is scalable for future upgrades. For instance, we may be
@@ -112,10 +118,13 @@ The structure of the model in the project folder is as follows:
       transaction types like
       lending, borrowing could be accommodated if required.
 
+
 3. `Details` (Class) that stores the quantity and the date of purchase of a particular share.
+
 
 4. `Log` (Class) that stores the `Details` and `lastSoldDate` of a particular share in the
    portfolio.
+
 
 ### Controller
 
@@ -131,22 +140,30 @@ The structure of the controller in the project folder is as follows:
 
 1. `Controller` (Interface) Defines functions to be executed for deciding which specific controller
    to be called.
+
+
 2. `GenericController` (concrete class) Implements the `Controller` interface and is used to decide
    which specific controller to call. It is used to determine which type pof portfolio the user
    wants to work with.
+
+
 3. `SpecificController` (Interface) An interface that state all the methods that are supposed to be
    implemented by all controllers of the program. A `SpecificController` object is meant to be
    used to produce a view to the client, take requests from them, perform data manipulations/cleanup
    on the inputs and delegate necessary functionality to the model of the program.
 
+
 4. `AbstractController` (abstract class) An abstract controller that implements methods that
    are supposed to be common between multiple types of controllers across the program.
+
 
 5. `StockControllerFlexible` (concrete class) The StockControllerFlexible implements methods that
    are meant to be executed while specifically working with flexible portfolios related to stock
    data and `AlphaVantageAPI`. Flexible portfolios have the ability to Buy/Sell shares, get value of
    portfolio, get cost basis of the portfolio as well as see the portfolio performance all on
    past/present dates.
+
+
 6. `StockControllerInflexible` (concrete class) The StockControllerInflexible implements methods
    that are meant to
    be executed while working specifically for stock related data on inflexible portfolios
@@ -154,7 +171,10 @@ The structure of the controller in the project folder is as follows:
    methods for creating stock portfolios. It has limited functionality and cannot work with
    past/future dates.
 
+
 7. `Function` (enum) states the feature to be executed by the program.
+
+
 8. `FileType` (enum) states the purpose of the file being worked on.
 
 
