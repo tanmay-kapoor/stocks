@@ -85,6 +85,7 @@ public class StockControllerFlexible extends AbstractController {
               portfolio.sell(ticker, getDetails(), getCommissionFee());
               portfolioComposition = portfolio.getComposition();
               shouldSave = true;
+              menu.printMessage("Successfully sold!");
             } catch (IllegalArgumentException e) {
               menu.printMessage("\n" + e.getMessage());
             }
