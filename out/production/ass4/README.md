@@ -15,6 +15,8 @@
   of the two methods:
   1. Using text-based CLI or
   2. Upload a _<<portfolio_name>>_.csv file that contains the stocks and its quantity.
+    The header of the csv should be `share,quantity,purchaseDate` where share is the ticker symbol of the company,
+    quantity is the amount of shares of the company (`double`) and purchaseDate (`LocalDate` in `YYYY-MM-DD` format) is the date that share was purchased.
 
 
 - Get the valuation of the portfolio. The value of the portfolio is determined by the
@@ -39,11 +41,11 @@
 
 ## Features specific to Flexible Portfolio
 
-- User can buy stocks (provided that their data is accessible by the AlphaVantage API) on any date 
+- **Buy**: User can buy stocks (provided that their data is accessible by the AlphaVantage API) on any date 
 as provided by the user. We do not allow to buy shares on any future dates.
 
 
-- Sell any stocks that is present in the portfolio. There are however, some constrains while
+- **Sell**: Sell any stocks that is present in the portfolio. There are however, some constrains while
 selling the stock in portfolio. The user cannot sell more stocks than the available quantity in the portfolio. 
 For example, if the portfolio has 100 shares of Google, selling 101 shares of the same stocks is not possible. Furthermore, we have restricted
 selling stocks before it has already been sold once. For instance, if you have sold 10 shares of google on 10th of January 2020,
@@ -51,20 +53,20 @@ you can sell those share again only on or after the last sold date (i.e. 10 Jan 
 9th Jan, 2020 or earlier would now be prohibited. 
 
 
-- For every transaction, user can now charge a commission fee of their choice that gets added and 
+- **Commission Fee**: For every transaction, user can now charge a commission fee of their choice that gets added and 
 stored in the cost basis of the portfolio if the transaction goes through successfully.
 
 
-- Everytime a transaction (buy/sell) is successfully executed, the cost basis of the portfolio
+- **Cost Basis**: Everytime a transaction (buy/sell) is successfully executed, the cost basis of the portfolio
   is updated for the date of transaction. The updated cost basis is also reflected on the future
   dates since we allow some operation such as buy, and sell in specific cases to be out of 
   chronological order. If user tries to get costBasis for a date when there were no stocks in the portfolio, The requested value would be 0.
   Requesting cost basis for future dates not allowed by the program.
   
 
-- User can now view the performance of the portfolio between the dates specified by the user. 
+- **Performance**: User can now view the performance of the portfolio between the dates specified by the user. 
   User cannot choose future dates as nor price data would exist for those requests. The scale of the performance is relative,
-  i.e. if one has "\*" and the next has "\***" with scale of ~ $100 and base value: $50,000. THen the first row 
+  i.e. if one row has "\*" and the next has "\***" with scale of ~ $100 and base value: $50,000. THen the first row 
   represent $50,000 and the second row represents 50,000 + (100 \* 2) = $50,200. 
 
 

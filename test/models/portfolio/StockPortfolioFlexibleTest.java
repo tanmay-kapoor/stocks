@@ -17,6 +17,9 @@ import models.api.ShareApi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+/**
+ * A test class that check the methods implemented foe flexible portfolio.
+ */
 public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
   protected Portfolio createPortfolio(String portfolioName, String directory, ShareApi api) {
     return new StockPortfolioFlexible(portfolioName, directory, api);
@@ -191,52 +194,6 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
   }
 
   @Test
-  public void testBuySell() {
-    try {
-      Details details = new Details(22, LocalDate.parse("2020-10-10"));
-      portfolio.buy("META", details, -44);
-      fail("Buy should fail for negative commission but did not");
-    } catch(IllegalArgumentException e1) {
-      Details details = new Details(22, LocalDate.parse("2020-10-10"));
-      portfolio.buy("META", details, 33);
-      try {
-        portfolio.sell("META", details, -5.2);
-        fail("Sell should fail for negative commission but did not");
-      } catch(IllegalArgumentException e2) {
-        portfolio.buy("META", details, 44);
-        try {
-          details = new Details(10, LocalDate.parse("1950-10-10"));
-          portfolio.sell("META", details, 22);
-          fail("Should give exception for super old date but did not");
-        } catch(IllegalArgumentException e3) {
-          try {
-            portfolio.buy("AAPL", details, 10);
-            portfolio.sell("GOOG", details, 10);
-            fail("Should give exception for absent ticker but did not");
-          } catch(IllegalArgumentException e4) {
-            try {
-              details = new Details(-3, LocalDate.parse("2022-11-11"));
-              portfolio.buy("meta", details, 11);
-              fail("Buy should fail for -ve quantity but did not");
-            } catch(IllegalArgumentException e5) {
-              try {
-                details = new Details(3, LocalDate.parse("2022-11-11"));
-                portfolio.buy("meta", details, 11);
-
-                details = new Details(-3, LocalDate.parse("2022-11-11"));
-                portfolio.sell("meta", details, 11);
-                fail("Sell should fail for -ve quantity but did not");
-              } catch (IllegalArgumentException e6) {
-
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  @Test
   public void testCostBasis() {
     Details details = new Details(22, LocalDate.parse("2021-01-01"));
     portfolio.buy("META", details, 10);
@@ -260,50 +217,11 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     assertEquals(202320.42, portfolio.getCostBasis(LocalDate.parse("2022-09-09")), 0);
     assertEquals(205438.66, portfolio.getCostBasis(LocalDate.parse("2022-10-10")), 0);
     assertEquals(205438.66, portfolio.getCostBasis(LocalDate.parse("2022-11-11")), 0);
-  }
-
-  @Test
-  public void testGetPerformance() {
-    Details details = new Details(22, LocalDate.parse("2021-01-01"));
-    portfolio.buy("META", details, 10);
-
-    details = new Details(2, LocalDate.parse("2021-05-05"));
-    portfolio.sell("META", details, 10);
-
-    details = new Details(66, LocalDate.parse("2021-12-12"));
-    portfolio.buy("GOOG", details, 5);
-
-    details = new Details(22, LocalDate.parse("2022-10-10"));
-    portfolio.buy("AAPL", details, 35.9);
-
-    LocalDate from = LocalDate.parse("2021-10-10");
-    LocalDate to = LocalDate.parse("2022-10-10");
-    Map<LocalDate, Double> performance = portfolio.getPortfolioPerformance(from, to);
-
-    Map<LocalDate, Double> expected = new HashMap<>();
-    expected.put(LocalDate.parse("2021-10-10"), 6601.0);
-    expected.put(LocalDate.parse("2021-11-05"), 6822.6);
-    expected.put(LocalDate.parse("2021-12-01"), 6212.0);
-    expected.put(LocalDate.parse("2021-12-27"), 202368.08000000002);
-    expected.put(LocalDate.parse("2022-01-22"), 177784.84);
-    expected.put(LocalDate.parse("2022-02-17"), 178801.42);
-    expected.put(LocalDate.parse("2022-03-15"), 174992.46000000002);
-    expected.put(LocalDate.parse("2022-04-10"), 181340.46000000002);
-    expected.put(LocalDate.parse("2022-05-06"), 156746.59999999998);
-    expected.put(LocalDate.parse("2022-06-01"), 154433.63999999998);
-    expected.put(LocalDate.parse("2022-06-27"), 157331.49999999997);
-    expected.put(LocalDate.parse("2022-07-23"), 10537.16);
-    expected.put(LocalDate.parse("2022-08-18"), 11469.96);
-    expected.put(LocalDate.parse("2022-09-13"), 10013.06);
-    expected.put(LocalDate.parse("2022-10-10"), 12279.9);
-    assertEquals(expected, performance);
 
     try {
-      from = LocalDate.parse("2022-10-10");
-      to = LocalDate.parse("2021-10-10");
-      portfolio.getPortfolioPerformance(from, to);
-      fail("Should fail when 'from' comes after 'to' but did not");
-    } catch(IllegalArgumentException e) {
+      portfolio.sell("META", details, -5.2);
+      fail("Should fail for negative commission but did not");
+    } catch (IllegalArgumentException e) {
       // passes
     }
   }
@@ -315,7 +233,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     try {
       portfolio.getCostBasis(LocalDate.parse("2028-10-10"));
-    } catch(IllegalArgumentException e1) {
+    } catch (IllegalArgumentException e1) {
       assertEquals(0, portfolio.getCostBasis(LocalDate.parse("1900-10-10")), 0);
     }
   }

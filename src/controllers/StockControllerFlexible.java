@@ -22,6 +22,10 @@ import views.Menu;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
+/**
+ * The StockControllerInflexible couples appropriate views and models that work specifically with
+ * Flexible Portfolio.
+ */
 public class StockControllerFlexible extends AbstractController {
   protected StockControllerFlexible(Menu menu, ShareApi api, String path) {
     super(menu, api, path);
@@ -93,7 +97,8 @@ public class StockControllerFlexible extends AbstractController {
           }
           break;
       }
-    } while (ch >= '1' && ch <= '2');
+    }
+    while (ch >= '1' && ch <= '2');
   }
 
   @Override
@@ -104,7 +109,8 @@ public class StockControllerFlexible extends AbstractController {
       if (commissionFee < 0.0) {
         menu.printMessage("\nCommission fee must be non-negative");
       }
-    } while (commissionFee < 0.0);
+    }
+    while (commissionFee < 0.0);
     return commissionFee;
   }
 
@@ -179,21 +185,21 @@ public class StockControllerFlexible extends AbstractController {
           StringBuilder performanceReport = new StringBuilder();
           performanceReport.append("Date\t\t\t\tPortfolio Valuation ($)\t\t\t\t\tRelative Change");
 
-          for (LocalDate date : performance.keySet()) {
-            double valueOnDate = performance.get(date);
-            int scaled = (int) round(scaleBetween(valueOnDate, min, max));
-            int stars = scaled == 0 ? 1 : scaled;
-//          System.out.println(stars);
-            if (prevStars != 0) {
-              int starDiff = abs(stars - prevStars);
-              if (starDiff != 0) {
-                double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
-//              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
-                valueDiffSum += avg_star_val;
-                count += stars;
-//              count++;
-              }
+        for (LocalDate date : performance.keySet()) {
+          double valueOnDate = performance.get(date);
+          int scaled = (int) round(scaleBetween(valueOnDate, min, max));
+          int stars = scaled == 0 ? 1 : scaled;
+
+          if (prevStars != 0) {
+            int starDiff = abs(stars - prevStars);
+            if (starDiff != 0) {
+              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
+              // double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
+              valueDiffSum += avg_star_val;
+              count += stars;
+              // count++;
             }
+          }
 
             prevVal = valueOnDate;
             prevStars = stars;
@@ -213,7 +219,9 @@ public class StockControllerFlexible extends AbstractController {
           menu.printMessage(e.getMessage());
         }
       }
-    } while (!isValidGap);
+
+    }
+    while (!isValidGap);
   }
 
   private void handleGetCostBasis(Portfolio portfolio) {
@@ -243,7 +251,8 @@ public class StockControllerFlexible extends AbstractController {
         isProblematic = true;
         menu.printMessage("\nInvalid date format");
       }
-    } while (isProblematic);
+    }
+    while (isProblematic);
   }
 
   private LocalDate getDate(String msg) {
@@ -258,14 +267,15 @@ public class StockControllerFlexible extends AbstractController {
         date = LocalDate.parse(menu.getDateForValue());
 
         if (date.compareTo(LocalDate.now()) > 0) {
-          menu.printMessage("\nCannot get performance report for a future date.");
+          menu.printMessage("\nCannot get performance for a future date.");
           isValidDate = false;
         }
       } catch (DateTimeParseException e) {
         isValidDate = false;
         menu.printMessage("\nInvalid Date. Please enter again.");
       }
-    } while (!isValidDate);
+    }
+    while (!isValidDate);
 
     return date;
   }
@@ -283,7 +293,8 @@ public class StockControllerFlexible extends AbstractController {
     do {
       quantity = menu.getQuantity();
       isValid = this.validateQuantity(quantity);
-    } while (!isValid);
+    }
+    while (!isValid);
 
     LocalDate purchaseDate = getDate("");
     return new Details(quantity, purchaseDate);

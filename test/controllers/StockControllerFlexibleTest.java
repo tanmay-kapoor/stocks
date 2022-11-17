@@ -37,7 +37,9 @@ public class StockControllerFlexibleTest {
 
     @Override
     public Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked) {
-      log.append("Inside get share details ").append(tickerSymbol).append(" ").append(dateAsked).append("\n");
+      log.append("Inside get share details ")
+              .append(tickerSymbol).append(" ")
+              .append(dateAsked).append("\n");
       return new HashMap<>();
     }
   }
@@ -135,18 +137,21 @@ public class StockControllerFlexibleTest {
     }
 
     @Override
-    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks, Map<LocalDate, Double> costBasisHistory) {
+    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
+                                        Map<LocalDate, Double> costBasisHistory) {
       log.append("Portfolio name mult : ").append(portfolioName).append("\n");
       return new MockStockPortfolio(log);
     }
 
     @Override
-    protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile) throws FileNotFoundException {
+    protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
+            throws FileNotFoundException {
       return new HashMap<>();
     }
 
     @Override
-    protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile) throws FileNotFoundException {
+    protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
+            throws FileNotFoundException {
       return new HashMap<>();
     }
 
@@ -209,7 +214,8 @@ public class StockControllerFlexibleTest {
             }
             break;
         }
-      } while (ch >= '1' && ch <= '2');
+      }
+      while (ch >= '1' && ch <= '2');
     }
 
     private void handleGetPortfolioPerformance(Portfolio portfolio) {
@@ -227,13 +233,15 @@ public class StockControllerFlexibleTest {
 
     @Override
     protected void filterBasedOnFunction(Function function) {
-      log.append("Inside filterBasedOnFunction(Function function) Received : ").append(function).append("\n");
+      log.append("Inside filterBasedOnFunction(Function function) Received : ")
+              .append(function).append("\n");
       commonStuff(function);
     }
 
     @Override
     protected void handleMenuOptions(Portfolio portfolio, Function function) {
-      log.append("Inside handleMenuOptions(p, f) function = ").append(function).append("\n");
+      log.append("Inside handleMenuOptions(p, f) function = ")
+              .append(function).append("\n");
       switch (function) {
         case Composition:
           handleGetPortfolioComposition(portfolio);
@@ -287,7 +295,8 @@ public class StockControllerFlexibleTest {
       do {
         quantity = menu.getQuantity();
         isValid = this.validateQuantity(quantity);
-      } while (!isValid);
+      }
+      while (!isValid);
 
       LocalDate purchaseDate = getDate("");
       return new Details(quantity, purchaseDate);
@@ -307,7 +316,8 @@ public class StockControllerFlexibleTest {
           isValidDate = false;
           menu.printMessage("\nInvalid Date. Please enter again.");
         }
-      } while (!isValidDate);
+      }
+      while (!isValidDate);
 
       return date;
     }
@@ -442,7 +452,8 @@ public class StockControllerFlexibleTest {
             "Inside get share details AAPL 2022-11-16\n" +
             "Inside get share details AAPL 2020-10-10\n" +
             "Inside getCommissionFee()\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 20.0 Purchase Date : 2020-10-10 Commission Fee : 20.6\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
+            "20.0 Purchase Date : 2020-10-10 Commission Fee : 20.6\n" +
             "Inside getComposition()\n" +
             "Neither buy nor sell\n" +
             "Inside savePortfolio\n";
@@ -452,8 +463,8 @@ public class StockControllerFlexibleTest {
   @Test
   public void testGetPerformance() {
     generateStream("5\nidk\n2022-01-01\n2022-05-05\nx\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : SeePerformance\n" +
-            "Portfolio name mult : idk\n" +
+    String expected = "Inside filterBasedOnFunction(Function function) Received: SeePerformance\n"
+            + "Portfolio name mult : idk\n" +
             "Inside handleMenuOptions(p, f) function = SeePerformance\n" +
             "Inside handleGetPortfolioPerformance(portfolio)\n" +
             "Inside getPortfolioPerformance(from, to) From : 2022-01-01 To : 2022-05-05\n";

@@ -298,7 +298,7 @@ abstract class AbstractController implements SpecificController {
           case '2':
             date = menu.getDateForValue();
             val = portfolio.getValue(LocalDate.parse(date));
-            menu.printMessage(String.format("\nValue of portfolio on %s = %.2f", date, val));
+            menu.printMessage(String.format("\nValue of portfolio on %s = $%.2f", date, val));
             break;
 
           default:

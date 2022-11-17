@@ -19,7 +19,7 @@ public class StockMenuFlexibleTest extends AbstractStockMenuTest {
             + "2. See portfolio composition.\n"
             + "3. Check portfolio value.\n"
             + "4. Buy/Sell shares from a portfolio.\n"
-            +"5. See portfolio performance.\n"
+            + "5. See portfolio performance.\n"
             + "6. Get Cost basis.\n"
             + "Press any other key to go back.\n"
             + "\nEnter your choice : ";

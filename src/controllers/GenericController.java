@@ -19,7 +19,6 @@ import views.StockMenuInflexible;
 public class GenericController implements Controller {
   private final InputStream in;
   private final PrintStream out;
-  private Menu menu;
   private final String commonPath;
 
   /**
@@ -48,14 +47,14 @@ public class GenericController implements Controller {
 
       switch (choice) {
         case '1':
-          this.menu = new StockMenuFlexible(this.in, this.out);
+          Menu menu = new StockMenuFlexible(this.in, this.out);
           api = new AlphaVantage();
           path = this.commonPath + "stocks/flexible/";
           new StockControllerFlexible(menu, api, path).start();
           break;
 
         case '2':
-          this.menu = new StockMenuInflexible(this.in, this.out);
+          menu = new StockMenuInflexible(this.in, this.out);
           api = new AlphaVantage();
           path = this.commonPath + "stocks/inflexible/";
           new StockControllerInflexible(menu, api, path).start();
