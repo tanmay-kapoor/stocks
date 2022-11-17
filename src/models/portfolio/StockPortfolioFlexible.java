@@ -194,7 +194,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     long days = ChronoUnit.DAYS.between(from, to);
 
     Map<LocalDate, Double> performance = new TreeMap<>();
-    int n = 14;
+    int n = 15;
     long intervals = days < n ? 1 : (days / (n - 1));
 
     LocalDate i;

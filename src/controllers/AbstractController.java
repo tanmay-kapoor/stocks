@@ -316,55 +316,69 @@ abstract class AbstractController implements SpecificController {
   }
 
   private String getPortfolioContents(Portfolio portfolio) {
-    Map<String, Log> portfolioContent = portfolio.getComposition(getPurchaseDate());
-    StringBuilder composition = new StringBuilder("\nshare\t\tquantity");
+    LocalDate date = getPurchaseDate();
+    Map<String, Log> portfolioContent = portfolio.getComposition(date);
+    StringBuilder composition = new StringBuilder();
 
-    for (String ticker : portfolioContent.keySet()) {
-      Log log = portfolioContent.get(ticker);
-      Set<Details> detailsSet = log.getDetailsSet();
-      int quantity = 0;
-      for (Details details : detailsSet) {
-        quantity += details.getQuantity();
+    if (portfolioContent.isEmpty()) {
+      composition.append("\nNo stocks existed on ").append(date);
+    } else {
+      composition.append("\nshare\t\tquantity");
+      for (String ticker : portfolioContent.keySet()) {
+        Log log = portfolioContent.get(ticker);
+        Set<Details> detailsSet = log.getDetailsSet();
+        int quantity = 0;
+        for (Details details : detailsSet) {
+          quantity += details.getQuantity();
+        }
+
+        composition
+                .append("\n")
+                .append(ticker)
+                .append("\t\t")
+                .append(quantity);
       }
-
-      composition
-              .append("\n")
-              .append(ticker)
-              .append("\t\t")
-              .append(quantity);
     }
+
     return composition.toString();
   }
 
   private String getPortfolioWeightage(Portfolio portfolio) {
-    Map<String, Log> portfolioContent = portfolio.getComposition(getPurchaseDate());
+    LocalDate date = getPurchaseDate();
+    Map<String, Log> portfolioContent = portfolio.getComposition(date);
+    StringBuilder composition = new StringBuilder();
 
-    StringBuilder composition = new StringBuilder("\nshare\t\tpercentage");
-    Map<String, Double> shareQuantity = new HashMap<>();
+    if (portfolioContent.isEmpty()) {
+      composition.append("\nNo stocks existed on ").append(date);
+    } else {
+      composition.append("\nshare\t\tpercentage");
 
-    long totalShare = 0;
-    for (String ticker : portfolioContent.keySet()) {
-      Log log = portfolioContent.get(ticker);
-      Set<Details> detailsSet = log.getDetailsSet();
-      double tickerQuantity = 0;
+      Map<String, Double> shareQuantity = new HashMap<>();
+      long totalShare = 0;
+      for (String ticker : portfolioContent.keySet()) {
+        Log log = portfolioContent.get(ticker);
+        Set<Details> detailsSet = log.getDetailsSet();
+        double tickerQuantity = 0;
 
-      for (Details details : detailsSet) {
-        double n = details.getQuantity();
-        totalShare += n;
-        tickerQuantity += n;
+        for (Details details : detailsSet) {
+          double n = details.getQuantity();
+          totalShare += n;
+          tickerQuantity += n;
+        }
+        shareQuantity.put(ticker, tickerQuantity);
       }
-      shareQuantity.put(ticker, tickerQuantity);
+
+      for (String ticker : shareQuantity.keySet()) {
+        double qty = shareQuantity.get(ticker);
+
+        composition
+                .append("\n")
+                .append(ticker)
+                .append("\t\t").append(String.format("%.02f", qty / totalShare * 100)).append("%")
+                .append("\t\t\t");
+      }
     }
 
-    for (String ticker : shareQuantity.keySet()) {
-      double qty = shareQuantity.get(ticker);
-
-      composition
-              .append("\n")
-              .append(ticker)
-              .append("\t\t").append(String.format("%.02f", qty / totalShare * 100)).append("%")
-              .append("\t\t\t");
-    }
     return composition.toString();
   }
 
