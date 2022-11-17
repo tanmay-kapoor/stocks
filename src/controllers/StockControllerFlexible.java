@@ -17,6 +17,7 @@ import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
+import models.portfolio.Txn;
 import views.Menu;
 
 import static java.lang.Math.abs;
@@ -71,6 +72,7 @@ public class StockControllerFlexible extends AbstractController {
             portfolio.buy(ticker, details, getCommissionFee());
             portfolioComposition = portfolio.getComposition();
             shouldSave = true;
+            //menu.successMessage(ticker, getDetails().getQuantity(), Txn.Buy);
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }
@@ -85,7 +87,7 @@ public class StockControllerFlexible extends AbstractController {
               portfolio.sell(ticker, getDetails(), getCommissionFee());
               portfolioComposition = portfolio.getComposition();
               shouldSave = true;
-              menu.printMessage("Successfully sold!");
+              //menu.successMessage(ticker, getDetails().getQuantity(), Txn.Sell);
             } catch (IllegalArgumentException e) {
               menu.printMessage("\n" + e.getMessage());
             }

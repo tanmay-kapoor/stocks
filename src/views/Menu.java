@@ -1,5 +1,7 @@
 package views;
 
+import models.portfolio.Txn;
+
 /**
  * An interface that states the methods to be implemented by any class that extends the
  * <code>Menu</code> class. The methods listed below shows the functions that are going
@@ -26,6 +28,8 @@ public interface Menu {
    * @param msg message to be displayed.
    */
   void printMessage(String msg);
+
+  void successMessage(String ticker, double qty, Txn txn_type);
 
   /**
    * Provides the choices that the user gets after choosing to create a portfolio.
