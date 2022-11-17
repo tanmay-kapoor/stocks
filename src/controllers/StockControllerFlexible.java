@@ -251,11 +251,11 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   private void handleGetCostBasis(Portfolio portfolio) {
-    char ch = menu.getDateChoice();
-    LocalDate date;
-    double costBasis;
     boolean isProblematic;
     do {
+      char ch = menu.getDateChoice();
+      LocalDate date;
+      double costBasis;
       isProblematic = false;
       try {
         switch (ch) {
@@ -275,9 +275,12 @@ public class StockControllerFlexible extends AbstractController {
           default:
             break;
         }
+      } catch (IllegalArgumentException e) {
+        isProblematic = true;
+        menu.printMessage("\n" + e.getMessage());
       } catch (DateTimeParseException e) {
         isProblematic = true;
-        menu.printMessage("\nInvalid date format");
+        menu.printMessage("\nInvalid date format" + "\n");
       }
     }
     while (isProblematic);
@@ -363,49 +366,49 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option) {
-    char ch = menu.getDateChoice();
     boolean isFutureDate;
 
-    switch (ch) {
-      case '1':
-        getCompositionForToday(portfolio, option);
-        return true;
+    do {
+      isFutureDate = false;
+      char ch = menu.getDateChoice();
 
-      case '2':
-        LocalDate date;
-        switch (option) {
-          case Contents:
-            do {
-              isFutureDate = false;
+      switch (ch) {
+        case '1':
+          getCompositionForToday(portfolio, option);
+          return true;
+
+        case '2':
+          LocalDate date;
+          switch (option) {
+            case Contents:
               try {
                 date = getPurchaseDate();
                 menu.printMessage(getPortfolioContents(portfolio, date));
               } catch (IllegalArgumentException e) {
                 isFutureDate = true;
-                menu.printMessage("\n" + e.getMessage() + "\n");
+                menu.printMessage("\n" + e.getMessage());
               }
-            } while (isFutureDate);
-            return true;
+              break;
 
-          case Weightage:
-            do {
-              isFutureDate = false;
+            case Weightage:
               try {
                 date = getPurchaseDate();
                 menu.printMessage(getPortfolioWeightage(portfolio, date));
               } catch (IllegalArgumentException e) {
                 isFutureDate = true;
-                menu.printMessage("\n" + e.getMessage() + "\n");
+                menu.printMessage("\n" + e.getMessage());
               }
-            } while (isFutureDate);
-            return true;
+              break;
 
-          default:
-            return false;
-        }
+            default:
+              return false;
+          }
+          break;
 
-      default:
-        return false;
-    }
+        default:
+          return false;
+      }
+    } while (isFutureDate);
+    return true;
   }
 }
