@@ -156,27 +156,34 @@ public class StockControllerFlexible extends AbstractController {
     boolean isValidGap;
 
     do {
+      isValidGap = true;
       from = getDate("Choose a start date");
       to = getDate("Choose an end date");
       long days = ChronoUnit.DAYS.between(from, to);
 
-      isValidGap = true;
+      if (from.compareTo(to) > 0) {
+        menu.printMessage("\nPlease choose a start date before the end date");
+        isValidGap = false;
+      } else if (to.compareTo(LocalDate.now()) > 0) {
+        isValidGap = false;
+        menu.printMessage("\nEnd date cannot be in the future.");
+      } else {
+        try {
+          menu.printMessage("\nPlease wait while performance report is being generated! "
+                  + "This may take some time..\n");
+          performance = portfolio.getPortfolioPerformance(from, to);
 
-      try {
-        menu.printMessage("\nPlease wait while performance report is being generated! "
-                + "This may take some time..\n");
-        performance = portfolio.getPortfolioPerformance(from, to);
+          //scale performance
+          Double min = Collections.min(performance.values());
+          Double max = Collections.max(performance.values());
 
-        //scale performance
-        Double min = Collections.min(performance.values());
-        Double max = Collections.max(performance.values());
+          int count = 0;
+          double prevVal = 0.00;
+          int prevStars = 0;
+          double valueDiffSum = 0;
 
-        int count = 0;
-        double prevVal = 0.00;
-        int prevStars = 0;
-        double valueDiffSum = 0;
-
-        menu.printMessage("Date\t\t\t\tPortfolio Valuation ($)\t\t\t\t\tRelative Change");
+          StringBuilder performanceReport = new StringBuilder();
+          performanceReport.append("Date\t\t\t\tPortfolio Valuation ($)\t\t\t\t\tRelative Change");
 
         for (LocalDate date : performance.keySet()) {
           double valueOnDate = performance.get(date);
@@ -194,19 +201,23 @@ public class StockControllerFlexible extends AbstractController {
             }
           }
 
-          prevVal = valueOnDate;
-          prevStars = stars;
+            prevVal = valueOnDate;
+            prevStars = stars;
 
-          menu.printMessage(date + "\t\t\t\t"
-                  + String.format("%.2f", performance.get(date)) + "\t\t\t\t\t\t"
-                  + "*".repeat(stars));
+            performanceReport.append("\n").append(date).append("\t\t\t\t").append(String.format("%.2f", performance.get(date))).append("\t\t\t\t\t\t").append("*".repeat(stars));
+          }
+          Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
+          performanceReport
+                  .append("\nScale: * ~ $")
+                  .append(String.format("%.2f", scale_val))
+                  .append(" relative to the base value of $")
+                  .append(String.format("%.2f", min))
+                  .append("\n");
 
+          menu.printMessage(performanceReport.toString());
+        } catch (IllegalArgumentException e) {
+          menu.printMessage(e.getMessage());
         }
-        Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
-        menu.printMessage("\nScale: * ~ $" + String.format("%.2f", scale_val)
-                + " relative to the base value of $" + String.format("%.2f", min) + "\n");
-      } catch (IllegalArgumentException e) {
-        menu.printMessage(e.getMessage());
       }
 
     }
