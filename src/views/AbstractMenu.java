@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import models.Details;
 import models.portfolio.Txn;
 
 /**
@@ -45,9 +46,9 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public void successMessage(String ticker, double qty, Txn txn_type) {
+  public void successMessage(String ticker, Details details, Txn txn_type) {
     String txn = txn_type == Txn.Buy ? "bought" : "sold";
-    this.print("Successfully " + txn + " " + qty + " shares of " + ticker.toUpperCase() + "\n");
+    this.print("\nSuccessfully " + txn + " " + details.getQuantity() + " shares of " + ticker.toUpperCase() + " on " + details.getPurchaseDate() + "\n");
   }
 
   @Override

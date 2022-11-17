@@ -1,5 +1,6 @@
 package views;
 
+import models.Details;
 import models.portfolio.Txn;
 
 /**
@@ -29,7 +30,7 @@ public interface Menu {
    */
   void printMessage(String msg);
 
-  void successMessage(String ticker, double qty, Txn txn_type);
+  void successMessage(String ticker, Details details, Txn txn_type);
 
   /**
    * Provides the choices that the user gets after choosing to create a portfolio.

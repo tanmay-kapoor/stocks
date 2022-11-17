@@ -86,7 +86,7 @@ public class StockControllerFlexible extends AbstractController {
             portfolio.buy(ticker, details, getCommissionFee());
             portfolioComposition = portfolio.getComposition();
             shouldSave = true;
-            //menu.successMessage(ticker, getDetails().getQuantity(), Txn.Buy);
+            menu.successMessage(ticker, details, Txn.Buy);
           } catch (IllegalArgumentException e) {
             menu.printMessage("\n" + e.getMessage());
           }
@@ -98,10 +98,11 @@ public class StockControllerFlexible extends AbstractController {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
             try {
-              portfolio.sell(ticker, getDetails(), getCommissionFee());
+              Details details = getDetails();
+              portfolio.sell(ticker, details, getCommissionFee());
               portfolioComposition = portfolio.getComposition();
               shouldSave = true;
-              //menu.successMessage(ticker, getDetails().getQuantity(), Txn.Sell);
+              menu.successMessage(ticker, details, Txn.Sell);
             } catch (IllegalArgumentException e) {
               menu.printMessage("\n" + e.getMessage());
             }
