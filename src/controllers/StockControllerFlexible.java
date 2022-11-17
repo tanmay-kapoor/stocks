@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -177,7 +176,6 @@ public class StockControllerFlexible extends AbstractController {
       isValidGap = true;
       from = getDate("Choose a start date");
       to = getDate("Choose an end date");
-      long days = ChronoUnit.DAYS.between(from, to);
 
       if (from.compareTo(to) > 0) {
         menu.printMessage("\nPlease choose a start date before the end date");
@@ -212,10 +210,8 @@ public class StockControllerFlexible extends AbstractController {
               int starDiff = abs(stars - prevStars);
               if (starDiff != 0) {
                 double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
-                // double avg_star_val = (abs(valueOnDate - prevVal) / starDiff);
                 valueDiffSum += avg_star_val;
                 count += stars;
-                // count++;
               }
             }
 
