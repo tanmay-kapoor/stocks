@@ -83,11 +83,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
               + "Current quantity: " + sharesAvailable);
     }
 
-    for(Details d : detailsSet) {
+    for (Details d : detailsSet) {
       if (d.getPurchaseDate().compareTo(sellDate) == 0) {
         sharesBoughtOnSellDay = true;
       }
-      if(d.getPurchaseDate().compareTo(sellDate) >= 0) {
+      if (d.getPurchaseDate().compareTo(sellDate) >= 0) {
         d.setQuantity(d.getQuantity() - sellQty);
       }
     }

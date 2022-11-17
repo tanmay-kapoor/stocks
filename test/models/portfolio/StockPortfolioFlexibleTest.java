@@ -297,7 +297,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     try {
       portfolio.getPortfolioPerformance(from, to);
       fail("Should fail for invalid from..to but did not");
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // passes
     }
   }

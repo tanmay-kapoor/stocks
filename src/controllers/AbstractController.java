@@ -284,7 +284,8 @@ abstract class AbstractController implements SpecificController {
           didPerform = true;
           break;
       }
-    } while (!didPerform);
+    }
+    while (!didPerform);
   }
 
   protected void handleGetPortfolioValue(Portfolio portfolio) {

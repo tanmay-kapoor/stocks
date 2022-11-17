@@ -118,6 +118,9 @@ The structure of the model in the project folder is as follows:
       transaction types like
       lending, borrowing could be accommodated if required.
 
+    - `Composition` Lists the type of compositions that can be requested by the client.
+      For now, we only allow getting composition based on contents or percent weightage of stocks.
+
 
 3. `Details` (Class) that stores the quantity and the date of purchase of a particular share.
 

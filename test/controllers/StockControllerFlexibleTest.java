@@ -376,7 +376,8 @@ public class StockControllerFlexibleTest {
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL 2022-10-10\n" +
             "Inside getCommissionFee()\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 Purchase Date : 2022-10-10 Commission Fee : 34.5\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
+            "38.0 Purchase Date : 2022-10-10 Commission Fee : 34.5\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -398,7 +399,8 @@ public class StockControllerFlexibleTest {
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL 2022-10-10\n" +
             "Inside getCommissionFee()\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 Purchase Date : 2022-10-10 Commission Fee : 22.3\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
+            "22.0 Purchase Date : 2022-10-10 Commission Fee : 22.3\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -410,7 +412,8 @@ public class StockControllerFlexibleTest {
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL 2022-10-10\n" +
             "Inside getCommissionFee()\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 Purchase Date : 2022-10-10 Commission Fee : 20.3\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL " +
+            "Quantity : -38.0 Purchase Date : 2022-10-10 Commission Fee : 20.3\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }

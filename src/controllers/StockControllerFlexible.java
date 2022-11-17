@@ -56,7 +56,8 @@ public class StockControllerFlexible extends AbstractController {
         isValidDate = false;
         menu.printMessage("\nInvalid Date format\n");
       }
-    } while (!isValidDate);
+    }
+    while (!isValidDate);
 
     return date;
   }
@@ -202,7 +203,8 @@ public class StockControllerFlexible extends AbstractController {
           double valueDiffSum = 0;
 
           StringBuilder performanceReport = new StringBuilder();
-          performanceReport.append("Date\t\t\t\tPortfolio Valuation ($)\t\t\t\t\tRelative Change");
+          performanceReport.append("Date\t\t\t\t\t\t\tPortfolio Valuation ($)"
+                  + "\t\t\t\t\tRelative Change");
 
           for (LocalDate date : performance.keySet()) {
             double valueOnDate = performance.get(date);
@@ -224,9 +226,9 @@ public class StockControllerFlexible extends AbstractController {
             performanceReport
                     .append("\n")
                     .append(date)
-                    .append("\t\t\t\t")
+                    .append("\t\t\t\t\t\t\t")
                     .append(precisionAdjusted)
-                    .append("\t\t\t\t\t")
+                    .append(" ".repeat(7 - precisionAdjusted.length() + 35))
                     .append("*".repeat(stars));
 
           }
@@ -406,7 +408,8 @@ public class StockControllerFlexible extends AbstractController {
         default:
           return false;
       }
-    } while (isFutureDate);
+    }
+    while (isFutureDate);
     return true;
   }
 }

@@ -46,9 +46,10 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
-  public void successMessage(String ticker, Details details, Txn txn_type) {
-    String txn = txn_type == Txn.Buy ? "bought" : "sold";
-    this.print("\nSuccessfully " + txn + " " + details.getQuantity() + " shares of " + ticker.toUpperCase() + " on " + details.getPurchaseDate() + "\n");
+  public void successMessage(String ticker, Details details, Txn txnType) {
+    String txn = txnType == Txn.Buy ? "bought" : "sold";
+    this.print("\nSuccessfully " + txn + " " + details.getQuantity()
+            + " shares of " + ticker.toUpperCase() + " on " + details.getPurchaseDate() + "\n");
   }
 
   @Override

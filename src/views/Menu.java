@@ -30,7 +30,7 @@ public interface Menu {
    */
   void printMessage(String msg);
 
-  void successMessage(String ticker, Details details, Txn txn_type);
+  void successMessage(String ticker, Details details, Txn txnType);
 
   /**
    * Provides the choices that the user gets after choosing to create a portfolio.
