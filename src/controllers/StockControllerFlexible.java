@@ -124,7 +124,7 @@ public class StockControllerFlexible extends AbstractController {
     do {
       commissionFee = menu.getCommissionFee();
       if (commissionFee < 0.0) {
-        menu.printMessage("\nCommission fee must be non-negative");
+        menu.printMessage("\nCommission fee must be non-negative\n");
       }
     }
     while (commissionFee < 0.0);
@@ -174,8 +174,11 @@ public class StockControllerFlexible extends AbstractController {
 
     do {
       isValidGap = true;
-      from = getDate("Choose a start date");
-      to = getDate("Choose an end date");
+      menu.printMessage("\nChoose a start date");
+      from = getDate();
+
+      menu.printMessage("\nChoose an end date");
+      to = getDate();
 
       if (from.compareTo(to) > 0) {
         menu.printMessage("\nPlease choose a start date before the end date");
@@ -257,14 +260,14 @@ public class StockControllerFlexible extends AbstractController {
         switch (ch) {
           case '1':
             costBasis = portfolio.getCostBasis();
-            menu.printMessage("Cost Basis on " + LocalDate.now()
+            menu.printMessage("\nCost Basis on " + LocalDate.now()
                     + " = $" + String.format("%.2f", costBasis));
             break;
 
           case '2':
             date = LocalDate.parse(menu.getDateForValue());
             costBasis = portfolio.getCostBasis(date);
-            menu.printMessage("Cost Basis on " + date
+            menu.printMessage("\nCost Basis on " + date
                     + " = $" + String.format("%.2f", costBasis));
             break;
 
@@ -276,13 +279,13 @@ public class StockControllerFlexible extends AbstractController {
         menu.printMessage("\n" + e.getMessage());
       } catch (DateTimeParseException e) {
         isProblematic = true;
-        menu.printMessage("\nInvalid date format" + "\n");
+        menu.printMessage("\nInvalid date format");
       }
     }
     while (isProblematic);
   }
 
-  private LocalDate getDate(String msg) {
+  private LocalDate getDate() {
     LocalDate date;
     boolean isValidDate;
 
@@ -290,16 +293,15 @@ public class StockControllerFlexible extends AbstractController {
       date = LocalDate.now();
       isValidDate = true;
       try {
-        menu.printMessage("\n" + msg);
         date = LocalDate.parse(menu.getDateForValue());
 
         if (date.compareTo(LocalDate.now()) > 0) {
-          menu.printMessage("\nCannot get performance for a future date.");
+          menu.printMessage("\nCannot perform action for a future date.\n");
           isValidDate = false;
         }
       } catch (DateTimeParseException e) {
         isValidDate = false;
-        menu.printMessage("\nInvalid Date. Please enter again.");
+        menu.printMessage("\nInvalid date format.\n");
       }
     }
     while (!isValidDate);
@@ -323,7 +325,7 @@ public class StockControllerFlexible extends AbstractController {
     }
     while (!isValid);
 
-    LocalDate purchaseDate = getDate("");
+    LocalDate purchaseDate = getDate();
     return new Details(quantity, purchaseDate);
   }
 
