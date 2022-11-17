@@ -322,11 +322,12 @@ abstract class AbstractController implements SpecificController {
     do {
       isValidDate = true;
       date = getPurchaseDate();
-      if(date.compareTo(LocalDate.now()) > 0) {
+      if (date.compareTo(LocalDate.now()) > 0) {
         isValidDate = false;
         menu.printMessage("\nDate cannot be in the future");
       }
-    } while(!isValidDate);
+    }
+    while (!isValidDate);
 
     Map<String, Log> portfolioContent = portfolio.getComposition(date);
     StringBuilder composition = new StringBuilder();
