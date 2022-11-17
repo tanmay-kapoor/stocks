@@ -5,7 +5,7 @@ Please follow the steps below to run the program:
 1. Open the project root directory in the terminal. 
 
 
-2. type `cd res` and press ENTER. you should see a file with .jar extension in this directory. 
+2. type `cd res` and press ENTER. You should see a file with .jar extension in this directory. 
    This is the file that you'll be using to interact with the program.
 
 
@@ -39,7 +39,7 @@ Follow the steps mentioned below to query the portfolio's value on 2 different d
 2. Choose `Today` option to get the portfolio's value as of the current date.
 3. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
 4. Choose the date `2012-04-11`. You should see the value : `0.00`. This is because all stocks have been bought after this date.
-5. Repeat the same process for custom date and this time, enter `2022-01-01`. YOu should get the value of `$$17831.15`.
+5. Repeat the same process for custom date and this time, enter `2022-01-01`. You should get the value of `$17831.15`.
 
 Follow the steps mentioned below to query the portfolio's cost basis on 2 different dates.
 
@@ -48,4 +48,4 @@ Follow the steps mentioned below to query the portfolio's cost basis on 2 differ
 3. Choose `Today` option to get the portfolio's cost basis till the current date. The cost value should be `$7086.15`.
 4. For other dates repeat `step 1` and instead of choosing today's date, select the `Custom Date` option.
 5. Choose the date `2017-10-10`. You should see the cost basis value : `$3144.89`.
-6. Repeat the same process for custom date and this time, enter `2022-07-12`. YOu should get the cost basis value of `7086.15`.
+6. Repeat the same process for custom date and this time, enter `2022-07-12`. You should get the cost basis value of `$7086.15`.
