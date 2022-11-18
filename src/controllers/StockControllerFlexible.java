@@ -209,7 +209,7 @@ public class StockControllerFlexible extends AbstractController {
           double valueDiffSum = 0;
 
           StringBuilder performanceReport = new StringBuilder();
-          performanceReport.append("Date\t\t\t\t\t\t\tPortfolio Valuation ($)"
+          performanceReport.append("Date\t\t\t\t\tPortfolio Valuation ($)"
                   + "\t\t\t\t\tRelative Change");
 
           for (LocalDate date : performance.keySet()) {
@@ -232,7 +232,7 @@ public class StockControllerFlexible extends AbstractController {
             performanceReport
                     .append("\n")
                     .append(date)
-                    .append("\t\t\t\t\t\t\t")
+                    .append("\t\t\t\t\t")
                     .append(precisionAdjusted)
                     .append(" ".repeat(7 - precisionAdjusted.length() + 35))
                     .append("*".repeat(stars));

@@ -30,18 +30,12 @@ public class AlphaVantage implements ShareApi {
 
   @Override
   public boolean isTickerPresent(String ticker) {
-    if (tickerDetails.containsKey(ticker.toUpperCase())) {
-      return true;
-    }
-    return false;
+    return tickerDetails.containsKey(ticker.toUpperCase());
   }
 
   @Override
   public boolean hasPrice(String ticker, LocalDate date) {
-    if(tickerDetails.get(ticker.toUpperCase()).containsKey(date)) {
-      return true;
-    }
-    return false;
+    return tickerDetails.get(ticker.toUpperCase()).containsKey(date);
   }
 
   @Override
@@ -97,14 +91,6 @@ public class AlphaVantage implements ShareApi {
         String[] vals = line.split(",");
         record = line;
         LocalDate rowDate = LocalDate.parse(vals[0]);
-//        if (tickerDetails.containsKey(tickerSymbol)
-//                && tickerDetails.get(tickerSymbol).containsKey(rowDate)) {
-//          if (i == 1 && rowDate.compareTo(dateAsked) < 0) {
-//            found = true;
-//            break;
-//          }
-//          continue;
-//        }
 
         Map<String, Double> values = new HashMap<>();
         assignValues(vals, values);
@@ -130,23 +116,19 @@ public class AlphaVantage implements ShareApi {
           }
         }
 
-//        int diff = rowDate.compareTo(dateAsked);
-//        if (diff <= 0) {
-//          found = true;
-//          break;
-//        }
         prevLine = line;
       }
 
-      LocalDate now = LocalDate.now();;
+      LocalDate now = LocalDate.now();
+
       LocalDate date = LocalDate.now();
       Map<LocalDate, Map<String, Double>> allDates = tickerDetails.get(tickerSymbol);
-      while(!allDates.containsKey(date)) {
+      while (!allDates.containsKey(date)) {
         date = date.minusDays(1);
       }
       Map<String, Double> vals = allDates.get(date);
       date = date.plusDays(1);
-      while(date.compareTo(now) <= 0) {
+      while (date.compareTo(now) <= 0) {
         allDates.put(date, vals);
         date = date.plusDays(1);
       }
@@ -157,14 +139,6 @@ public class AlphaVantage implements ShareApi {
       }
       return allDates.get(dateAsked);
 
-//      Map<String, Double> shareDetails = new HashMap<>();
-//      String[] details = record.split(",");
-//
-//      for (int i = 1; i < details.length; i++) {
-//        shareDetails.put(keys[i], Double.parseDouble(details[i]));
-//      }
-//
-//      return shareDetails;
     } catch (IOException e) {
       throw new IllegalArgumentException("No price data found for " + tickerSymbol);
     }

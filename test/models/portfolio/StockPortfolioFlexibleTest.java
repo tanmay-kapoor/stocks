@@ -73,7 +73,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
       Details details = new Details(50, LocalDate.parse("2028-10-10"));
       portfolio.buy("META", details, 10);
       fail("Should fail but future date but did not");
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // passes
     }
   }
@@ -265,7 +265,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
       details = new Details(10, LocalDate.parse("2028-10-10"));
       portfolio.sell("META", details, 20);
       fail("Should fail for future date but did not.");
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // passes
     }
   }
@@ -291,14 +291,14 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
   @Test
   public void testSellInvalid() {
-    Details details = new Details(50, LocalDate.parse("2018-10-10"));
+    Details details = new Details(50, LocalDate.parse("2020-10-10"));
     portfolio.buy("META", details, 10);
 
     try {
-      details = new Details(1980, LocalDate.parse("2020-10-10"));
+      details = new Details(1980, LocalDate.parse("2028-10-10"));
       portfolio.sell("META", details, 10);
       fail("Should fail but did not");
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // passes
     }
   }
