@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -56,8 +59,13 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     super(portfolioName, stocks, path, api, costBasisHistory);
   }
 
-  public void doDca (String dcaName, Dca dca) {
+  public Map<String, Dca> getDcaStrategies() {
+    return this.dcaMap;
+  }
 
+  public void doDca (String strategyName, Dca dca) {
+    List<LocalDate> buyOnDates = getBuyDates(dca);
+    buyOnDates(dca, buyOnDates);
   }
 
   protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {
@@ -226,6 +234,32 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
 
     return performance;
+  }
+
+  private List<LocalDate> getBuyDates(Dca dca) {
+    LocalDate startDate = dca.getTimeLine().getStartDate();
+    LocalDate endDate = dca.getTimeLine().getEndDate();
+
+    List<LocalDate> buyOnDates = new ArrayList<>();
+    for(LocalDate i = startDate; i.compareTo(endDate) <= 0 ; i = i.plusDays(dca.getInterval())) {
+      buyOnDates.add(i);
+    }
+
+    return buyOnDates;
+  }
+
+  private void buyOnDates(Dca dca, List<LocalDate> buyOnDates) {
+    double totalAmount = dca.getTotalAmount();
+    Map<String, Double> stockWeightage = dca.getStockWeightage();
+
+    for(LocalDate date : buyOnDates) {
+      for(String ticker: stockWeightage.keySet()) {
+        double stockPrice = api.getShareDetails(ticker, date).get("close");
+        double quantityToBuy = stockPrice / totalAmount;
+        buy(ticker, new Details(quantityToBuy, date), 0.0);
+      }
+    }
+
   }
 
 }
