@@ -13,6 +13,7 @@ public class StockMenuFlexible extends AbstractMenu {
     super(in, out);
   }
 
+  @Override
   protected void displayManyMenuOptions() {
     print("\n1. Create portfolio.\n"
             + "2. See portfolio composition.\n"
@@ -24,6 +25,7 @@ public class StockMenuFlexible extends AbstractMenu {
             + "\nEnter your choice : ");
   }
 
+  @Override
   protected char getBuySellChoiceIfApplicable() {
     print("\n1. Buy a stock\n"
             + "2. Sell a stock\n"
@@ -32,8 +34,41 @@ public class StockMenuFlexible extends AbstractMenu {
     return getCharVal();
   }
 
+  @Override
   protected double getCommissionFeeIfApplicable() {
     print("Enter the commission fee ($) you want to charge for this transaction : ");
-    return sc.nextDouble();
+    return getDoubleVal();
+  }
+
+  @Override
+  protected String getStrategyNameIfApplicable() {
+    print("\nEnter a name for new strategy : ");
+    return getWordVal();
+  }
+
+  @Override
+  protected double getWeightageIfApplicable() {
+    print("Enter % of amount you would like to invest : ");
+    return getDoubleVal();
+  }
+
+  @Override
+  protected double getStrategyAmountIfApplicable() {
+    print("\nEnter amount to invest : ");
+    return getDoubleVal();
+  }
+
+  @Override
+  protected int getIntervalIfApplicable() {
+    print("\nEnter interval for investment in days : ");
+    return getIntVal();
+  }
+
+  @Override
+  protected void printAddToPortfolioChoicesDifferently() {
+    this.print("\n1. Add a share to your portfolio.\n"
+            + "2. Create Dollar Cost Average Strategy.\n"
+            + "Press any other key to go back.\n"
+            + "\nEnter your choice : ");
   }
 }

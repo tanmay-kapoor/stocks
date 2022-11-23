@@ -44,6 +44,10 @@ abstract class AbstractPortfolio implements Portfolio {
   protected abstract Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from,
                                                                                 LocalDate to);
 
+  protected abstract void doDcaIfApplicable(String dcaName, Dca dca);
+
+  protected abstract Map<String, Dca> getDcaStrategiesIfApplicable();
+
   /**
    * Constructor for the class that initializes the name of the portfolio,
    * date it was created and the API that it is supposed to use for the fetching relevant data.
@@ -292,6 +296,14 @@ abstract class AbstractPortfolio implements Portfolio {
     }
   }
 
+  @Override
+  public void doDca(String dcaName, Dca dca) {
+    doDcaIfApplicable(dcaName, dca);
+  }
 
+  @Override
+  public Map<String, Dca> getDcaStrategies() {
+    return getDcaStrategiesIfApplicable();
+  }
 }
 

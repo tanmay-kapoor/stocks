@@ -97,4 +97,11 @@ public interface Menu {
    * @return brokers fee form the user.
    */
   double getCommissionFee();
+
+  String getStrategyName();
+
+  double getWeightage();
+  double getStrategyAmount();
+
+  int getInterval();
 }

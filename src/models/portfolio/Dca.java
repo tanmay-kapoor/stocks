@@ -9,12 +9,14 @@ public class Dca {
   private final Map<String, Double> stocksWeightage;
   private final TimeLine timeLine;
   private final int interval;
+  private final double commission;
 
-  public Dca(double totalAmount, Map<String, Double> stocksWeightage, TimeLine timeLine, int interval) {
+  public Dca(double totalAmount, Map<String, Double> stocksWeightage, TimeLine timeLine, int interval, double commission) {
     this.totalAmount = totalAmount;
     this.stocksWeightage = stocksWeightage;
     this.timeLine = timeLine;
     this.interval = interval;
+    this.commission = commission;
   }
 
   public Map<String, Double> getStockWeightage() {
@@ -33,4 +35,7 @@ public class Dca {
     return this.interval;
   }
 
+  public double getCommission() {
+    return this.commission;
+  }
 }

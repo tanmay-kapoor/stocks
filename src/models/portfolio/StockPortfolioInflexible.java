@@ -1,6 +1,7 @@
 package models.portfolio;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -67,5 +68,15 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
                                                                        LocalDate to) {
     // throw new RuntimeException("not allowed for inflexible portfolio");
     return new TreeMap<>();
+  }
+
+  @Override
+  protected Map<String, Dca> getDcaStrategiesIfApplicable() {
+    return new HashMap<>();
+  }
+
+  @Override
+  protected void doDcaIfApplicable(String dcaName, Dca dca) {
+    return;
   }
 }

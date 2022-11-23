@@ -18,6 +18,7 @@ import models.Details;
 import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Composition;
+import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import views.Menu;
 import views.StockMenuFlexible;
@@ -131,6 +132,16 @@ public class StockControllerFlexibleTest {
     public double getCostBasis(LocalDate date) {
       log.append("Inside getCostBasis(date) Date : ").append(date).append("\n");
       return 1.1;
+    }
+
+    @Override
+    public void doDca(String dcaName, Dca dca) {
+
+    }
+
+    @Override
+    public Map<String, Dca> getDcaStrategies() {
+      return null;
     }
   }
 
@@ -313,6 +324,11 @@ public class StockControllerFlexibleTest {
       }
 
       return true;
+    }
+
+    @Override
+    protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio, String portfolioName) {
+      return false;
     }
 
     private void handleGetCostBasis(Portfolio portfolio) {

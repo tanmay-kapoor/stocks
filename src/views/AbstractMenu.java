@@ -28,6 +28,15 @@ abstract class AbstractMenu implements Menu {
 
   protected abstract double getCommissionFeeIfApplicable();
 
+  protected abstract String getStrategyNameIfApplicable();
+
+  protected abstract double getWeightageIfApplicable();
+
+  protected abstract double getStrategyAmountIfApplicable();
+  protected abstract int getIntervalIfApplicable();
+
+  protected abstract void printAddToPortfolioChoicesDifferently();
+
   @Override
   public char getMainMenuChoice() {
     displayManyMenuOptions();
@@ -61,9 +70,7 @@ abstract class AbstractMenu implements Menu {
 
   @Override
   public char getAddToPortfolioChoice() {
-    this.print("\n1. Add a share to your portfolio.\n"
-            + "Press any other key to go back.\n"
-            + "\nEnter your choice : ");
+    printAddToPortfolioChoicesDifferently();
     return getCharVal();
   }
 
@@ -82,9 +89,7 @@ abstract class AbstractMenu implements Menu {
   @Override
   public double getQuantity() {
     this.print("Enter the number of shares : ");
-    double quantity = sc.nextDouble();
-    sc.nextLine();
-    return quantity;
+    return getDoubleVal();
   }
 
   @Override
@@ -122,6 +127,26 @@ abstract class AbstractMenu implements Menu {
     return getCommissionFeeIfApplicable();
   }
 
+  @Override
+  public String getStrategyName() {
+    return getStrategyNameIfApplicable();
+  }
+
+  @Override
+  public double getWeightage() {
+    return getWeightageIfApplicable();
+  }
+
+  @Override
+  public double getStrategyAmount() {
+    return getStrategyAmountIfApplicable();
+  }
+
+  @Override
+  public int getInterval() {
+    return getIntervalIfApplicable();
+  }
+
   protected void print(String msg) {
     this.out.print(msg);
   }
@@ -134,6 +159,18 @@ abstract class AbstractMenu implements Menu {
 
   protected String getWordVal() {
     String val = sc.next();
+    sc.nextLine();
+    return val;
+  }
+
+  protected double getDoubleVal() {
+    double quantity = sc.nextDouble();
+    sc.nextLine();
+    return quantity;
+  }
+
+  protected int getIntVal() {
+    int val = sc.nextInt();
     sc.nextLine();
     return val;
   }

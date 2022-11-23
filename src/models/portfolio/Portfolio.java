@@ -100,4 +100,8 @@ public interface Portfolio {
    * @return cost basis of the portfolio.
    */
   double getCostBasis(LocalDate date);
+
+  void doDca(String dcaName, Dca dca);
+
+  Map<String, Dca> getDcaStrategies();
 }

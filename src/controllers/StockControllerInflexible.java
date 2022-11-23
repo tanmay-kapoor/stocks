@@ -96,4 +96,20 @@ public class StockControllerInflexible extends AbstractController {
     getCompositionForToday(portfolio, option);
     return true;
   }
+
+  @Override
+  protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
+                                                String portfolioName) {
+    if (choice == '1') {
+      displayAddStockStuff(portfolio);
+    } else {
+      try {
+        savePortfolio(portfolioName, portfolio);
+        return true;
+      } catch (RuntimeException e) {
+        menu.printMessage("\n" + e.getMessage());
+      }
+    }
+    return false;
+  }
 }

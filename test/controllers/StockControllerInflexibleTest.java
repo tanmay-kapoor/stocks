@@ -17,6 +17,7 @@ import models.Details;
 import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Composition;
+import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import views.Menu;
 import views.StockMenuInflexible;
@@ -131,6 +132,16 @@ public class StockControllerInflexibleTest {
       log.append("Inside getCostBasis(date) Date : ").append(date).append("\n");
       return 1.1;
     }
+
+    @Override
+    public void doDca(String dcaName, Dca dca) {
+
+    }
+
+    @Override
+    public Map<String, Dca> getDcaStrategies() {
+      return null;
+    }
   }
 
   private class MockStockControllerInflexible extends AbstractController {
@@ -219,6 +230,11 @@ public class StockControllerInflexibleTest {
       log.append("Inside giveDateOptionsIfApplicable(p, o) option = ").append(option).append("\n");
       getCompositionForToday(portfolio, option);
       return true;
+    }
+
+    @Override
+    protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio, String portfolioName) {
+      return false;
     }
   }
 

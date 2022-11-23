@@ -61,6 +61,9 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option);
 
+  protected abstract boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
+                                                         String portfolioName);
+
   protected AbstractController(Menu menu, ShareApi api, String path) {
     this.menu = menu;
     this.api = api;
@@ -405,23 +408,7 @@ abstract class AbstractController implements SpecificController {
     return composition.toString();
   }
 
-  private boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
-                                              String portfolioName) {
-
-    if (choice == '1') {
-      displayAddStockStuff(portfolio);
-    } else {
-      try {
-        savePortfolio(portfolioName, portfolio);
-        return true;
-      } catch (RuntimeException e) {
-        menu.printMessage("\n" + e.getMessage());
-      }
-    }
-    return false;
-  }
-
-  private void savePortfolio(String portfolioName, Portfolio portfolio) {
+  protected void savePortfolio(String portfolioName, Portfolio portfolio) {
     boolean saved;
     saved = portfolio.savePortfolio();
     if (saved) {
@@ -439,7 +426,7 @@ abstract class AbstractController implements SpecificController {
     return true;
   }
 
-  private void displayAddStockStuff(Portfolio portfolio) {
+  protected void displayAddStockStuff(Portfolio portfolio) {
     String tickerSymbol = menu.getTickerSymbol();
 
     try {

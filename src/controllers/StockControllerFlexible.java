@@ -13,8 +13,10 @@ import java.util.TreeMap;
 
 import models.Details;
 import models.Log;
+import models.TimeLine;
 import models.api.ShareApi;
 import models.portfolio.Composition;
+import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
 import models.portfolio.Txn;
@@ -182,10 +184,10 @@ public class StockControllerFlexible extends AbstractController {
     do {
       isValidGap = true;
       menu.printMessage("\nChoose a start date");
-      from = getDate();
+      from = getDate(false);
 
       menu.printMessage("\nChoose an end date");
-      to = getDate();
+      to = getDate(false);
 
       if (from.compareTo(to) > 0) {
         menu.printMessage("\nPlease choose a start date before the end date");
@@ -293,7 +295,7 @@ public class StockControllerFlexible extends AbstractController {
     while (isProblematic);
   }
 
-  private LocalDate getDate() {
+  private LocalDate getDate(boolean canBeFuture) {
     LocalDate date;
     boolean isValidDate;
 
@@ -303,9 +305,11 @@ public class StockControllerFlexible extends AbstractController {
       try {
         date = LocalDate.parse(menu.getDateForValue());
 
-        if (date.compareTo(LocalDate.now()) > 0) {
-          menu.printMessage("\nCannot perform action for a future date.\n");
-          isValidDate = false;
+        if (!canBeFuture) {
+          if (date.compareTo(LocalDate.now()) > 0) {
+            menu.printMessage("\nCannot perform action for a future date.\n");
+            isValidDate = false;
+          }
         }
       } catch (DateTimeParseException e) {
         isValidDate = false;
@@ -333,7 +337,7 @@ public class StockControllerFlexible extends AbstractController {
     }
     while (!isValid);
 
-    LocalDate purchaseDate = getDate();
+    LocalDate purchaseDate = getDate(false);
     return new Details(quantity, purchaseDate);
   }
 
@@ -417,5 +421,140 @@ public class StockControllerFlexible extends AbstractController {
     }
     while (isFutureDate);
     return true;
+  }
+
+  @Override
+  protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
+                                                String portfolioName) {
+    if (choice == '1') {
+      displayAddStockStuff(portfolio);
+    } else if (choice == '2') {
+      displayDcaStuff(portfolio);
+    } else {
+      try {
+        savePortfolio(portfolioName, portfolio);
+        return true;
+      } catch (RuntimeException e) {
+        menu.printMessage("\n" + e.getMessage());
+      }
+    }
+    return false;
+  }
+
+  private void displayDcaStuff(Portfolio portfolio) {
+    String strategy = getStrategyName(portfolio);
+    TimeLine timeline = getTimeline();
+    double amount = getAmount();
+    Map<String, Double> stocksWeightage = getStocksWeightage();
+    int interval = getInterval();
+    double commission = getCommissionFee();
+
+    Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
+    portfolio.doDca(strategy, dca);
+  }
+
+  private String getStrategyName(Portfolio portfolio) {
+    Map<String, Dca> existingStrategies = portfolio.getDcaStrategies();
+    boolean isValid;
+    String strategy;
+    do {
+      isValid = true;
+      strategy = menu.getStrategyName();
+      if (existingStrategies.containsKey(strategy)) {
+        isValid = false;
+        menu.printMessage("\nStrategy xx already exists in this portfolio. Choose a different name.");
+      }
+    } while (!isValid);
+    return strategy;
+  }
+
+  private TimeLine getTimeline() {
+    boolean isValid;
+    LocalDate start;
+    LocalDate end;
+
+    do {
+      isValid = true;
+      menu.printMessage("\nSTART DATE ");
+      start = getDate(true);
+
+      menu.printMessage("\nEND DATE ");
+      end = getDate(true);
+
+      if (start.compareTo(end) > 0) {
+        isValid = false;
+        menu.printMessage("\nStart date cannot be later than end date\n");
+      }
+    } while (!isValid);
+    return new TimeLine(start, end);
+  }
+
+  private double getAmount() {
+    double amount;
+    do {
+      amount = menu.getStrategyAmount();
+      if (amount < 0.0) {
+        menu.printMessage("\nAmount cannot be negative.\n");
+      }
+    } while (amount < 0.0);
+    return amount;
+  }
+
+  private Map<String, Double> getStocksWeightage() {
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    String ticker = null;
+    double weightage;
+
+    double total = 100.0;
+    while (total > 0.0) {
+      menu.printMessage("\nWeightage left : " + total + "%");
+      boolean isValidTicker;
+      do {
+        isValidTicker = true;
+        try {
+          ticker = menu.getTickerSymbol();
+          if (!api.isTickerPresent(ticker)) {
+            api.getShareDetails(ticker, LocalDate.now());
+          }
+        } catch (IllegalArgumentException e) {
+          isValidTicker = false;
+          menu.printMessage("\nThis ticker is not associated with any company");
+        }
+      } while (!isValidTicker);
+
+      boolean isValidWeightage;
+      do {
+        isValidWeightage = true;
+        weightage = menu.getWeightage();
+        if (total - weightage < 0.0) {
+          isValidWeightage = false;
+          menu.printMessage("\n" + weightage + "% makes the total weightage of all stocks > 100. " +
+                  "Enter a weightage <= " + total + "\n");
+        }
+      } while (!isValidWeightage);
+
+      if (stocksWeightage.containsKey(ticker)) {
+        stocksWeightage.put(ticker, stocksWeightage.get(ticker) + weightage);
+      } else {
+        stocksWeightage.put(ticker, weightage);
+      }
+      total -= weightage;
+    }
+    return stocksWeightage;
+  }
+
+  private int getInterval() {
+    int interval;
+
+    do {
+      interval = menu.getInterval();
+      if (interval < 0) {
+        menu.printMessage("\nInterval cannot be negative.");
+      } else if (interval < 1) {
+        menu.printMessage("\nInterval should be at least 1 day");
+      }
+    } while (interval < 1);
+
+    return interval;
   }
 }

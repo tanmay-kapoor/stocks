@@ -38,6 +38,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
    */
   public StockPortfolioFlexible(String portfolioName, String path, ShareApi api) {
     super(portfolioName, path, api);
+    this.dcaMap = new HashMap<>();
   }
 
   public StockPortfolioFlexible(String portfolioName, String path, ShareApi api, Map<String, Dca> dcaMap) {
@@ -57,15 +58,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   public StockPortfolioFlexible(String portfolioName, Map<String, Log> stocks, String path,
                                 ShareApi api, Map<LocalDate, Double> costBasisHistory) {
     super(portfolioName, stocks, path, api, costBasisHistory);
-  }
-
-  public Map<String, Dca> getDcaStrategies() {
-    return this.dcaMap;
-  }
-
-  public void doDca (String strategyName, Dca dca) {
-    List<LocalDate> buyOnDates = getBuyDates(dca);
-    buyOnDates(dca, buyOnDates);
   }
 
   protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {
@@ -263,4 +255,14 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     }
   }
 
+  @Override
+  protected void doDcaIfApplicable(String dcaName, Dca dca) {
+    List<LocalDate> buyOnDates = getBuyDates(dca);
+    buyOnDates(dca, buyOnDates);
+  }
+
+  @Override
+  protected Map<String, Dca> getDcaStrategiesIfApplicable() {
+    return this.dcaMap;
+  }
 }
