@@ -23,6 +23,8 @@ import static models.portfolio.Txn.Sell;
  */
 public class StockPortfolioFlexible extends AbstractPortfolio {
 
+  Map<String, Dca> dcaMap;
+
   /**
    * Constructor for the class that initializes the name of the portfolio,
    * date it was created and the API that it is supposed to use for the fetching relevant data.
@@ -33,6 +35,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
    */
   public StockPortfolioFlexible(String portfolioName, String path, ShareApi api) {
     super(portfolioName, path, api);
+  }
+
+  public StockPortfolioFlexible(String portfolioName, String path, ShareApi api, Map<String, Dca> dcaMap) {
+    super(portfolioName, path, api);
+    this.dcaMap = dcaMap;
   }
 
   /**
@@ -47,6 +54,10 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   public StockPortfolioFlexible(String portfolioName, Map<String, Log> stocks, String path,
                                 ShareApi api, Map<LocalDate, Double> costBasisHistory) {
     super(portfolioName, stocks, path, api, costBasisHistory);
+  }
+
+  public void doDca (String dcaName, Dca dca) {
+
   }
 
   protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {
