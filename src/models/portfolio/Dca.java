@@ -1,7 +1,8 @@
 package models.portfolio;
 
-import java.sql.Time;
 import java.util.Map;
+
+import models.TimeLine;
 
 public class Dca {
   private final double totalAmount;
