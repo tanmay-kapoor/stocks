@@ -54,7 +54,7 @@ public class GenericController implements Controller {
 
       switch (ch) {
         case '1':
-          mainMenu = new MainMenuImplGui();
+          mainMenu = new MainMenuImplGui("Choose Portfolio Type");
           do {
             choice = mainMenu.getPortfolioType();
             switch (choice) {
