@@ -1,5 +1,7 @@
 import controllers.Controller;
 import controllers.GenericController;
+import models.api.AlphaVantage;
+import models.api.ShareApi;
 
 /**
  * This is where the starter code lies. When the user starts the program, the main method of this
@@ -20,7 +22,9 @@ public class ProgramRunner {
             ? System.getProperty("user.dir") + "/src/files/" :
             "../res/files/";
 
-    Controller controller = new GenericController(System.in, System.out, commonPath);
+    ShareApi api = new AlphaVantage();
+
+    Controller controller = new GenericController(System.in, System.out, api, commonPath);
     controller.start();
   }
 }

@@ -5,11 +5,15 @@ import java.io.PrintStream;
 
 import models.api.AlphaVantage;
 import models.api.ShareApi;
-import views.StockMenuFlexible;
 import views.MainMenu;
 import views.MainMenuImpl;
+import views.MainMenuImplGui;
 import views.Menu;
+import views.StockMenuFlexible;
+import views.StockMenuFlexibleGui;
 import views.StockMenuInflexible;
+import views.UiOption;
+import views.UiOptionImpl;
 
 /**
  * A class that decides weather to create a Portfolio object for Flexible portfolio or
@@ -19,6 +23,7 @@ import views.StockMenuInflexible;
 public class GenericController implements Controller {
   private final InputStream in;
   private final PrintStream out;
+  private final ShareApi api;
   private final String commonPath;
 
   /**
@@ -29,41 +34,77 @@ public class GenericController implements Controller {
    * @param out        Output Stream
    * @param commonPath path to access and store portfolio files.
    */
-  public GenericController(InputStream in, PrintStream out, String commonPath) {
+  public GenericController(InputStream in, PrintStream out, ShareApi api, String commonPath) {
     this.in = in;
     this.out = out;
+    this.api = api;
     this.commonPath = commonPath;
   }
 
   @Override
   public void start() {
-    ShareApi api;
-    String path;
-    MainMenu mainMenu = new MainMenuImpl(this.in, this.out);
+    UiOption uiOption;
+    MainMenu mainMenu;
 
-    char choice;
+    char ch;
     do {
-      choice = mainMenu.getPortfolioType();
+      uiOption = new UiOptionImpl(this.in, this.out);
+      ch = uiOption.getUiOption();
+      char choice;
 
-      switch (choice) {
+      switch (ch) {
         case '1':
-          Menu menu = new StockMenuFlexible(this.in, this.out);
-          api = new AlphaVantage();
-          path = this.commonPath + "stocks/flexible/";
-          new StockControllerFlexible(menu, api, path).start();
+          mainMenu = new MainMenuImplGui();
+          do {
+            choice = mainMenu.getPortfolioType();
+            switch (choice) {
+              case '1':
+                handleFlexibleSelected(new StockMenuFlexibleGui());
+                break;
+
+              case '2':
+                handleInflexibleSelected(new StockMenuInflexible(this.in, this.out));
+                break;
+
+              default:
+                break;
+            }
+          } while (choice >= '1' && choice <= '2');
           break;
 
         case '2':
-          menu = new StockMenuInflexible(this.in, this.out);
-          api = new AlphaVantage();
-          path = this.commonPath + "stocks/inflexible/";
-          new StockControllerInflexible(menu, api, path).start();
+          mainMenu = new MainMenuImpl(this.in, this.out);
+          do {
+            choice = mainMenu.getPortfolioType();
+            switch (choice) {
+              case '1':
+                handleFlexibleSelected(new StockMenuFlexible(this.in, this.out));
+                break;
+
+              case '2':
+                handleInflexibleSelected(new StockMenuInflexible(this.in, this.out));
+                break;
+
+              default:
+                break;
+            }
+          }
+          while (choice >= '1' && choice <= '2');
           break;
 
         default:
           break;
       }
-    }
-    while (choice >= '1' && choice <= '2');
+    } while (ch >= '1' && ch <= '2');
+  }
+
+  private void handleFlexibleSelected(Menu menu) {
+    String path = this.commonPath + "stocks/flexible/";
+    new StockControllerFlexible(menu, api, path).start();
+  }
+
+  private void handleInflexibleSelected(Menu menu) {
+    String path = this.commonPath + "stocks/inflexible/";
+    new StockControllerInflexible(menu, api, path).start();
   }
 }
