@@ -1,5 +1,6 @@
 package views;
 
+import controllers.Features;
 import models.Details;
 import models.portfolio.Txn;
 
@@ -14,14 +15,14 @@ public interface Menu {
    *
    * @return option chosen by the user.
    */
-  char getMainMenuChoice();
+  void getMainMenuChoice();
 
   /**
    * Gets the name of teh portfolio from the client.
    *
    * @return the name of the portfolio in string format.
    */
-  String getPortfolioName();
+  void getPortfolioName();
 
   /**
    * Prints the message to be displayed to the client.
@@ -37,33 +38,33 @@ public interface Menu {
    *
    * @return choice entered by the user.
    */
-  char getCreatePortfolioThroughWhichMethod();
+  void getCreatePortfolioThroughWhichMethod();
 
   /**
    * Take the choice that determines the kind of portfolio the user wants to work with.
    * @return choice of the user.
    */
-  char getAddToPortfolioChoice();
+  void getAddToPortfolioChoice();
 
   /**
    * Take filepath form the user.
    * @return file path of the csv file.
    */
-  String getFilePath();
+  void getFilePath();
 
   /**
    * Asks the user for the ticker symbol.
    *
    * @return the ticker symbol chosen by the user.
    */
-  String getTickerSymbol();
+  void getTickerSymbol();
 
   /**
    * Gives the quantity of the shares.
    *
    * @return double representing the quantity.
    */
-  double getQuantity();
+  void getQuantity();
 
   /**
    * Provides user the options for the date that they would like to choose. They may their
@@ -71,37 +72,37 @@ public interface Menu {
    *
    * @return the choice entered by the user.
    */
-  char getDateChoice();
+  void getDateChoice();
 
   /**
    * Prints the menu for user that states the format in which they are supposed to enter the date.
    *
    * @return the date in string format.
    */
-  String getDateForValue();
+  void getDateForValue();
 
   /**
    * Choose the type of composition from the user.
    * @return User's choice.
    */
-  char getPortfolioCompositionOption();
+  void getPortfolioCompositionOption();
 
   /**
    * Choose the type of transaction from the user.
    * @return user's choice.
    */
-  char getBuySellChoice();
+  void getBuySellChoice();
 
   /**
    * get commission fee from the broker.
    * @return brokers fee form the user.
    */
-  double getCommissionFee();
+  void getCommissionFee();
 
-  String getStrategyName();
+  void getStrategyName();
 
-  double getWeightage();
-  double getStrategyAmount();
+  void getWeightage();
+  void getStrategyAmount();
 
-  int getInterval();
+  void getInterval();
 }

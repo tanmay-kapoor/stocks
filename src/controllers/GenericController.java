@@ -3,14 +3,12 @@ package controllers;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import models.api.AlphaVantage;
 import models.api.ShareApi;
 import views.MainMenu;
 import views.MainMenuImpl;
-import views.MainMenuImplGui;
 import views.Menu;
+import views.MenuGuiFlexible;
 import views.StockMenuFlexible;
-import views.StockMenuFlexibleGui;
 import views.StockMenuInflexible;
 import views.UiOption;
 import views.UiOptionImpl;
@@ -53,24 +51,29 @@ public class GenericController implements Controller {
       char choice;
 
       switch (ch) {
+//        case '1':
+//          mainMenu = new MainMenuImplGui("Choose Portfolio Type");
+//          do {
+//            choice = mainMenu.getPortfolioType();
+//            switch (choice) {
+//              case '1':
+//                handleFlexibleSelected(new StockMenuFlexibleGui());
+//                break;
+//
+//              case '2':
+//                handleInflexibleSelected(new StockMenuInflexible(this.in, this.out));
+//                break;
+//
+//              default:
+//                break;
+//            }
+//          } while (choice >= '1' && choice <= '2');
+//          break;
+
         case '1':
-          mainMenu = new MainMenuImplGui("Choose Portfolio Type");
-          do {
-            choice = mainMenu.getPortfolioType();
-            switch (choice) {
-              case '1':
-                handleFlexibleSelected(new StockMenuFlexibleGui());
-                break;
-
-              case '2':
-                handleInflexibleSelected(new StockMenuInflexible(this.in, this.out));
-                break;
-
-              default:
-                break;
-            }
-          } while (choice >= '1' && choice <= '2');
-          break;
+          Features controller = new FeaturesImpl(this.api, this.commonPath);
+          Menu menuGui = new MenuGuiFlexible(controller, "Choose portfolio type");
+          controller.setView(menuGui);
 
         case '2':
           mainMenu = new MainMenuImpl(this.in, this.out);
@@ -100,11 +103,11 @@ public class GenericController implements Controller {
 
   private void handleFlexibleSelected(Menu menu) {
     String path = this.commonPath + "stocks/flexible/";
-    new StockControllerFlexible(menu, api, path).start();
+    new StockControllerFlexible(in, menu, api, path).start();
   }
 
   private void handleInflexibleSelected(Menu menu) {
     String path = this.commonPath + "stocks/inflexible/";
-    new StockControllerInflexible(menu, api, path).start();
+    new StockControllerInflexible(in, menu, api, path).start();
   }
 }

@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
@@ -30,8 +31,48 @@ import static java.lang.Math.round;
  * Flexible Portfolio.
  */
 public class StockControllerFlexible extends AbstractController {
-  protected StockControllerFlexible(Menu menu, ShareApi api, String path) {
-    super(menu, api, path);
+  protected StockControllerFlexible(InputStream in, Menu menu, ShareApi api, String path) {
+    super(in, menu, api, path);
+    sc = new Scanner(this.in);
+  }
+
+  @Override
+  protected void getWhatToDoOnStart() {
+    char choice;
+    do {
+      menu.getMainMenuChoice();
+      choice = getCharVal();
+
+      switch (choice) {
+        case '1':
+          handleCreatePortfolioChoice();
+          break;
+
+        case '2':
+          filterBasedOnFunction(Function.Composition);
+          break;
+
+        case '3':
+          filterBasedOnFunction(Function.GetValue);
+          break;
+
+        case '4':
+          filterBasedOnFunction(Function.BuySell);
+          break;
+
+        case '5':
+          filterBasedOnFunction(Function.SeePerformance);
+          break;
+
+        case '6':
+          filterBasedOnFunction(Function.CostBasis);
+          break;
+
+        default:
+          break;
+      }
+    }
+    while (choice >= '1' && choice <= getLastOption());
   }
 
   @Override
@@ -53,7 +94,8 @@ public class StockControllerFlexible extends AbstractController {
     do {
       isValidDate = true;
       try {
-        date = LocalDate.parse(menu.getDateForValue());
+        menu.getDateForValue();
+        date = LocalDate.parse(getWordVal());
       } catch (DateTimeParseException e) {
         isValidDate = false;
         menu.printMessage("\nInvalid Date format\n");
@@ -75,13 +117,15 @@ public class StockControllerFlexible extends AbstractController {
     char ch;
     boolean shouldSave = false;
     do {
-      ch = menu.getBuySellChoice();
+      menu.getBuySellChoice();
+      ch = getCharVal();
       String ticker;
 
       switch (ch) {
         case '1':
           try {
-            ticker = menu.getTickerSymbol().toUpperCase();
+            menu.getTickerSymbol();
+            ticker = getWordVal().toUpperCase();
             if (!api.isTickerPresent(ticker)) {
               api.getShareDetails(ticker, LocalDate.now());
             }
@@ -101,7 +145,8 @@ public class StockControllerFlexible extends AbstractController {
           break;
 
         case '2':
-          ticker = menu.getTickerSymbol().toUpperCase();
+          menu.getTickerSymbol();
+          ticker = getWordVal().toUpperCase();
           if (!portfolioComposition.containsKey(ticker)) {
             menu.printMessage("\nCannot sell ticker that is not in portfolio");
           } else {
@@ -131,7 +176,8 @@ public class StockControllerFlexible extends AbstractController {
   protected double getCommissionFee() {
     double commissionFee;
     do {
-      commissionFee = menu.getCommissionFee();
+      menu.getCommissionFee();
+      commissionFee = getDoubleVal();
       if (commissionFee < 0.0) {
         menu.printMessage("\nCommission fee must be non-negative\n");
       }
@@ -262,7 +308,8 @@ public class StockControllerFlexible extends AbstractController {
   private void handleGetCostBasis(Portfolio portfolio) {
     boolean isProblematic;
     do {
-      char ch = menu.getDateChoice();
+      menu.getDateChoice();
+      char ch = getCharVal();
       LocalDate date;
       double costBasis;
       isProblematic = false;
@@ -275,7 +322,8 @@ public class StockControllerFlexible extends AbstractController {
             break;
 
           case '2':
-            date = LocalDate.parse(menu.getDateForValue());
+            menu.getDateForValue();
+            date = LocalDate.parse(getWordVal());
             costBasis = portfolio.getCostBasis(date);
             menu.printMessage("\nCost Basis on " + date
                     + " = $" + String.format("%.2f", costBasis));
@@ -303,7 +351,8 @@ public class StockControllerFlexible extends AbstractController {
       date = LocalDate.now();
       isValidDate = true;
       try {
-        date = LocalDate.parse(menu.getDateForValue());
+        menu.getDateForValue();
+        date = LocalDate.parse(getWordVal());
 
         if (!canBeFuture) {
           if (date.compareTo(LocalDate.now()) > 0) {
@@ -332,7 +381,8 @@ public class StockControllerFlexible extends AbstractController {
     boolean isValid;
     double quantity;
     do {
-      quantity = menu.getQuantity();
+      menu.getQuantity();
+      quantity = getDoubleVal();
       isValid = this.validateQuantity(quantity);
     }
     while (!isValid);
@@ -380,7 +430,8 @@ public class StockControllerFlexible extends AbstractController {
 
     do {
       isFutureDate = false;
-      char ch = menu.getDateChoice();
+      menu.getDateChoice();
+      char ch = getCharVal();
 
       switch (ch) {
         case '1':
@@ -459,7 +510,8 @@ public class StockControllerFlexible extends AbstractController {
     String strategy;
     do {
       isValid = true;
-      strategy = menu.getStrategyName();
+      menu.getStrategyName();
+      strategy = getWordVal();
       if (existingStrategies.containsKey(strategy)) {
         isValid = false;
         menu.printMessage("\nStrategy xx already exists in this portfolio. Choose a different name.");
@@ -492,7 +544,8 @@ public class StockControllerFlexible extends AbstractController {
   private double getAmount() {
     double amount;
     do {
-      amount = menu.getStrategyAmount();
+      menu.getStrategyAmount();
+      amount = getDoubleVal();
       if (amount < 0.0) {
         menu.printMessage("\nAmount cannot be negative.\n");
       }
@@ -512,7 +565,8 @@ public class StockControllerFlexible extends AbstractController {
       do {
         isValidTicker = true;
         try {
-          ticker = menu.getTickerSymbol();
+          menu.getTickerSymbol();
+          ticker = getWordVal();
           if (!api.isTickerPresent(ticker)) {
             api.getShareDetails(ticker, LocalDate.now());
           }
@@ -525,7 +579,8 @@ public class StockControllerFlexible extends AbstractController {
       boolean isValidWeightage;
       do {
         isValidWeightage = true;
-        weightage = menu.getWeightage();
+        menu.getWeightage();
+        weightage = getDoubleVal();
         if (total - weightage < 0.0) {
           isValidWeightage = false;
           menu.printMessage("\n" + weightage + "% makes the total weightage of all stocks > 100. " +
@@ -547,7 +602,8 @@ public class StockControllerFlexible extends AbstractController {
     int interval;
 
     do {
-      interval = menu.getInterval();
+      menu.getInterval();
+      interval = getIntVal();
       if (interval < 0) {
         menu.printMessage("\nInterval cannot be negative.");
       } else if (interval < 1) {

@@ -2,9 +2,11 @@ package controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import models.Log;
 import models.api.ShareApi;
@@ -20,8 +22,48 @@ import views.Menu;
  */
 
 public class StockControllerInflexible extends AbstractController {
-  public StockControllerInflexible(Menu menu, ShareApi api, String path) {
-    super(menu, api, path);
+  public StockControllerInflexible(InputStream in, Menu menu, ShareApi api, String path) {
+    super(in, menu, api, path);
+    sc = new Scanner(this.in);
+  }
+
+  @Override
+  protected void getWhatToDoOnStart() {
+    char choice;
+    do {
+      menu.getMainMenuChoice();
+      choice = getCharVal();
+
+      switch (choice) {
+        case '1':
+          handleCreatePortfolioChoice();
+          break;
+
+        case '2':
+          filterBasedOnFunction(Function.Composition);
+          break;
+
+        case '3':
+          filterBasedOnFunction(Function.GetValue);
+          break;
+
+        case '4':
+          filterBasedOnFunction(Function.BuySell);
+          break;
+
+        case '5':
+          filterBasedOnFunction(Function.SeePerformance);
+          break;
+
+        case '6':
+          filterBasedOnFunction(Function.CostBasis);
+          break;
+
+        default:
+          break;
+      }
+    }
+    while (choice >= '1' && choice <= getLastOption());
   }
 
   @Override

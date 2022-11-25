@@ -3,6 +3,8 @@ package views;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import controllers.Features;
+
 /**
  * View that is meant to specifically deal with menu while interacting with user about
  * stock portfolio.
@@ -23,39 +25,33 @@ public class StockMenuInflexible extends AbstractMenu {
   }
 
   @Override
-  protected char getBuySellChoiceIfApplicable() {
+  protected void getBuySellChoiceIfApplicable() {
     printNotAllowed();
-    return 'q';
   }
 
   @Override
-  protected double getCommissionFeeIfApplicable() {
+  protected void getCommissionFeeIfApplicable() {
     printNotAllowed();
-    return 0.0;
   }
 
   @Override
-  protected String getStrategyNameIfApplicable() {
+  protected void getStrategyNameIfApplicable() {
     printNotAllowed();
-    return "";
   }
 
   @Override
-  protected double getWeightageIfApplicable() {
+  protected void getWeightageIfApplicable() {
     printNotAllowed();
-    return 0.0;
   }
 
   @Override
-  protected double getStrategyAmountIfApplicable() {
+  protected void getStrategyAmountIfApplicable() {
     printNotAllowed();
-    return 0.0;
   }
 
   @Override
-  protected int getIntervalIfApplicable() {
+  protected void getIntervalIfApplicable() {
     printNotAllowed();
-    return 0;
   }
 
   @Override

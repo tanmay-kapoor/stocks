@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -31,11 +32,16 @@ import views.Menu;
  * two or more types of controllers across the program.
  */
 abstract class AbstractController implements SpecificController {
+  protected final InputStream in;
+  protected Scanner sc;
+
   protected final Menu menu;
   protected final ShareApi api;
   protected final String path;
   protected final List<String> allPortfolios;
   protected final Map<String, Portfolio> allPortfolioObjects;
+
+  protected abstract void getWhatToDoOnStart();
 
   protected abstract Portfolio createPortfolio(String portfolioName);
 
@@ -64,7 +70,8 @@ abstract class AbstractController implements SpecificController {
   protected abstract boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
                                                          String portfolioName);
 
-  protected AbstractController(Menu menu, ShareApi api, String path) {
+  protected AbstractController(InputStream in, Menu menu, ShareApi api, String path) {
+    this.in = in;
     this.menu = menu;
     this.api = api;
     this.path = path;
@@ -95,46 +102,12 @@ abstract class AbstractController implements SpecificController {
 
   @Override
   public void start() {
-    char choice;
-
-    do {
-      choice = menu.getMainMenuChoice();
-
-      switch (choice) {
-        case '1':
-          handleCreatePortfolioChoice();
-          break;
-
-        case '2':
-          filterBasedOnFunction(Function.Composition);
-          break;
-
-        case '3':
-          filterBasedOnFunction(Function.GetValue);
-          break;
-
-        case '4':
-          filterBasedOnFunction(Function.BuySell);
-          break;
-
-        case '5':
-          filterBasedOnFunction(Function.SeePerformance);
-          break;
-
-        case '6':
-          filterBasedOnFunction(Function.CostBasis);
-          break;
-
-        default:
-          break;
-      }
-    }
-    while (choice >= '1' && choice <= getLastOption());
+    getWhatToDoOnStart();
   }
 
-  private void handleCreatePortfolioChoice() {
-    char c;
-    c = menu.getCreatePortfolioThroughWhichMethod();
+  protected void handleCreatePortfolioChoice() {
+    menu.getCreatePortfolioThroughWhichMethod();
+    char c = getCharVal();
     switch (c) {
       case '1':
         handleCreatePortfolioThroughInterface();
@@ -149,12 +122,13 @@ abstract class AbstractController implements SpecificController {
     }
   }
 
-  private void handleCreatePortfolioThroughInterface() {
+  protected void handleCreatePortfolioThroughInterface() {
     boolean shouldContinue;
 
     do {
       shouldContinue = false;
-      String portfolioName = menu.getPortfolioName();
+      menu.getPortfolioName();
+      String portfolioName = getSentenceVal();
 
       if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
         shouldContinue = true;
@@ -166,7 +140,8 @@ abstract class AbstractController implements SpecificController {
         Portfolio portfolio = createPortfolio(portfolioName);
         boolean shouldExit;
         do {
-          char option = menu.getAddToPortfolioChoice();
+          menu.getAddToPortfolioChoice();
+          char option = getCharVal();
           try {
             shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
           } catch (IllegalArgumentException e) {
@@ -180,12 +155,13 @@ abstract class AbstractController implements SpecificController {
     while (shouldContinue);
   }
 
-  private void handleCreatePortfolioThroughUpload() {
+  protected void handleCreatePortfolioThroughUpload() {
     boolean shouldContinue;
     do {
       shouldContinue = true;
 
-      String filePath = menu.getFilePath();
+      menu.getFilePath();
+      String filePath = getSentenceVal();
       try {
         Paths.get(filePath);
         File file = new File(filePath);
@@ -240,7 +216,8 @@ abstract class AbstractController implements SpecificController {
       portfolioNames.append("\n").append(existingPortfolio);
     }
     menu.printMessage(portfolioNames.toString());
-    String name = menu.getPortfolioName();
+    menu.getPortfolioName();
+    String name = getSentenceVal();
 
     Portfolio portfolio = null;
     if (allPortfolioObjects.containsKey(name)
@@ -273,7 +250,8 @@ abstract class AbstractController implements SpecificController {
     boolean didPerform;
 
     do {
-      char choice = menu.getPortfolioCompositionOption();
+      menu.getPortfolioCompositionOption();
+      char choice = getCharVal();
       switch (choice) {
         case '1':
           didPerform = giveDateOptionsIfApplicable(portfolio, Composition.Contents);
@@ -296,21 +274,22 @@ abstract class AbstractController implements SpecificController {
     do {
       shouldContinue = false;
 
-      char ch;
-      ch = menu.getDateChoice();
-      String date;
+      menu.getDateChoice();
+      char ch = getCharVal();
+      LocalDate date;
       double val;
       try {
         switch (ch) {
           case '1':
-            date = LocalDate.now().toString();
+            date = LocalDate.now();
             val = portfolio.getValue();
             menu.printMessage(String.format("\nValue of portfolio on %s = $%.2f", date, val));
             break;
 
           case '2':
-            date = menu.getDateForValue();
-            val = portfolio.getValue(LocalDate.parse(date));
+            menu.getDateForValue();
+            date = LocalDate.parse(getWordVal());
+            val = portfolio.getValue(date);
             menu.printMessage(String.format("\nValue of portfolio on %s = $%.2f", date, val));
             break;
 
@@ -427,7 +406,8 @@ abstract class AbstractController implements SpecificController {
   }
 
   protected void displayAddStockStuff(Portfolio portfolio) {
-    String tickerSymbol = menu.getTickerSymbol();
+    menu.getTickerSymbol();
+    String tickerSymbol = getWordVal().toUpperCase();
 
     try {
       api.getShareDetails(tickerSymbol, LocalDate.now());
@@ -435,7 +415,8 @@ abstract class AbstractController implements SpecificController {
       boolean shouldExit;
 
       do {
-        quantity = menu.getQuantity();
+        menu.getQuantity();
+        quantity = getDoubleVal();
         shouldExit = this.validateQuantity(quantity);
       }
       while (!shouldExit);
@@ -527,5 +508,33 @@ abstract class AbstractController implements SpecificController {
     String createdFilePath = creationPath + name + ".csv";
 
     return new File(createdFilePath);
+  }
+
+  protected char getCharVal() {
+    char c = sc.next().charAt(0);
+    sc.nextLine();
+    return c;
+  }
+
+  protected String getSentenceVal() {
+    return sc.nextLine();
+  }
+
+  protected String getWordVal() {
+    String val = sc.next();
+    sc.nextLine();
+    return val;
+  }
+
+  protected double getDoubleVal() {
+    double quantity = sc.nextDouble();
+    sc.nextLine();
+    return quantity;
+  }
+
+  protected int getIntVal() {
+    int val = sc.nextInt();
+    sc.nextLine();
+    return val;
   }
 }
