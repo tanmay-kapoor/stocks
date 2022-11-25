@@ -37,17 +37,35 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     setSize(500, 500);
     setLocation(200, 200);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    this.setLayout(new FlowLayout());
 
+    JPanel mainPanel = new JPanel(new CardLayout());
+
+    JPanel panel1 = new JPanel();
     flexibleButton = new JButton("Flexible");
-    this.add(flexibleButton);
+    panel1.add(flexibleButton);
 
     inflexibleButton = new JButton("Inflexible");
-    this.add(inflexibleButton);
+//    this.add(inflexibleButton);
+    panel1.add(inflexibleButton);
 
     exitButton = new JButton("Exit");
-    this.add(exitButton);
+//    this.add(exitButton);
+    panel1.add(exitButton);
 
+    JPanel panel2 = new JPanel();
+    panel2.add(new JButton("back"));
+
+    mainPanel.add(panel1, "1");
+    mainPanel.add(panel2, "2");
+    CardLayout cl = (CardLayout) (mainPanel.getLayout());
+
+    cl.show(mainPanel, "1");
+//    cl.next(mainPanel);
+
+    this.add(mainPanel);
+
+
+//    flexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
     flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
     inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
     exitButton.addActionListener(evt -> features.exitProgram());
