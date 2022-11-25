@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import models.api.ShareApi;
+import views.Gui;
 import views.MainMenu;
 import views.MainMenuImpl;
 import views.Menu;

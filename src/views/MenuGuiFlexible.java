@@ -25,7 +25,5 @@ public class MenuGuiFlexible extends AbstractMenuGui {
     getCostBasisButton = new JButton("Get Cost basis");
     this.add(getCostBasisButton);
 
-    goBackButton = new JButton("Go back");
-    this.add(goBackButton);
   }
 }
