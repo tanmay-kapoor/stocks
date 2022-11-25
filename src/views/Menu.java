@@ -105,4 +105,6 @@ public interface Menu {
   void getStrategyAmount();
 
   void getInterval();
+
+  void clearTextIfDisplayed();
 }

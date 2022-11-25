@@ -52,6 +52,11 @@ abstract class AbstractMenu implements Menu {
   }
 
   @Override
+  public void clearTextIfDisplayed() {
+    return;
+  }
+
+  @Override
   public void successMessage(String ticker, Details details, Txn txnType) {
     String txn = txnType == Txn.Buy ? "bought" : "sold";
     this.print("\nSuccessfully " + txn + " " + details.getQuantity()

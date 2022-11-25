@@ -19,6 +19,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JButton getCompositionButton;
   private JButton getValueButton;
   private JLabel portfolioNameLabel;
+  private JLabel text;
 
   protected abstract void getRestIfApplicable();
 
@@ -79,7 +80,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     JButton enterButton = new JButton("Enter");
     this.add(enterButton);
-//    enterButton.addActionListener(evt -> features.findPortfolio());
+    enterButton.addActionListener(evt -> features.createPortfolio(portfolioName.getText()));
 
     this.refresh();
   }
@@ -95,7 +96,15 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void printMessage(String msg) {
+    text = new JLabel(msg);
+    this.add(text);
+    this.refresh();
+  }
 
+  @Override
+  public void clearTextIfDisplayed() {
+    this.remove(text);
+    this.refresh();
   }
 
   @Override

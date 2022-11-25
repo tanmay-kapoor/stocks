@@ -83,8 +83,24 @@ public class FeaturesImpl implements Features {
     menu.getPortfolioName();
   }
 
-  public void findPortfolio(String portfolioName) {
-
+  @Override
+  public void createPortfolio(String portfolioName) {
+    if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
+      menu.printMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
+    } else {
+      Portfolio portfolio = new StockPortfolioFlexible(portfolioName, path, api);
+      menu.clearTextIfDisplayed();
+      System.out.println("can create");
+//      boolean shouldExit;
+//      menu.getAddToPortfolioChoice();
+//      char option = getCharVal();
+//      try {
+//        shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
+//      } catch (IllegalArgumentException e) {
+//        menu.printMessage("\n" + e.getMessage());
+//        shouldExit = false;
+//      }
+    }
   }
 
   @Override

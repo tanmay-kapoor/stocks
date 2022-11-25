@@ -12,4 +12,5 @@ public interface Features {
   void handleCreatePortfolioChoice();
   void handleCreatePortfolioThroughInterface();
   void handleCreatePortfolioThroughUpload();
+  void createPortfolio(String portfolioName);
 }
