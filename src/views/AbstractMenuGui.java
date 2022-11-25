@@ -1,8 +1,9 @@
 package views;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.time.LocalDate;
 
 import javax.swing.*;
 
@@ -19,6 +20,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JButton getCompositionButton;
   private JButton getValueButton;
   private JButton goBackButton;
+  private JTextField ticker;
+  private JTextField quantity;
+  private JTextField datePicker;
+  private JTextField commission;
 
   private JLabel portfolioNameLabel;
   private JLabel text;
@@ -88,7 +93,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     this.add(enterButton);
     enterButton.addActionListener(evt -> {
       String pName = portfolioName.getText();
-      if(pName.equals("")) {
+      if (pName.equals("")) {
         printMessage("Name cannot be empty");
       } else {
         portfolioName.setText("");
@@ -163,26 +168,42 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getTickerSymbol() {
-    JLabel msg = new JLabel("Ticker symbol");
+    JLabel msg = new JLabel("Ticker symbol : ");
     this.add(msg);
 
-    JTextField ticker = new JTextField(10);
+    ticker = new JTextField(10);
     this.add(ticker);
+
+    getQuantity();
+    getDateForValue();
+    getCommissionFee();
 
     JButton addBtn = new JButton("Add");
     this.add(addBtn);
-    addBtn.addActionListener(e -> {
-      if(ticker.getText().equals("")) {
-        printMessage("Ticker cannot be empty");
-      } else {
-      }
-    });
+    addBtn.addActionListener(e ->
+            features.buyStock(
+                    ticker.getText(),
+                    Double.parseDouble(quantity.getText().toUpperCase()),
+                    LocalDate.now(),
+                    Double.parseDouble(commission.getText())
+            ));
+
     this.refresh();
   }
 
   @Override
   public void getQuantity() {
+    JLabel msg = new JLabel("Number of shares : ");
+    this.add(msg);
 
+    quantity = new JTextField(10);
+    this.add(quantity);
+    quantity.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        quantity.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
+                || key.getKeyCode() == 8);
+      }
+    });
   }
 
   @Override
@@ -192,7 +213,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getDateForValue() {
-
+    JLabel msg = new JLabel("Choose date : ");
+    this.add(msg);
   }
 
   @Override
@@ -207,7 +229,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getCommissionFee() {
+    JLabel msg = new JLabel("Commission Fee : ");
+    this.add(msg);
 
+    commission = new JTextField(10);
+    this.add(commission);
+    commission.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        commission.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
+                || key.getKeyCode() == 8 || key.getKeyChar() == '.');
+      }
+    });
   }
 
   @Override
