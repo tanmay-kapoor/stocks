@@ -22,6 +22,7 @@ public class FeaturesImpl implements Features {
   private String path;
   private final List<String> allPortfolios;
   private final Map<String, Portfolio> allPortfolioObjects;
+  private Portfolio portfolio;
 
   public FeaturesImpl(ShareApi api, String commonPath) {
     this.api = api;
@@ -74,17 +75,23 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
-  public void handleCreatePortfolioChoice() {
-    menu.getCreatePortfolioThroughWhichMethod();
-  }
-
-  @Override
-  public void handleCreatePortfolioThroughInterface() {
-    menu.getPortfolioName();
-  }
-
-  public void findPortfolio(String portfolioName) {
-
+  public void createPortfolio(String portfolioName) {
+    if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
+      menu.printMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
+    } else {
+      portfolio = new StockPortfolioFlexible(portfolioName, path, api);
+      menu.clearTextIfDisplayed();
+      menu.getAddToPortfolioChoice();
+//      boolean shouldExit;
+//      menu.getAddToPortfolioChoice();
+//      char option = getCharVal();
+//      try {
+//        shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
+//      } catch (IllegalArgumentException e) {
+//        menu.printMessage("\n" + e.getMessage());
+//        shouldExit = false;
+//      }
+    }
   }
 
   @Override

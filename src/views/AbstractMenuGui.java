@@ -1,8 +1,8 @@
 package views;
 
-import com.sun.source.tree.NewArrayTree;
-
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -21,6 +21,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JButton goBackButton;
 
   private JLabel portfolioNameLabel;
+  private JLabel text;
 
   protected abstract void getRestIfApplicable();
 
@@ -49,11 +50,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 //    pack();
     setVisible(true);
   }
+
   @Override
   public void getMainMenuChoice() {
     createPortfolioButton = new JButton("Create portfolio");
     this.add(createPortfolioButton);
-    createPortfolioButton.addActionListener(evt -> features.handleCreatePortfolioChoice());
+    createPortfolioButton.addActionListener(evt -> getCreatePortfolioThroughWhichMethod());
 
     getCompositionButton = new JButton("See portfolio composition");
     this.add(getCompositionButton);
@@ -84,14 +86,22 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     JButton enterButton = new JButton("Enter");
     this.add(enterButton);
-//    enterButton.addActionListener(evt -> features.findPortfolio());
+    enterButton.addActionListener(evt -> {
+      String pName = portfolioName.getText();
+      if(pName.equals("")) {
+        printMessage("Name cannot be empty");
+      } else {
+        portfolioName.setText("");
+        features.createPortfolio(pName);
+      }
+    });
 
     this.refresh();
   }
 
   @Override
   public void toggleColor() {
-    if(this.portfolioNameLabel.getForeground().equals(Color.BLACK)){
+    if (this.portfolioNameLabel.getForeground().equals(Color.BLACK)) {
       this.portfolioNameLabel.setForeground(Color.RED);
     } else {
       this.portfolioNameLabel.setForeground(Color.BLACK);
@@ -100,7 +110,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void printMessage(String msg) {
+    clearTextIfDisplayed();
+    text = new JLabel(msg);
+    this.add(text);
+    this.refresh();
+  }
 
+  @Override
+  public void clearTextIfDisplayed() {
+    if (text != null) {
+      this.remove(text);
+      this.refresh();
+    }
   }
 
   @Override
@@ -112,7 +133,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   public void getCreatePortfolioThroughWhichMethod() {
     JButton interfaceButton = new JButton("Interface");
     this.add(interfaceButton);
-    interfaceButton.addActionListener(evt -> features.handleCreatePortfolioThroughInterface());
+    interfaceButton.addActionListener(evt -> getPortfolioName());
 
     JButton uploadButton = new JButton("File upload");
     this.add(uploadButton);
@@ -125,7 +146,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getAddToPortfolioChoice() {
+    JButton addShareBtn = new JButton("Add share");
+    this.add(addShareBtn);
+    addShareBtn.addActionListener(evt -> getTickerSymbol());
 
+    JButton createStrategyBtn = new JButton("Create DCA strategy");
+    this.add(createStrategyBtn);
+
+    this.refresh();
   }
 
   @Override
@@ -135,7 +163,21 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getTickerSymbol() {
+    JLabel msg = new JLabel("Ticker symbol");
+    this.add(msg);
 
+    JTextField ticker = new JTextField(10);
+    this.add(ticker);
+
+    JButton addBtn = new JButton("Add");
+    this.add(addBtn);
+    addBtn.addActionListener(e -> {
+      if(ticker.getText().equals("")) {
+        printMessage("Ticker cannot be empty");
+      } else {
+      }
+    });
+    this.refresh();
   }
 
   @Override

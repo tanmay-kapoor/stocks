@@ -8,8 +8,6 @@ public interface Features {
   void handleFlexibleSelected();
   void handleInflexibleSelected();
   void exitProgram();
-
-  void handleCreatePortfolioChoice();
-  void handleCreatePortfolioThroughInterface();
   void handleCreatePortfolioThroughUpload();
+  void createPortfolio(String portfolioName);
 }
