@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import models.api.ShareApi;
-import views.Gui;
 import views.MainMenu;
 import views.MainMenuImpl;
 import views.Menu;
@@ -75,6 +74,7 @@ public class GenericController implements Controller {
           Features controller = new FeaturesImpl(this.api, this.commonPath);
           Menu menuGui = new MenuGuiFlexible(controller, "Choose portfolio type");
           controller.setView(menuGui);
+          break;
 
         case '2':
           mainMenu = new MainMenuImpl(this.in, this.out);
@@ -99,7 +99,7 @@ public class GenericController implements Controller {
         default:
           break;
       }
-    } while (ch >= '1' && ch <= '2');
+    } while (ch == '2');
   }
 
   private void handleFlexibleSelected(Menu menu) {

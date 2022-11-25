@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import models.Details;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
@@ -92,6 +94,13 @@ public class FeaturesImpl implements Features {
 //        shouldExit = false;
 //      }
     }
+  }
+
+  @Override
+  public void buyStock(String ticker, double quantity, LocalDate purchaseDate, double commissionFee) {
+    Details details = new Details(quantity, purchaseDate);
+    portfolio.buy(ticker, details, commissionFee);
+    menu.printMessage("Success");
   }
 
   @Override
