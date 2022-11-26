@@ -125,10 +125,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void clearTextIfDisplayed() {
-    if (text != null) {
-      this.remove(text);
-      this.refresh();
-    }
+
   }
 
   @Override
@@ -183,7 +180,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     panel3.add(ticker);
     System.out.println("in getTickerSymbol");
     getQuantity();
-    getDateForValue();
+    getDateChoice();
     getCommissionFee();
 
     JButton addBtn = new JButton("Add");
@@ -219,18 +216,28 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getDateChoice() {
-
+    JLabel msg = new JLabel("Choose date : ");
+    JTextField dateTxtFiled = new JTextField(10);
+    panel3.add(msg);
+    panel3.add(dateTxtFiled);
   }
+
 
   @Override
   public void getDateForValue() {
     JLabel msg = new JLabel("Choose date : ");
+    JTextField dateTxtFiled = new JTextField(10);
     panel3.add(msg);
+    panel3.add(dateTxtFiled);
   }
 
   @Override
   public void getPortfolioCompositionOption() {
+    panel3.removeAll();
 
+
+
+    panel3.revalidate();
   }
   @Override
   public void getBuySellChoice() {
