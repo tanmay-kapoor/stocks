@@ -262,7 +262,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton getContentsBtn = new JButton("Get Contents");
     panel3.add(getContentsBtn);
-    getContentsBtn.addActionListener(e -> features.getContents(portfolioName, dateTxtFiled.getText()));
+    getContentsBtn.addActionListener(e -> {
+      Map<String, Log> contents = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
+      String[][] dummyData = {
+              { "Kundan Kumar Jha", "4031", "CSE" },
+              { "Anand Jha", "6014", "IT" }
+      };
+      showTable(dummyData);
+    });
 
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
     panel3.add(getContentsBtn);
@@ -375,6 +382,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
+  private void showTable (String[][] data) {
+    panel3.removeAll();
+
+    String[] colNames = {"Ticker", "Quantity"};
+
+    JTable table = new JTable(data, colNames);
+    panel3.add(table);
+
+    panel3.revalidate();
+  }
+
 
   //////////////////////////////////JFRAME RELATED SHIT//////////////////////
 
@@ -400,6 +418,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     inflexibleButton = new JButton("Inflexible");
     panel1.add(inflexibleButton);
+
+    JButton backToTextUi = new JButton("Back To Text UI");
+    panel1.add(backToTextUi);
 
     panel1.add(exitButton);
 
