@@ -321,7 +321,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     panel1.add(exitButton);
 
     flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
-    inflexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
+//    inflexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
 
     return panel1;
   }
