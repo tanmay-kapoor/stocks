@@ -333,9 +333,9 @@ abstract class AbstractController implements SpecificController {
       for (String ticker : portfolioContent.keySet()) {
         Log log = portfolioContent.get(ticker);
         Set<Details> detailsSet = log.getDetailsSet();
-        int quantity = 0;
+        double quantity = 0.0;
         for (Details details : detailsSet) {
-          quantity += details.getQuantity();
+          quantity = details.getQuantity();
         }
 
         composition

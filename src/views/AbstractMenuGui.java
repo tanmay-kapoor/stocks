@@ -12,7 +12,6 @@ import javax.swing.*;
 
 import controllers.Features;
 import models.Details;
-import models.Log;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
@@ -262,7 +261,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton getContentsBtn = new JButton("Get Contents");
     panel3.add(getContentsBtn);
-    getContentsBtn.addActionListener(e -> features.getContents(portfolioName, dateTxtFiled.getText()));
+    getContentsBtn.addActionListener(e -> {
+      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
+      System.out.println(composition);
+    });
 
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
     panel3.add(getContentsBtn);
@@ -339,7 +341,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     List<String> portfolios = features.getAllPortfolios();
-    if(portfolios.size() == 0) {
+    if (portfolios.size() == 0) {
       panel3.add(new JLabel("No Portfolios. Please Create atleast one and come back again."));
       panel3.add(goBackButton);
       panel3.revalidate();
@@ -350,8 +352,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(msg);
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
-    portfolioListCb = new JComboBox(portfolioList);
+    portfolioListCb = new JComboBox<>(portfolioList);
     portfolioListCb.setEditable(true);
+    portfolioName = portfolioListCb.getItemAt(0);
     portfolioListCb.addActionListener(evt -> {
       portfolioName = portfolioListCb.getSelectedItem().toString();
       System.out.println(portfolioName);

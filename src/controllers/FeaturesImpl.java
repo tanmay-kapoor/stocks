@@ -149,11 +149,20 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
-  public Map<String, Log> getPortfolioContents(String portfolioName, String date) {
+  public Map<String, Double> getPortfolioContents(String portfolioName, String date) {
     try {
       Portfolio portfolio = findPortfolio(portfolioName);
       LocalDate d = LocalDate.parse(date);
-      return portfolio.getComposition(d);
+      Map<String, Log> composition = portfolio.getComposition(d);
+      Map<String, Double> vals = new HashMap<>();
+      for (String ticker : composition.keySet()) {
+        double quantity = 0.0;
+        for(Details details : composition.get(ticker).getDetailsSet()) {
+          quantity = details.getQuantity();
+        }
+        vals.put(ticker, quantity);
+      }
+      return vals;
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
     }
@@ -161,6 +170,7 @@ public class FeaturesImpl implements Features {
   }
 
   private Portfolio findPortfolio(String name) {
+    System.out.println(name);
     Portfolio portfolio;
     if (allPortfolioObjects.containsKey(name)) {
       portfolio = allPortfolioObjects.get(name);
