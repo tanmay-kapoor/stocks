@@ -155,13 +155,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   @Override
   public void getAddToPortfolioChoice() {
     JButton addShareBtn = new JButton("Add share");
-    this.add(addShareBtn);
+    panel3.add(addShareBtn);
     addShareBtn.addActionListener(evt -> getTickerSymbol());
 
     JButton createStrategyBtn = new JButton("Create DCA strategy");
-    this.add(createStrategyBtn);
+    panel3.add(createStrategyBtn);
 
-    this.refresh();
   }
 
   @Override
@@ -171,10 +170,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getTickerSymbol() {
+    panel3.removeAll();
+
     JLabel msg = new JLabel("Ticker symbol : ");
     panel3.add(msg);
 
-    JTextField ticker = new JTextField("some text", 10);
+    JTextField ticker = new JTextField(10);
     panel3.add(ticker);
     System.out.println("in getTickerSymbol");
     getQuantity();
@@ -193,6 +194,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
                     LocalDate.now(),
                     Double.parseDouble(commission.getText())
             ));
+
+    panel3.revalidate();
   }
 
   @Override
