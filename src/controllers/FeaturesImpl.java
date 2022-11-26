@@ -14,6 +14,7 @@ import models.Details;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
+import models.portfolio.Txn;
 import views.Menu;
 
 public class FeaturesImpl implements Features {
@@ -99,13 +100,31 @@ public class FeaturesImpl implements Features {
 
   @Override
   public void buyStock(String ticker, double quantity, LocalDate purchaseDate, double commissionFee) {
-                System.out.println(ticker + " " +
-                    quantity+ " " +
-                    purchaseDate+ " " +
-                        commissionFee);
-    Details details = new Details(quantity, purchaseDate);
-    portfolio.buy(ticker, details, commissionFee);
-    menu.printMessage("Success");
+    System.out.println(ticker + " " +
+            quantity + " " +
+            purchaseDate + " " +
+            commissionFee);
+    try {
+      if (!api.isTickerPresent(ticker)) {
+        api.getShareDetails(ticker, LocalDate.now());
+      }
+      Details details = new Details(quantity, purchaseDate);
+      portfolio.buy(ticker, details, commissionFee);
+      menu.successMessage(ticker, details, Txn.Buy);
+    } catch (IllegalArgumentException e) {
+      menu.printMessage("This ticker is not associated with any company");
+    }
+  }
+
+  @Override
+  public void savePortfolio(String portfolioName) {
+    boolean saved;
+    saved = portfolio.savePortfolio();
+    if (saved) {
+      menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
+      allPortfolios.add(portfolioName);
+      allPortfolioObjects.put(portfolioName, portfolio);
+    }
   }
 
   @Override

@@ -12,6 +12,7 @@ import models.Details;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
+  private String portfolioName;
   private final Features features;
   private JButton flexibleButton;
   private JButton inflexibleButton;
@@ -25,7 +26,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JTextField commission;
 
 //  private JLabel portfolioNameLabel;
-  private JTextField portfolioName;
   private JLabel text;
 
   private CardLayout cl;
@@ -54,7 +54,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     goBackButton = new JButton("Go back");
-    goBackButton.addActionListener(evt -> cl.previous(mainPanel));
+    goBackButton.addActionListener(evt -> {
+      cl.previous(mainPanel);
+      if(true) {
+        features.savePortfolio(portfolioName);
+      }
+    });
 
     exitButton = new JButton("Exit");
     exitButton.addActionListener(evt -> features.exitProgram());
@@ -102,13 +107,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     panel3.add(goBackButton);
 
     enterButton.addActionListener(evt -> {
-      String pName = portfolioNameTextField.getText();
-      if (pName.equals("")) {
+      portfolioName = portfolioNameTextField.getText();
+      if (portfolioName.equals("")) {
         printMessage("Name cannot be empty");
       } else {
         portfolioNameTextField.setText("");
-        features.createPortfolio(pName);
+        features.createPortfolio(portfolioName);
       }
+      panel3.revalidate();
     });
 
     panel3.revalidate();
@@ -120,13 +126,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     clearTextIfDisplayed();
     text = new JLabel(msg);
     panel3.add(text);
+    panel3.revalidate();
   }
 
   @Override
   public void clearTextIfDisplayed() {
     if (text != null) {
-      this.remove(text);
-      this.refresh();
+      panel3.remove(text);
+      panel3.revalidate();
     }
   }
 
