@@ -8,13 +8,18 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.sound.sampled.Port;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import models.Details;
+import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioFlexible;
@@ -144,27 +149,111 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
-  public void getContents(String portfolioName, String date) {
-    Portfolio portfolio = findPortfolio(portfolioName);
+  public Map<String, Log> getPortfolioContents(String portfolioName, String date) {
+    try {
+      Portfolio portfolio = findPortfolio(portfolioName);
+      LocalDate d = LocalDate.parse(date);
+      return portfolio.getComposition(d);
+    } catch (DateTimeParseException e) {
+      menu.printMessage("Invalid date format");
+    }
+    return null;
   }
 
   private Portfolio findPortfolio(String name) {
-//    if(allPortfolioObjects.containsKey(name)) {
-//      return allPortfolioObjects.get(name);
-//    } else {
-//      try {
-//        String logPath = this.path + "logs/";
-//        String costBasisPath = this.path + "costbasis/";
-//        portfolio = createPortfolioFromCsv(name,
-//                new File(String.format("%s%s.csv", this.path, name)),
-//                new File(String.format("%s%s.csv", logPath, name)),
-//                new File(String.format("%s%s.csv", costBasisPath, name)));
-//        allPortfolioObjects.put(name, portfolio);
-//      } catch (FileNotFoundException e) {
-//        throw new RuntimeException(e);
-//      }
-//    }
-    return null;
+    Portfolio portfolio;
+    if (allPortfolioObjects.containsKey(name)) {
+      portfolio = allPortfolioObjects.get(name);
+    } else {
+      try {
+        String logPath = this.path + "logs/";
+        String costBasisPath = this.path + "costbasis/";
+        portfolio = createPortfolioFromCsv(name,
+                new File(String.format("%s%s.csv", this.path, name)),
+                new File(String.format("%s%s.csv", logPath, name)),
+                new File(String.format("%s%s.csv", costBasisPath, name)));
+        allPortfolioObjects.put(name, portfolio);
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return portfolio;
+  }
+
+  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile,
+                                           File costBasisFile) throws FileNotFoundException {
+    //implement try catch here
+    Map<String, LocalDate> lastSoldDateList = readLastSoldDateFromCsv(logFile);
+    Map<String, Log> stocks = readStocksFromCsv(file, lastSoldDateList);
+    Map<LocalDate, Double> costBasisHistory = readStockBasisHistoryFromCsv(costBasisFile);
+
+    return new StockPortfolioFlexible(pName, stocks, path, api, costBasisHistory);
+  }
+
+  private Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
+          throws FileNotFoundException {
+    Scanner csvReader = new Scanner(logFile);
+    csvReader.nextLine();
+
+    Map<String, LocalDate> lastDateSoldList = new HashMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      if (Objects.equals(vals[1], "null")) {
+        lastDateSoldList.put(vals[0], null);
+      } else {
+        lastDateSoldList.put(vals[0], LocalDate.parse(vals[1]));
+      }
+    }
+    return lastDateSoldList;
+  }
+
+  private Map<String, Log> readStocksFromCsv(File file, Map<String, LocalDate> lastSoldDateList)
+          throws FileNotFoundException {
+    Scanner csvReader = new Scanner(file);
+    csvReader.nextLine();
+
+    Map<String, Log> stocks = new HashMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      String ticker = vals[0];
+      double quantity = Double.parseDouble(vals[1]);
+      LocalDate purchaseDateForRecord = LocalDate.parse(vals[2]);
+      Details details = new Details(quantity, purchaseDateForRecord);
+      LocalDate lastSoldDate = lastSoldDateList.get(ticker);
+
+      //refine this ....common methods outside both loops
+      if (!stocks.containsKey(vals[0])) {
+        Set<Details> detailsList = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
+        detailsList.add(details);
+        Log log = new Log(detailsList, lastSoldDate);
+        stocks.put(ticker, log);
+      } else {
+        Log log = stocks.get(ticker);
+        Set<Details> detailsSet = log.getDetailsSet();
+        detailsSet.add(details);
+        log.setDetailsSet(detailsSet);
+        stocks.put(ticker, log);
+      }
+    }
+    csvReader.close();
+    return stocks;
+  }
+
+  private Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
+          throws FileNotFoundException {
+    Scanner csvReader = new Scanner(costBasisFile);
+    csvReader.nextLine();
+
+    Map<LocalDate, Double> costBasisHistory = new TreeMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+      costBasisHistory.put(LocalDate.parse(vals[0]), Double.parseDouble(vals[1]));
+    }
+
+    return costBasisHistory;
   }
 
   @Override

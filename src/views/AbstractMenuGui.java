@@ -5,12 +5,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.*;
 
 import controllers.Features;
 import models.Details;
+import models.Log;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
@@ -351,6 +353,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     portfolioListCb = new JComboBox(portfolioList);
     portfolioListCb.setEditable(true);
     portfolioListCb.addActionListener(evt -> {
+      portfolioName = portfolioListCb.getSelectedItem().toString();
+      System.out.println(portfolioName);
       String selectedPortfolio = portfolioListCb.getSelectedItem().toString();
     });
     panel3.add(portfolioListCb);

@@ -2,7 +2,9 @@ package controllers;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+import models.Log;
 import views.Menu;
 
 public interface Features {
@@ -16,5 +18,5 @@ public interface Features {
   void buyStock(String ticker, String quant, String purchaseDate, String commission);
   void savePortfolio(String portfolioName);
   List<String> getAllPortfolios();
-  void getContents(String portfolioName, String date);
+  Map<String, Log> getPortfolioContents(String portfolioName, String date);
 }
