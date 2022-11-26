@@ -3,6 +3,8 @@ package views;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.swing.*;
 
@@ -21,6 +23,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JButton getCompositionButton;
   private JButton getValueButton;
   private JButton goBackButton;
+
+  private JButton enterBtn;
   private JTextField quantity;
   private JTextField datePicker;
   private JTextField commission;
@@ -52,6 +56,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     setSize(400, 500);
     setLocation(900, 100);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    enterBtn = new JButton("Enter");
 
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
@@ -100,23 +106,37 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     JTextField portfolioNameTextField = new JTextField(10);
     panel3.add(portfolioNameTextField);
 
-    JButton enterButton = new JButton("Enter");
-    panel3.add(enterButton);
+    panel3.add(enterBtn);
 
-    panel3.add(goBackButton);
+    panel3.add(enterBtn);
 
-    enterButton.addActionListener(evt -> {
+    enterBtn.addActionListener(evt -> {
+      String frameTitle = this.getTitle();
       portfolioName = portfolioNameTextField.getText();
+
       if (portfolioName.equals("")) {
         printMessage("Name cannot be empty");
-      } else {
-        portfolioNameTextField.setText("");
+      }
+      else if (Objects.equals(frameTitle, "Create Portfolio")) {
+//        portfolioNameTextField.setText("");
         features.createPortfolio(portfolioName);
       }
-      panel3.revalidate();
+      else if (Objects.equals(frameTitle, "Portfolio Composition")) {
+//        features.getComposition()
+      }
+      else if(Objects.equals(frameTitle, "Portfolio Value")) {
+//        features.getValue();
+      }
+      else if (Objects.equals(frameTitle, "Portfolio Cost Basis")) {
+//        features.getCostBasis();
+      }
+      else if (Objects.equals(frameTitle, "Portfolio Performance")) {
+//        features.getPortfolioPerformance();
+      }
     });
 
     panel3.revalidate();
+    cl.show(mainPanel, "panel 3");
   }
 
 
@@ -345,10 +365,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     createPortfolioButton = new JButton("Create portfolio");
     panel2.add(createPortfolioButton);
-    createPortfolioButton.addActionListener(evt -> getCreatePortfolioThroughWhichMethod());
+    createPortfolioButton.addActionListener(evt -> {
+      this.setTitle("Create Portfolio");
+      getCreatePortfolioThroughWhichMethod();
+    });
 
     getCompositionButton = new JButton("See portfolio composition");
     panel2.add(getCompositionButton);
+    getCompositionButton.addActionListener(evt -> {
+      this.setTitle("Portfolio Composition");
+      getPortfolioName();
+    });
 
     getValueButton = new JButton("Check portfolio value");
     panel2.add(getValueButton);

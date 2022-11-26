@@ -100,11 +100,6 @@ public class FeaturesImpl implements Features {
 
   @Override
   public void buyStock(String ticker, String quant, String date, String commission) {
-    System.out.println(ticker + " " +
-            quant + " " +
-            date + " " +
-            commission);
-
     try {
       double quantity = Double.parseDouble(quant);
       double commissionFee = Double.parseDouble(commission);
