@@ -13,9 +13,9 @@ import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private final Features features;
-  private final JButton flexibleButton;
-  private final JButton inflexibleButton;
-  private final JButton exitButton;
+  private JButton flexibleButton;
+  private JButton inflexibleButton;
+  private JButton exitButton;
   private JButton createPortfolioButton;
   private JButton getCompositionButton;
   private JButton getValueButton;
@@ -25,50 +25,47 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JTextField datePicker;
   private JTextField commission;
 
-  private JLabel portfolioNameLabel;
+//  private JLabel portfolioNameLabel;
+  private JTextField portfolioName;
   private JLabel text;
 
-  protected abstract void getRestIfApplicable();
+  private CardLayout cl;
+  private JPanel mainPanel;
+
+  // panel 1 stores choice between flexible and inflexible menu
+  private JPanel panel1;
+
+  //panel 2 gives portfolio specific features options in the menu
+  private JPanel panel2;
+
+  // panel 3 does the option chosen by user, e.g. create portfolio, get composition, etc.
+  private JPanel panel3;
+
+
+  protected abstract void getRestIfApplicable(JPanel panel2);
 
   protected AbstractMenuGui(Features features, String caption) {
     super(caption);
     this.features = features;
 
-    setSize(500, 500);
+    setSize(400, 500);
     setLocation(200, 200);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    JPanel mainPanel = new JPanel(new CardLayout());
-
-    JPanel panel1 = new JPanel();
-    flexibleButton = new JButton("Flexible");
-    panel1.add(flexibleButton);
-
-    inflexibleButton = new JButton("Inflexible");
-//    this.add(inflexibleButton);
-    panel1.add(inflexibleButton);
-
-    exitButton = new JButton("Exit");
-//    this.add(exitButton);
-    panel1.add(exitButton);
-
-    JPanel panel2 = new JPanel();
-    panel2.add(new JButton("back"));
-
-    mainPanel.add(panel1, "1");
-    mainPanel.add(panel2, "2");
-    CardLayout cl = (CardLayout) (mainPanel.getLayout());
-
-    cl.show(mainPanel, "1");
-//    cl.next(mainPanel);
+    this.mainPanel = getMainPanel();
+    this.cl = (CardLayout) (mainPanel.getLayout());
+    this.cl.show(mainPanel, "Main Panel");
 
     this.add(mainPanel);
 
-
-//    flexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
     flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
-    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
+//    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
+    inflexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
+    goBackButton.addActionListener(evt -> cl.previous(mainPanel));
     exitButton.addActionListener(evt -> features.exitProgram());
+    createPortfolioButton.addActionListener(evt -> getPortfolioName());
+//    getCompositionButton.addActionListener(evt ->);
+//    getValueButton.addActionListener(evt -> );
 
 //    pack();
     setVisible(true);
@@ -76,22 +73,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getMainMenuChoice() {
-    createPortfolioButton = new JButton("Create portfolio");
-    this.add(createPortfolioButton);
-    createPortfolioButton.addActionListener(evt -> getCreatePortfolioThroughWhichMethod());
-
-    getCompositionButton = new JButton("See portfolio composition");
-    this.add(getCompositionButton);
-
-    getValueButton = new JButton("Check portfolio value");
-    this.add(getValueButton);
-
-    goBackButton = new JButton("Go back");
-    this.add(goBackButton);
-
-    getRestIfApplicable();
-
-    this.refresh();
+    cl.next(mainPanel);
   }
 
   private void refresh() {
@@ -101,14 +83,16 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getPortfolioName() {
-    portfolioNameLabel = new JLabel("Enter portfolio name");
-    this.add(portfolioNameLabel);
+    this.panel3.removeAll();
 
-    JTextField portfolioName = new JTextField(10);
-    this.add(portfolioName);
+    JLabel portfolioNameLabel = new JLabel("Enter portfolio name");
+    panel3.add(portfolioNameLabel);
+
+    portfolioName = new JTextField(10);
+    panel3.add(portfolioName);
 
     JButton enterButton = new JButton("Enter");
-    this.add(enterButton);
+    panel3.add(enterButton);
     enterButton.addActionListener(evt -> {
       String pName = portfolioName.getText();
       if (pName.equals("")) {
@@ -119,17 +103,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
       }
     });
 
-    this.refresh();
+    panel3.add(goBackButton);
+
+    cl.show(mainPanel, "panel 3");
+//    cl.next(mainPanel);
+
   }
 
-  @Override
-  public void toggleColor() {
-    if (this.portfolioNameLabel.getForeground().equals(Color.BLACK)) {
-      this.portfolioNameLabel.setForeground(Color.RED);
-    } else {
-      this.portfolioNameLabel.setForeground(Color.BLACK);
-    }
-  }
 
   @Override
   public void printMessage(String msg) {
@@ -279,4 +259,70 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   public void getInterval() {
 
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //////////////////////////////////JFRAME RELATED SHIT//////////////////////
+
+  private JPanel getMainPanel() {
+    JPanel mainPanel = new JPanel(new CardLayout());
+
+    this.panel1 = getPanel1();
+    this.panel2 = getPanel2();
+    this.panel3 = new JPanel();
+
+    mainPanel.add(panel1, "Main Menu");
+    mainPanel.add(panel2, "2");
+    mainPanel.add(panel3, "panel 3");
+
+    return mainPanel;
+  }
+
+  private JPanel getPanel1() {
+    JPanel panel1 = new JPanel();
+
+    flexibleButton = new JButton("Flexible");
+    panel1.add(flexibleButton);
+
+    inflexibleButton = new JButton("Inflexible");
+    panel1.add(inflexibleButton);
+
+    exitButton = new JButton("Exit");
+    panel1.add(exitButton);
+
+    return panel1;
+  }
+
+  private JPanel getPanel2() {
+    JPanel panel2 = new JPanel();
+
+    createPortfolioButton = new JButton("Create portfolio");
+    panel2.add(createPortfolioButton);
+    createPortfolioButton.addActionListener(evt -> getCreatePortfolioThroughWhichMethod());
+
+    getCompositionButton = new JButton("See portfolio composition");
+    panel2.add(getCompositionButton);
+
+    getValueButton = new JButton("Check portfolio value");
+    panel2.add(getValueButton);
+
+    goBackButton = new JButton("Go back");
+    panel2.add(goBackButton);
+
+    //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
+    getRestIfApplicable(panel2);
+
+    return panel2;
+  }
+
 }

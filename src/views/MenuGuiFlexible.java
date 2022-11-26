@@ -15,15 +15,15 @@ public class MenuGuiFlexible extends AbstractMenuGui {
   }
 
   @Override
-  public void getRestIfApplicable() {
+  public void getRestIfApplicable(JPanel panel2) {
     buySellButton = new JButton("Buy/Sell shares");
-    this.add(buySellButton);
+    panel2.add(buySellButton);
 
     seePerformance = new JButton("See portfolio performance");
-    this.add(seePerformance);
+    panel2.add(seePerformance);
 
     getCostBasisButton = new JButton("Get Cost basis");
-    this.add(getCostBasisButton);
+    panel2.add(getCostBasisButton);
 
   }
 }
