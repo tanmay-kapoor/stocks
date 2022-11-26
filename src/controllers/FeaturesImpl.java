@@ -83,8 +83,7 @@ public class FeaturesImpl implements Features {
     } else {
       portfolio = new StockPortfolioFlexible(portfolioName, path, api);
 //      menu.clearTextIfDisplayed();
-//      menu.getAddToPortfolioChoice();
-      menu.getTickerSymbol();
+      menu.getAddToPortfolioChoice();
 //      boolean shouldExit;
 //      menu.getAddToPortfolioChoice();
 //      char option = getCharVal();

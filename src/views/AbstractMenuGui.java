@@ -86,6 +86,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     this.repaint();
   }
 
+
   @Override
   public void getPortfolioName() {
     panel3.removeAll();
@@ -154,6 +155,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getAddToPortfolioChoice() {
+    panel3. removeAll();
+
     JButton addShareBtn = new JButton("Add share");
     panel3.add(addShareBtn);
     addShareBtn.addActionListener(evt -> getTickerSymbol());
@@ -161,6 +164,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     JButton createStrategyBtn = new JButton("Create DCA strategy");
     panel3.add(createStrategyBtn);
 
+    panel3.revalidate();
   }
 
   @Override
