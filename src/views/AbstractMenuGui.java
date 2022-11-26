@@ -12,7 +12,6 @@ import javax.swing.*;
 
 import controllers.Features;
 import models.Details;
-import models.Log;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
@@ -263,7 +262,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton getContentsBtn = new JButton("Get Contents");
     panel3.add(getContentsBtn);
     getContentsBtn.addActionListener(e -> {
-      Map<String, Log> contents = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
+      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
       String[][] dummyData = {
               { "Kundan Kumar Jha", "4031", "CSE" },
               { "Anand Jha", "6014", "IT" }
@@ -346,7 +345,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     List<String> portfolios = features.getAllPortfolios();
-    if(portfolios.size() == 0) {
+    if (portfolios.size() == 0) {
       panel3.add(new JLabel("No Portfolios. Please Create atleast one and come back again."));
       panel3.add(goBackButton);
       panel3.revalidate();
@@ -357,8 +356,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(msg);
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
-    portfolioListCb = new JComboBox(portfolioList);
+    portfolioListCb = new JComboBox<>(portfolioList);
     portfolioListCb.setEditable(true);
+    portfolioName = portfolioListCb.getItemAt(0);
     portfolioListCb.addActionListener(evt -> {
       portfolioName = portfolioListCb.getSelectedItem().toString();
       System.out.println(portfolioName);
