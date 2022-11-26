@@ -136,6 +136,11 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
+  public List<String> getAllPortfolios() {
+    return allPortfolios;
+  }
+
+  @Override
   public void handleCreatePortfolioThroughUpload() {
 
   }

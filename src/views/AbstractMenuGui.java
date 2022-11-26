@@ -262,8 +262,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   @Override
   public void getPortfolioCompositionOption() {
     panel3.removeAll();
-
-
+//     features.getAllPortfolios();
+//    accept date
+//    accept contents/weightage
+    // features.someFunction => talk to me at this point coz i am also not sure
     panel3.revalidate();
   }
 
@@ -374,7 +376,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     panel2.add(getCompositionButton);
     getCompositionButton.addActionListener(evt -> {
       this.setTitle("Portfolio Composition");
-      getPortfolioName();
+      getPortfolioCompositionOption();
     });
 
     getValueButton = new JButton("Check portfolio value");
