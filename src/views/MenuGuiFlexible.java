@@ -24,7 +24,7 @@ public class MenuGuiFlexible extends AbstractMenuGui {
     JButton seePerformance = new JButton("See portfolio performance");
     panel2.add(seePerformance);
     seePerformance.addActionListener(evt -> {
-      this.setTitle("See PortfolioPerformance");
+      this.setTitle("See Portfolio Performance");
       getAllPortfolios();
     });
 

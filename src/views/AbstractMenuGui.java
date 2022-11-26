@@ -3,8 +3,6 @@ package views;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -127,18 +125,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       if (Objects.equals(frameTitle, "Create Portfolio")) {
 //        portfolioNameTextField.setText("");
         features.createPortfolio(portfolioName);
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Composition")) {
-//        features.getComposition()
-      }
-      else if(Objects.equals(frameTitle, "Portfolio Value")) {
-//        features.getValue();
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Cost Basis")) {
-//        features.getCostBasis();
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Performance")) {
-//        features.getPortfolioPerformance();
       }
     });
 
@@ -268,31 +254,24 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getPortfolioCompositionOption() {
-    panel3.removeAll();
+//    panel3.removeAll();
 
-    getAllPortfolios();
     getDateChoice();
 
     JButton getContentsBtn = new JButton("Get Contents");
     panel3.add(getContentsBtn);
     getContentsBtn.addActionListener(e -> features.getContents(portfolioName, dateTxtFiled.getText()));
-//    getCompositionBtn.addActionListener(evt -> features.);
-//    accept date
-//    accept contents/weightage
-    // features.someFunction => talk to me at this point coz i am also not sure
-    panel3.revalidate();
 
-    cl.show(mainPanel, "panel 3");
-  }
+    JButton getWeightageBtn = new JButton("Get Stock Weightage");
+    panel3.add(getContentsBtn);
+//    getWeightageBtn.addActionListener(e -> features.getWeightage(portfolioName, dateTxtFiled.getText()));
 
-  //  @Override
-  public void getPortfolioValueOption() {
-    panel3.removeAll();
-
+    panel3.add(goBackButton);
 
     panel3.revalidate();
     cl.show(mainPanel, "panel 3");
   }
+
 
   @Override
   public void getBuySellChoice() {
@@ -354,30 +333,42 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   protected void getAllPortfolios() {
+    cl.show(mainPanel, "panel 3");
+    panel3.removeAll();
+
+    List<String> portfolios = features.getAllPortfolios();
+    if(portfolios.size() == 0) {
+      panel3.add(new JLabel("No Portfolios. Please Create atleast one and come back again."));
+      panel3.add(goBackButton);
+      panel3.revalidate();
+      return;
+    }
+
     JLabel msg = new JLabel("Choose a portfolio from the list");
     panel3.add(msg);
 
-    List<String> portfolios = features.getAllPortfolios();
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
-
     portfolioListCb = new JComboBox(portfolioList);
     portfolioListCb.setEditable(true);
     portfolioListCb.addActionListener(evt -> {
       String selectedPortfolio = portfolioListCb.getSelectedItem().toString();
-
-      switch (this.getTitle()) {
-        case "Portfolio Composition":
-          //call composition function;
-        case "Portfolio Value":
-          //call portfolio function
-        case "Portfolio Cost Basis":
-          //call relevant method
-        case "Portfolio Performance":
-          // call relevant methods
-      }
     });
-
     panel3.add(portfolioListCb);
+
+    switch (this.getTitle()) {
+      case "Portfolio Composition":
+        getPortfolioCompositionOption();
+      case "Portfolio Value":
+        //call portfolio function
+      case "Portfolio Cost Basis":
+        //call relevant method
+      case "Portfolio Performance":
+        // call relevant methods
+//        showgraph();
+    }
+
+    panel3.revalidate();
+
   }
 
 
@@ -428,14 +419,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel2.add(getCompositionButton);
     getCompositionButton.addActionListener(evt -> {
       this.setTitle("Portfolio Composition");
-      getPortfolioCompositionOption();
+      getAllPortfolios();
     });
 
     getValueButton = new JButton("Check portfolio value");
     panel2.add(getValueButton);
     getValueButton.addActionListener(evt -> {
       this.setTitle("Portfolio Value");
-//      getPortfolioValueOption();
+      getAllPortfolios();
     });
 
     panel2.add(goBackButton);
