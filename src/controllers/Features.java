@@ -12,6 +12,6 @@ public interface Features {
   void exitProgram();
   void handleCreatePortfolioThroughUpload();
   void createPortfolio(String portfolioName);
-  void buyStock(String ticker, double quantity, LocalDate purchaseDate, double commissionFee);
+  void buyStock(String ticker, String quant, String purchaseDate, String commission);
   void savePortfolio(String portfolioName);
 }

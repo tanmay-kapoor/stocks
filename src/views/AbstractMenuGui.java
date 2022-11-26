@@ -3,7 +3,6 @@ package views;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.time.LocalDate;
 
 import javax.swing.*;
 
@@ -13,6 +12,7 @@ import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private String portfolioName;
+  private JTextField dateTxtFiled;
   private final Features features;
   private JButton flexibleButton;
   private JButton inflexibleButton;
@@ -25,7 +25,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JTextField datePicker;
   private JTextField commission;
 
-//  private JLabel portfolioNameLabel;
+  //  private JLabel portfolioNameLabel;
   private JLabel text;
 
   private CardLayout cl;
@@ -56,7 +56,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
       cl.previous(mainPanel);
-      if(true) {
+      if (true) {
         features.savePortfolio(portfolioName);
       }
     });
@@ -69,7 +69,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     this.cl.show(mainPanel, "Main Panel");
 
     this.add(mainPanel);
-
 
 
 //    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
@@ -161,7 +160,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getAddToPortfolioChoice() {
-    panel3. removeAll();
+    panel3.removeAll();
 
     JButton addShareBtn = new JButton("Add share");
     panel3.add(addShareBtn);
@@ -200,9 +199,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     addBtn.addActionListener(e ->
             features.buyStock(
                     ticker.getText(),
-                    Double.parseDouble(quantity.getText().toUpperCase()),
-                    LocalDate.now(),
-                    Double.parseDouble(commission.getText())
+                    quantity.getText(),
+                    dateTxtFiled.getText(),
+                    commission.getText()
             ));
 
     panel3.revalidate();
@@ -225,8 +224,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getDateChoice() {
-    JLabel msg = new JLabel("Choose date : ");
-    JTextField dateTxtFiled = new JTextField(10);
+    JLabel msg = new JLabel("Purchase Date (YYYY-MM-DD) : ");
+    dateTxtFiled = new JTextField(10);
     panel3.add(msg);
     panel3.add(dateTxtFiled);
   }
@@ -245,9 +244,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     panel3.removeAll();
 
 
-
     panel3.revalidate();
   }
+
   @Override
   public void getBuySellChoice() {
     panel3.removeAll();
@@ -306,17 +305,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   public void getInterval() {
 
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
   //////////////////////////////////JFRAME RELATED SHIT//////////////////////

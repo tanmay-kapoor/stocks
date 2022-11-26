@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,20 +99,33 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
-  public void buyStock(String ticker, double quantity, LocalDate purchaseDate, double commissionFee) {
+  public void buyStock(String ticker, String quant, String date, String commission) {
     System.out.println(ticker + " " +
-            quantity + " " +
-            purchaseDate + " " +
-            commissionFee);
+            quant + " " +
+            date + " " +
+            commission);
+
     try {
+      double quantity = Double.parseDouble(quant);
+      double commissionFee = Double.parseDouble(commission);
+      LocalDate purchaseDate = LocalDate.parse(date);
+
       if (!api.isTickerPresent(ticker)) {
         api.getShareDetails(ticker, LocalDate.now());
       }
-      Details details = new Details(quantity, purchaseDate);
-      portfolio.buy(ticker, details, commissionFee);
-      menu.successMessage(ticker, details, Txn.Buy);
+      if (purchaseDate.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("Cannot buy on a future date");
+      } else {
+        Details details = new Details(quantity, purchaseDate);
+        portfolio.buy(ticker, details, commissionFee);
+        menu.successMessage(ticker, details, Txn.Buy);
+      }
+    } catch (NumberFormatException e) {
+      menu.printMessage("Invalid format for 1 or more fields");
     } catch (IllegalArgumentException e) {
       menu.printMessage("This ticker is not associated with any company");
+    } catch (DateTimeParseException e) {
+      menu.printMessage("Invalid Date format");
     }
   }
 
