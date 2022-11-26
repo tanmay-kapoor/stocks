@@ -121,23 +121,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         printMessage("Name cannot be empty");
       }
 
-
       //CONVERT THIS TO SWITCH CASE
       if (Objects.equals(frameTitle, "Create Portfolio")) {
 //        portfolioNameTextField.setText("");
         features.createPortfolio(portfolioName);
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Composition")) {
-//        features.getComposition()
-      }
-      else if(Objects.equals(frameTitle, "Portfolio Value")) {
-//        features.getValue();
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Cost Basis")) {
-//        features.getCostBasis();
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Performance")) {
-//        features.getPortfolioPerformance();
       }
     });
 
@@ -352,7 +339,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  private void getAllPortfolios() {
+  protected void getAllPortfolios() {
     JLabel msg = new JLabel("Choose a portfolio from the list");
     panel3.add(msg);
 
@@ -363,7 +350,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     portfolioListCb.setEditable(true);
     portfolioListCb.addActionListener(evt -> {
       String selectedPortfolio = portfolioListCb.getSelectedItem().toString();
-      System.out.println(selectedPortfolio);
+
+      switch (this.getTitle()) {
+        case "Portfolio Composition":
+          //call composition function;
+        case "Portfolio Value":
+          //call portfolio function
+        case "Portfolio Cost Basis":
+          //call relevant method
+        case "Portfolio Performance":
+          // call relevant methods
+      }
     });
 
     panel3.add(portfolioListCb);
