@@ -361,6 +361,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JComboBox portfolioListCb = new JComboBox(portfolioList);
     portfolioListCb.setEditable(true);
+    portfolioListCb.addActionListener(evt -> {
+      String selectedPortfolio = portfolioListCb.getSelectedItem().toString();
+      System.out.println(selectedPortfolio);
+    });
 
     panel3.add(portfolioListCb);
   }
