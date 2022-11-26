@@ -20,7 +20,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JButton getCompositionButton;
   private JButton getValueButton;
   private JButton goBackButton;
-  private JTextField ticker;
   private JTextField quantity;
   private JTextField datePicker;
   private JTextField commission;
@@ -39,7 +38,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   private JPanel panel2;
 
   // panel 3 does the option chosen by user, e.g. create portfolio, get composition, etc.
-  private JPanel panel3;
+  protected JPanel panel3;
+
+  protected abstract void displaySellPanel();
 
 
   protected abstract void getRestIfApplicable(JPanel panel2);
@@ -49,7 +50,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     this.features = features;
 
     setSize(400, 500);
-    setLocation(200, 200);
+    setLocation(900, 100);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     this.mainPanel = getMainPanel();
@@ -58,16 +59,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     this.add(mainPanel);
 
-    flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
 //    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
-    inflexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
-    goBackButton.addActionListener(evt -> cl.previous(mainPanel));
-    exitButton.addActionListener(evt -> features.exitProgram());
-    createPortfolioButton.addActionListener(evt -> getPortfolioName());
+
 //    getCompositionButton.addActionListener(evt ->);
 //    getValueButton.addActionListener(evt -> );
 
-//    pack();
+//    this.pack();
     setVisible(true);
   }
 
@@ -83,31 +80,30 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getPortfolioName() {
-    this.panel3.removeAll();
+    panel3.removeAll();
 
     JLabel portfolioNameLabel = new JLabel("Enter portfolio name");
     panel3.add(portfolioNameLabel);
 
-    portfolioName = new JTextField(10);
-    panel3.add(portfolioName);
+    JTextField portfolioNameTextField = new JTextField(10);
+    panel3.add(portfolioNameTextField);
 
     JButton enterButton = new JButton("Enter");
     panel3.add(enterButton);
+
+    panel3.add(goBackButton);
+
     enterButton.addActionListener(evt -> {
-      String pName = portfolioName.getText();
+      String pName = portfolioNameTextField.getText();
       if (pName.equals("")) {
         printMessage("Name cannot be empty");
       } else {
-        portfolioName.setText("");
+        portfolioNameTextField.setText("");
         features.createPortfolio(pName);
       }
     });
 
-    panel3.add(goBackButton);
-
-    cl.show(mainPanel, "panel 3");
-//    cl.next(mainPanel);
-
+    panel3.revalidate();
   }
 
 
@@ -134,17 +130,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   @Override
   public void getCreatePortfolioThroughWhichMethod() {
+    panel3.removeAll();
+
     JButton interfaceButton = new JButton("Interface");
-    this.add(interfaceButton);
+    panel3.add(interfaceButton);
     interfaceButton.addActionListener(evt -> getPortfolioName());
 
     JButton uploadButton = new JButton("File upload");
-    this.add(uploadButton);
+    panel3.add(uploadButton);
 
-    JButton backButton = new JButton("Go back");
-    this.add(backButton);
+    panel3.add(goBackButton);
 
-    this.refresh();
+    panel3.revalidate();
+    cl.show(mainPanel, "panel 3");
   }
 
   @Override
@@ -167,17 +165,20 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   @Override
   public void getTickerSymbol() {
     JLabel msg = new JLabel("Ticker symbol : ");
-    this.add(msg);
+    panel3.add(msg);
 
-    ticker = new JTextField(10);
-    this.add(ticker);
-
+    JTextField ticker = new JTextField("some text", 10);
+    panel3.add(ticker);
+    System.out.println("in getTickerSymbol");
     getQuantity();
     getDateForValue();
     getCommissionFee();
 
     JButton addBtn = new JButton("Add");
-    this.add(addBtn);
+    panel3.add(addBtn);
+    panel3.add(goBackButton);
+    panel3.revalidate();
+
     addBtn.addActionListener(e ->
             features.buyStock(
                     ticker.getText(),
@@ -185,17 +186,15 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
                     LocalDate.now(),
                     Double.parseDouble(commission.getText())
             ));
-
-    this.refresh();
   }
 
   @Override
   public void getQuantity() {
     JLabel msg = new JLabel("Number of shares : ");
-    this.add(msg);
+    panel3.add(msg);
 
     quantity = new JTextField(10);
-    this.add(quantity);
+    panel3.add(quantity);
     quantity.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
         quantity.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
@@ -212,26 +211,44 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   @Override
   public void getDateForValue() {
     JLabel msg = new JLabel("Choose date : ");
-    this.add(msg);
+    panel3.add(msg);
   }
 
   @Override
   public void getPortfolioCompositionOption() {
 
   }
-
   @Override
   public void getBuySellChoice() {
+    panel3.removeAll();
+
+    JButton buyOptionBtn = new JButton("Buy");
+    JButton sellOptionBtn = new JButton("Sell");
+
+    panel3.add(buyOptionBtn);
+    panel3.add(sellOptionBtn);
+    panel3.add(goBackButton);
+
+    panel3.revalidate();
+
+    buyOptionBtn.addActionListener(evt -> displayBuyPanel());
+    sellOptionBtn.addActionListener(evt -> displaySellPanel());
+
+  }
+
+  protected void displayBuyPanel() {
+    panel3.removeAll();
+    getTickerSymbol();
 
   }
 
   @Override
   public void getCommissionFee() {
     JLabel msg = new JLabel("Commission Fee : ");
-    this.add(msg);
+    panel3.add(msg);
 
     commission = new JTextField(10);
-    this.add(commission);
+    panel3.add(commission);
     commission.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
         commission.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
@@ -279,11 +296,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     this.panel1 = getPanel1();
     this.panel2 = getPanel2();
-    this.panel3 = new JPanel();
+    this.panel3 = new JPanel(new GridLayout(0, 2, 10, 80));
 
     mainPanel.add(panel1, "Main Menu");
     mainPanel.add(panel2, "2");
     mainPanel.add(panel3, "panel 3");
+
+    goBackButton.addActionListener(evt -> cl.previous(mainPanel));
+    exitButton.addActionListener(evt -> features.exitProgram());
 
     return mainPanel;
   }
@@ -299,6 +319,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     exitButton = new JButton("Exit");
     panel1.add(exitButton);
+
+    flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
+    inflexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
 
     return panel1;
   }

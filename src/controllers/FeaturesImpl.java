@@ -98,6 +98,10 @@ public class FeaturesImpl implements Features {
 
   @Override
   public void buyStock(String ticker, double quantity, LocalDate purchaseDate, double commissionFee) {
+                System.out.println(ticker + " " +
+                    quantity+ " " +
+                    purchaseDate+ " " +
+                        commissionFee);
     Details details = new Details(quantity, purchaseDate);
     portfolio.buy(ticker, details, commissionFee);
     menu.printMessage("Success");

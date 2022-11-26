@@ -11,6 +11,11 @@ public class MenuGuiInflexible extends AbstractMenuGui {
   }
 
   @Override
+  protected void displaySellPanel() {
+    return;
+  }
+
+  @Override
   protected void getRestIfApplicable(JPanel panel2) {
 
   }
