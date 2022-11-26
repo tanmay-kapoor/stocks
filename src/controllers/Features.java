@@ -16,4 +16,5 @@ public interface Features {
   void buyStock(String ticker, String quant, String purchaseDate, String commission);
   void savePortfolio(String portfolioName);
   List<String> getAllPortfolios();
+  void getContents(String portfolioName, String date);
 }

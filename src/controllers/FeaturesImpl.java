@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.sound.sampled.Port;
 
 import models.Details;
 import models.api.ShareApi;
@@ -137,7 +140,31 @@ public class FeaturesImpl implements Features {
 
   @Override
   public List<String> getAllPortfolios() {
-    return allPortfolios;
+    return new ArrayList<>(allPortfolios);
+  }
+
+  @Override
+  public void getContents(String portfolioName, String date) {
+    Portfolio portfolio = findPortfolio(portfolioName);
+  }
+
+  private Portfolio findPortfolio(String name) {
+//    if(allPortfolioObjects.containsKey(name)) {
+//      return allPortfolioObjects.get(name);
+//    } else {
+//      try {
+//        String logPath = this.path + "logs/";
+//        String costBasisPath = this.path + "costbasis/";
+//        portfolio = createPortfolioFromCsv(name,
+//                new File(String.format("%s%s.csv", this.path, name)),
+//                new File(String.format("%s%s.csv", logPath, name)),
+//                new File(String.format("%s%s.csv", costBasisPath, name)));
+//        allPortfolioObjects.put(name, portfolio);
+//      } catch (FileNotFoundException e) {
+//        throw new RuntimeException(e);
+//      }
+//    }
+    return null;
   }
 
   @Override

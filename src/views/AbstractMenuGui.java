@@ -3,8 +3,6 @@ package views;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +14,7 @@ import models.Details;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
+  private JComboBox<String> portfolioListCb;
   private String portfolioName;
   private JTextField dateTxtFiled;
   private final Features features;
@@ -126,17 +125,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       if (Objects.equals(frameTitle, "Create Portfolio")) {
 //        portfolioNameTextField.setText("");
         features.createPortfolio(portfolioName);
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Composition")) {
+      } else if (Objects.equals(frameTitle, "Portfolio Composition")) {
 //        features.getComposition()
-      }
-      else if(Objects.equals(frameTitle, "Portfolio Value")) {
+      } else if (Objects.equals(frameTitle, "Portfolio Value")) {
 //        features.getValue();
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Cost Basis")) {
+      } else if (Objects.equals(frameTitle, "Portfolio Cost Basis")) {
 //        features.getCostBasis();
-      }
-      else if (Objects.equals(frameTitle, "Portfolio Performance")) {
+      } else if (Objects.equals(frameTitle, "Portfolio Performance")) {
 //        features.getPortfolioPerformance();
       }
     });
@@ -250,7 +245,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getDateChoice() {
-    JLabel msg = new JLabel("Purchase Date (YYYY-MM-DD) : ");
+    JLabel msg = new JLabel("Date (YYYY-MM-DD) : ");
     dateTxtFiled = new JTextField(10);
     panel3.add(msg);
     panel3.add(dateTxtFiled);
@@ -272,8 +267,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     getAllPortfolios();
     getDateChoice();
 
-    JButton getCompositionBtn = new JButton("Get Composition");
-    panel3.add(getCompositionBtn);
+    JButton getContentsBtn = new JButton("Get Contents");
+    panel3.add(getContentsBtn);
+    getContentsBtn.addActionListener(e -> features.getContents(portfolioName, dateTxtFiled.getText()));
 //    getCompositionBtn.addActionListener(evt -> features.);
 //    accept date
 //    accept contents/weightage
@@ -283,10 +279,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
   }
 
-//  @Override
+  //  @Override
   public void getPortfolioValueOption() {
     panel3.removeAll();
-
 
 
     panel3.revalidate();
@@ -359,7 +354,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     List<String> portfolios = features.getAllPortfolios();
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
 
-    JComboBox portfolioListCb = new JComboBox(portfolioList);
+    portfolioListCb = new JComboBox(portfolioList);
     portfolioListCb.setEditable(true);
     portfolioListCb.addActionListener(evt -> {
       String selectedPortfolio = portfolioListCb.getSelectedItem().toString();
