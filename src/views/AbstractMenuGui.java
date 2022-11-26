@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.swing.*;
@@ -12,7 +15,7 @@ import controllers.Features;
 import models.Details;
 import models.portfolio.Txn;
 
-abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
+abstract class AbstractMenuGui extends JFrame implements Menu {
   private String portfolioName;
   private JTextField dateTxtFiled;
   private final Features features;
@@ -117,7 +120,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
       if (portfolioName.equals("")) {
         printMessage("Name cannot be empty");
       }
-      else if (Objects.equals(frameTitle, "Create Portfolio")) {
+
+
+      //CONVERT THIS TO SWITCH CASE
+      if (Objects.equals(frameTitle, "Create Portfolio")) {
 //        portfolioNameTextField.setText("");
         features.createPortfolio(portfolioName);
       }
@@ -262,11 +268,29 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   @Override
   public void getPortfolioCompositionOption() {
     panel3.removeAll();
-//     features.getAllPortfolios();
+
+    getAllPortfolios();
+    getDateChoice();
+
+    JButton getCompositionBtn = new JButton("Get Composition");
+    panel3.add(getCompositionBtn);
+//    getCompositionBtn.addActionListener(evt -> features.);
 //    accept date
 //    accept contents/weightage
     // features.someFunction => talk to me at this point coz i am also not sure
     panel3.revalidate();
+
+    cl.show(mainPanel, "panel 3");
+  }
+
+//  @Override
+  public void getPortfolioValueOption() {
+    panel3.removeAll();
+
+
+
+    panel3.revalidate();
+    cl.show(mainPanel, "panel 3");
   }
 
   @Override
@@ -328,6 +352,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
   }
 
+  private void getAllPortfolios() {
+    JLabel msg = new JLabel("Choose a portfolio from the list");
+    panel3.add(msg);
+
+    List<String> portfolios = features.getAllPortfolios();
+    String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
+
+    JComboBox portfolioListCb = new JComboBox(portfolioList);
+    portfolioListCb.setEditable(true);
+
+    panel3.add(portfolioListCb);
+  }
+
 
   //////////////////////////////////JFRAME RELATED SHIT//////////////////////
 
@@ -381,6 +418,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
 
     getValueButton = new JButton("Check portfolio value");
     panel2.add(getValueButton);
+    getValueButton.addActionListener(evt -> {
+      this.setTitle("Portfolio Value");
+//      getPortfolioValueOption();
+    });
 
     panel2.add(goBackButton);
 
