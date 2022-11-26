@@ -53,11 +53,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     setLocation(900, 100);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+    goBackButton = new JButton("Go back");
+    goBackButton.addActionListener(evt -> cl.previous(mainPanel));
+
+    exitButton = new JButton("Exit");
+    exitButton.addActionListener(evt -> features.exitProgram());
+
     this.mainPanel = getMainPanel();
     this.cl = (CardLayout) (mainPanel.getLayout());
     this.cl.show(mainPanel, "Main Panel");
 
     this.add(mainPanel);
+
+
 
 //    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
 
@@ -111,8 +119,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
   public void printMessage(String msg) {
     clearTextIfDisplayed();
     text = new JLabel(msg);
-    this.add(text);
-    this.refresh();
+    panel3.add(text);
   }
 
   @Override
@@ -302,9 +309,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     mainPanel.add(panel2, "2");
     mainPanel.add(panel3, "panel 3");
 
-    goBackButton.addActionListener(evt -> cl.previous(mainPanel));
-    exitButton.addActionListener(evt -> features.exitProgram());
-
     return mainPanel;
   }
 
@@ -317,7 +321,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     inflexibleButton = new JButton("Inflexible");
     panel1.add(inflexibleButton);
 
-    exitButton = new JButton("Exit");
     panel1.add(exitButton);
 
     flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
@@ -339,7 +342,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu, GuiAbilities {
     getValueButton = new JButton("Check portfolio value");
     panel2.add(getValueButton);
 
-    goBackButton = new JButton("Go back");
     panel2.add(goBackButton);
 
     //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
