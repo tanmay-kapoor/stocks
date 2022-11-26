@@ -3,6 +3,8 @@ package views;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -352,7 +354,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  private void getAllPortfolios() {
+  protected void getAllPortfolios() {
     JLabel msg = new JLabel("Choose a portfolio from the list");
     panel3.add(msg);
 
@@ -364,6 +366,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     portfolioListCb.addActionListener(evt -> {
       portfolioName = portfolioListCb.getSelectedItem().toString();
       System.out.println(portfolioName);
+
+      switch (this.getTitle()) {
+        case "Portfolio Composition":
+          //call composition function;
+        case "Portfolio Value":
+          //call portfolio function
+        case "Portfolio Cost Basis":
+          //call relevant method
+        case "Portfolio Performance":
+          // call relevant methods
+      }
     });
     portfolioName = portfolioListCb.getItemAt(0);
 
