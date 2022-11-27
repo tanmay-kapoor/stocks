@@ -403,7 +403,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     getPerformanceBtn.addActionListener(evt -> {
       Report performanceReport = features.getPortfolioPerformance(portfolioName,
               fromDate.getText(), toDate.getText());
-      showPerformanceGraph(performanceReport);
+      if (performanceReport != null) {
+        showPerformanceGraph(performanceReport);
+      }
     });
     panel3.add(getPerformanceBtn);
 
@@ -448,7 +450,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
     portfolioListCb = new JComboBox<>(portfolioList);
-    portfolioListCb.setEditable(true);
     portfolioName = portfolioListCb.getItemAt(0);
     portfolioListCb.addActionListener(evt ->
             portfolioName = Objects.requireNonNull(portfolioListCb.getSelectedItem()).toString());
