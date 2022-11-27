@@ -64,10 +64,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
-      cl.previous(mainPanel);
-      if (true) {
+      cl.show(mainPanel, "Portfolio Features");
+
+      if (Objects.equals(this.getTitle(), "Create Portfolio")) {
         features.savePortfolio(portfolioName);
       }
+      this.setTitle("<<Portfolio Type>>");
     });
 
     exitButton = new JButton("Exit");
@@ -104,7 +106,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
-    printMessage("Enter portfolio name");
+    panel3.add(new JLabel("Enter portfolio name"));
 
     JTextField portfolioNameTextField = new JTextField(10);
     panel3.add(portfolioNameTextField);
@@ -226,7 +228,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getDateChoice() {
-    printMessage("Date (YYYY-MM-DD) : ");
+    panel3.add(new JLabel("Date (YYYY-MM-DD) : "));
 
     dateTxtFiled = new JTextField(10);
     panel3.add(dateTxtFiled);
@@ -244,7 +246,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   @Override
   public void getPortfolioCompositionOption() {
     cl.show(mainPanel, "panel 3");
+    panel3.removeAll();
 
+    getAllPortfolios();
     getDateChoice();
 
     JButton getContentsBtn = new JButton("Get Contents");
@@ -254,7 +258,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(getWeightageBtn);
 
     panel3.add(goBackButton);
-
 
     getContentsBtn.addActionListener(e -> {
       Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
@@ -298,7 +301,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private void getPortfolioValueOptions() {
     cl.show(mainPanel, "panel 3");
+    panel3.removeAll();
 
+    getAllPortfolios();
     getDateChoice();
 
     JButton getValueBtn = new JButton("Get Portfolio Value");
@@ -318,9 +323,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
   }
 
-  private void getPortfolioCostBasisOptions() {
+  protected void getPortfolioCostBasisOptions() {
     cl.show(mainPanel, "panel 3");
+    panel3.removeAll();
 
+    getAllPortfolios();
     getDateChoice();
 
     JButton getCostBasisBtn = new JButton("Get Cost Basis");
@@ -400,8 +407,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   protected void getAllPortfolios() {
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
 
     List<String> portfolios = features.getAllPortfolios();
     if (portfolios.size() == 0) {
@@ -411,7 +416,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       return;
     }
 
-    printMessage("Choose a portfolio from the list");
+    panel3.add(new JLabel("Choose a portfolio from the list"));
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
     portfolioListCb = new JComboBox<>(portfolioList);
@@ -424,19 +429,21 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
     panel3.add(portfolioListCb);
 
-    switch (this.getTitle()) {
-      case "Portfolio Composition":
-        getPortfolioCompositionOption();
-      case "Portfolio Value":
-        getPortfolioValueOptions();   //can change the name probably
-      case "Portfolio Cost Basis":
-        getPortfolioCostBasisOptions();
-      case "Portfolio Performance":
-        // call relevant methods
-//        showgraph();
-    }
-
     panel3.revalidate();
+
+//    switch (this.getTitle()) {
+//      case "Portfolio Composition":
+//        getPortfolioCompositionOption();
+//      case "Portfolio Value":
+//        getPortfolioValueOptions();   //can change the name probably
+//      case "Portfolio Cost Basis":
+//        getPortfolioCostBasisOptions();
+//      case "Portfolio Performance":
+//        // call relevant methods
+////        showgraph();
+//    }
+
+
 
   }
 
@@ -465,7 +472,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 //    this.panel3 = new JPanel(new GridBagLayout());
 
     mainPanel.add(panel1, "Main Menu");
-    mainPanel.add(panel2, "2");
+    mainPanel.add(panel2, "Portfolio Features");
     mainPanel.add(panel3, "panel 3");
 
     return mainPanel;
@@ -505,17 +512,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel2.add(getCompositionButton);
     getCompositionButton.addActionListener(evt -> {
       this.setTitle("Portfolio Composition");
-      getAllPortfolios();
+      getPortfolioCompositionOption();
     });
 
     getValueButton = new JButton("Check portfolio value");
     panel2.add(getValueButton);
     getValueButton.addActionListener(evt -> {
       this.setTitle("Portfolio Value");
-      getAllPortfolios();
+      getPortfolioValueOptions();
     });
 
-    panel2.add(goBackButton);
+    JButton backP1Btn = new JButton("Back to Main Menu");
+    backP1Btn.addActionListener(evt -> cl.show(mainPanel, "Main Menu"));
+    panel2.add(backP1Btn);
 
     //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
     getRestIfApplicable(panel2);
