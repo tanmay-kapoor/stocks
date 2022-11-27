@@ -15,7 +15,7 @@ public interface Features {
 
   void exitProgram();
 
-  void handleCreatePortfolioThroughUpload();
+  void handleCreatePortfolioThroughUpload(String filePath);
 
   void createPortfolio(String portfolioName);
 

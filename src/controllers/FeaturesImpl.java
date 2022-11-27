@@ -2,8 +2,10 @@ package controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -116,7 +118,7 @@ public class FeaturesImpl implements Features {
   public void buyStock(String portfolioName, String ticker, String quant, String d, String commission) {
     try {
       Portfolio portfolio;
-      if(allPortfolios.contains(portfolioName)) {
+      if (allPortfolios.contains(portfolioName)) {
         portfolio = findPortfolio(portfolioName);
       } else {
         portfolio = this.portfolio;
@@ -422,7 +424,63 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
-  public void handleCreatePortfolioThroughUpload() {
+  public void handleCreatePortfolioThroughUpload(String filePath) {
+    try {
+      Paths.get(filePath);
+      File file = new File(filePath);
+      String fileName = file.getName();
+      String portfolioName = fileName.substring(0, fileName.lastIndexOf("."));
+      if(allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
+        menu.printMessage(String.format("\n\"%s\" named portfolio already exists. "
+                + "Portfolio names are case insensitive! Please rename your file "
+                + "and try again!", portfolioName));
+      } else {
+        Portfolio portfolio = createPortfolioFromCsv(portfolioName, file);
+        savePortfolio(portfolioName, portfolio);
+        menu.printMessage("");
+      }
+    } catch (InvalidPathException e) {
+      menu.printMessage("Invalid file path");
+    } catch (FileNotFoundException | NullPointerException e) {
+      menu.printMessage("File not found. Select file with proper path");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
+  private Portfolio createPortfolioFromCsv(String pName, File file) throws IOException {
+    //creating log file
+    File logFile = createCsvFile(pName, FileType.LogFile);
+
+    //creating costBasis file
+    File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
+
+    return createPortfolioFromCsv(pName, file, logFile, costBasisFile);
+  }
+
+  private File createCsvFile(String name, FileType type) throws IOException {
+    String subFolder = type == FileType.CostBasisFile ? "costbasis/" : "logs/";
+    String creationPath = this.path + subFolder;
+    Files.createDirectories(Paths.get(creationPath));
+    String fileName = String.format(creationPath + "%s.csv", name);
+    FileWriter csvWriter = new FileWriter(fileName);
+    csvWriter.append(
+            type == FileType.CostBasisFile ? "Date, CostBasis\n" : "Date, lastSellDate\n"
+    );
+    csvWriter.close();
+
+    String createdFilePath = creationPath + name + ".csv";
+
+    return new File(createdFilePath);
+  }
+
+  protected void savePortfolio(String portfolioName, Portfolio portfolio) {
+    boolean saved;
+    saved = portfolio.savePortfolio();
+    if (saved) {
+      menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
+      allPortfolios.add(portfolioName);
+      allPortfolioObjects.put(portfolioName, portfolio);
+    }
   }
 }
