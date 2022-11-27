@@ -51,25 +51,6 @@ public class GenericController implements Controller {
       char choice;
 
       switch (ch) {
-//        case '1':
-//          mainMenu = new MainMenuImplGui("Choose Portfolio Type");
-//          do {
-//            choice = mainMenu.getPortfolioType();
-//            switch (choice) {
-//              case '1':
-//                handleFlexibleSelected(new StockMenuFlexibleGui());
-//                break;
-//
-//              case '2':
-//                handleInflexibleSelected(new StockMenuInflexible(this.in, this.out));
-//                break;
-//
-//              default:
-//                break;
-//            }
-//          } while (choice >= '1' && choice <= '2');
-//          break;
-
         case '1':
           Features controller = new FeaturesImpl(this.api, this.commonPath);
           Menu menuGui = new MenuGuiFlexible(controller, "Choose portfolio type");
@@ -99,7 +80,7 @@ public class GenericController implements Controller {
         default:
           break;
       }
-    } while (ch == '2');
+    } while (ch >= '1' && ch <= '2');
   }
 
   private void handleFlexibleSelected(Menu menu) {
