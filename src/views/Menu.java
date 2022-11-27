@@ -108,5 +108,4 @@ public interface Menu {
 
 //  void getPortfolioInterval();    //use this instead of getInterval()
 
-  void clearTextIfDisplayed();
 }

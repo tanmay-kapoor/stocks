@@ -92,7 +92,7 @@ public class FeaturesImpl implements Features {
       menu.printMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
     } else {
       portfolio = new StockPortfolioFlexible(portfolioName, path, api);
-      menu.clearTextIfDisplayed();
+//      menu.clearTextIfDisplayed();
       menu.getAddToPortfolioChoice();
 //      boolean shouldExit;
 //      menu.getAddToPortfolioChoice();

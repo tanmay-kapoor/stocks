@@ -101,54 +101,42 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getPortfolioName() {
+    cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
-    JLabel portfolioNameLabel = new JLabel("Enter portfolio name");
-    panel3.add(portfolioNameLabel);
+    printMessage("Enter portfolio name");
 
     JTextField portfolioNameTextField = new JTextField(10);
     panel3.add(portfolioNameTextField);
 
     panel3.add(enterBtn);
 
-    panel3.add(enterBtn);
-
     enterBtn.addActionListener(evt -> {
-      String frameTitle = this.getTitle();
       portfolioName = portfolioNameTextField.getText();
 
       if (portfolioName.equals("")) {
         printMessage("Name cannot be empty");
       }
 
-
-      //CONVERT THIS TO SWITCH CASE
-      if (Objects.equals(frameTitle, "Create Portfolio")) {
-//        portfolioNameTextField.setText("");
-        features.createPortfolio(portfolioName);
-      }
+      features.createPortfolio(portfolioName);
     });
 
     panel3.revalidate();
-    cl.show(mainPanel, "panel 3");
   }
 
 
   @Override
   public void printMessage(String msg) {
-    clearTextIfDisplayed();
+    if (text != null) {
+      //don't always remove this or don't use printMessage() all the time
+      panel3.remove(text);
+      panel3.revalidate();
+    }
     text = new JLabel(msg);
     panel3.add(text);
     panel3.revalidate();
   }
 
-  @Override
-  public void clearTextIfDisplayed() {
-    if (text != null) {
-      panel3.remove(text);
-      panel3.revalidate();
-    }
-  }
 
   @Override
   public void successMessage(String ticker, Details details, Txn txnType) {
@@ -197,8 +185,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void getTickerSymbol() {
     panel3.removeAll();
 
-    JLabel msg = new JLabel("Ticker symbol : ");
-    panel3.add(msg);
+    printMessage("Ticker symbol : ");
 
     JTextField ticker = new JTextField(10);
     panel3.add(ticker);
@@ -225,8 +212,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getQuantity() {
-    JLabel msg = new JLabel("Number of shares : ");
-    panel3.add(msg);
+    printMessage("Number of shares : ");
 
     quantity = new JTextField(10);
     panel3.add(quantity);
@@ -240,18 +226,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getDateChoice() {
-    JLabel msg = new JLabel("Date (YYYY-MM-DD) : ");
+    printMessage("Date (YYYY-MM-DD) : ");
+
     dateTxtFiled = new JTextField(10);
-    panel3.add(msg);
     panel3.add(dateTxtFiled);
   }
 
 
   @Override
   public void getDateForValue() {
-    JLabel msg = new JLabel("Choose date : ");
+    printMessage("Choose date : ");
+
     JTextField dateTxtFiled = new JTextField(10);
-    panel3.add(msg);
     panel3.add(dateTxtFiled);
   }
 
@@ -332,6 +318,28 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
   }
 
+  private void getPortfolioCostBasisOptions() {
+    cl.show(mainPanel, "panel 3");
+
+    getDateChoice();
+
+    JButton getCostBasisBtn = new JButton("Get Cost Basis");
+    panel3.add(getCostBasisBtn);
+    getCostBasisBtn.addActionListener(evt -> {
+      double value = features.getCostBasis(portfolioName, dateTxtFiled.getText());
+      //data cleaning
+      if (value != -1) {
+        printMessage("Value of " + portfolioName
+                + " on " + dateTxtFiled.getText()
+                + " is: $" + value);
+      }
+    });
+
+    panel3.add(goBackButton);
+
+    panel3.revalidate();
+  }
+
 
   @Override
   public void getBuySellChoice() {
@@ -359,8 +367,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getCommissionFee() {
-    JLabel msg = new JLabel("Commission Fee : ");
-    panel3.add(msg);
+    printMessage("Commission Fee : ");
 
     commission = new JTextField(10);
     panel3.add(commission);
@@ -398,14 +405,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     List<String> portfolios = features.getAllPortfolios();
     if (portfolios.size() == 0) {
-      panel3.add(new JLabel("No Portfolios. Please Create atleast one and come back again."));
+      printMessage("No Portfolios. Please Create atleast one and come back again.");
       panel3.add(goBackButton);
       panel3.revalidate();
       return;
     }
 
-    JLabel msg = new JLabel("Choose a portfolio from the list");
-    panel3.add(msg);
+    printMessage("Choose a portfolio from the list");
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
     portfolioListCb = new JComboBox<>(portfolioList);
@@ -424,7 +430,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       case "Portfolio Value":
         getPortfolioValueOptions();   //can change the name probably
       case "Portfolio Cost Basis":
-        //call relevant method
+        getPortfolioCostBasisOptions();
       case "Portfolio Performance":
         // call relevant methods
 //        showgraph();
