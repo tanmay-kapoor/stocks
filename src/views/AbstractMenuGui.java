@@ -177,10 +177,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     JButton addShareBtn = new JButton("Add share");
+    addShareBtn.setPreferredSize(new Dimension(40, 40));
     panel3.add(addShareBtn);
     addShareBtn.addActionListener(evt -> getTickerSymbol());
 
     JButton createStrategyBtn = new JButton("Create DCA strategy");
+    createStrategyBtn.setPreferredSize(new Dimension(40, 40));
     panel3.add(createStrategyBtn);
 
     panel3.revalidate();
@@ -266,7 +268,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(getWeightageBtn);
 
     panel3.add(goBackButton);
-    panel3.revalidate();
+
 
     getContentsBtn.addActionListener(e -> {
       Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
@@ -296,7 +298,30 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       showTable(data);
     });
 
+    panel3.revalidate();
+  }
 
+
+  private void getPortfolioValueOptions() {
+    cl.show(mainPanel, "panel 3");
+
+    getDateChoice();
+
+    JButton getValueBtn = new JButton("Get Portfolio Value");
+    panel3.add(getValueBtn);
+    getValueBtn.addActionListener(evt -> {
+//      Double value= features.getPortfolioValue(portfolioName, dateTxtFiled.getText());
+      Double value = 12312.000;
+      //data cleaning
+      panel3.add(new JLabel("Value of " + portfolioName
+              + " on " + dateTxtFiled.getText()
+              + " is: " + value));
+      panel3.validate();
+    });
+
+    panel3.add(goBackButton);
+
+    panel3.revalidate();
   }
 
 
@@ -389,7 +414,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       case "Portfolio Composition":
         getPortfolioCompositionOption();
       case "Portfolio Value":
-        //call portfolio function
+        getPortfolioValueOptions();   //can change the name probably
       case "Portfolio Cost Basis":
         //call relevant method
       case "Portfolio Performance":
@@ -405,9 +430,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     String[] colNames = {"Ticker", "Quantity"};
+    System.out.println();
     JTable table = new JTable(data, colNames);
-    panel3.add(table);
-//    panel3.add(goBackButton);
+    JScrollPane sp =new JScrollPane(table);
+    panel3.add(sp);
+    panel3.add(goBackButton);
 
     panel3.revalidate();
   }
@@ -421,6 +448,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     this.panel1 = getPanel1();
     this.panel2 = getPanel2();
     this.panel3 = new JPanel(new GridLayout(0, 2, 10, 80));
+//    this.panel3 = new JPanel(new GridBagLayout());
 
     mainPanel.add(panel1, "Main Menu");
     mainPanel.add(panel2, "2");
