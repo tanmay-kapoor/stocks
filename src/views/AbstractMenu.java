@@ -51,10 +51,7 @@ abstract class AbstractMenu implements Menu {
     this.print(msg + "\n");
   }
 
-  @Override
-  public void clearTextIfDisplayed() {
-    return;
-  }
+
 
   @Override
   public void successMessage(String ticker, Details details, Txn txnType) {
