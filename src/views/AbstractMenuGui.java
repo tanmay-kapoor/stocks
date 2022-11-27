@@ -255,29 +255,34 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getPortfolioCompositionOption() {
-//    panel3.removeAll();
+    cl.show(mainPanel, "panel 3");
 
     getDateChoice();
 
     JButton getContentsBtn = new JButton("Get Contents");
     panel3.add(getContentsBtn);
-    getContentsBtn.addActionListener(e -> {
-      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
-      String[][] dummyData = {
-              { "Kundan Kumar Jha", "4031", "CSE" },
-              { "Anand Jha", "6014", "IT" }
-      };
-      showTable(dummyData);
-    });
 
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
-    panel3.add(getContentsBtn);
+    panel3.add(getWeightageBtn);
 //    getWeightageBtn.addActionListener(e -> features.getWeightage(portfolioName, dateTxtFiled.getText()));
 
     panel3.add(goBackButton);
-
     panel3.revalidate();
-    cl.show(mainPanel, "panel 3");
+
+    getContentsBtn.addActionListener(e -> {
+      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
+      //data cleaning
+      String[][] data = new String[composition.size()][2];
+      int count = 0;
+      for(Map.Entry<String,Double> entry : composition.entrySet()){
+        data[count][0] = entry.getKey();
+        data[count][1] = entry.getValue().toString();
+        count++;
+      }
+
+      showTable(data);
+    });
+
   }
 
 
@@ -389,12 +394,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JTable table = new JTable(data, colNames);
     panel3.add(table);
+//    panel3.add(goBackButton);
 
     panel3.revalidate();
   }
 
 
-  //////////////////////////////////JFRAME RELATED SHIT//////////////////////
+  //////////////////////////////////FRAME RELATED SHIT//////////////////////
 
   private JPanel getMainPanel() {
     JPanel mainPanel = new JPanel(new CardLayout());
