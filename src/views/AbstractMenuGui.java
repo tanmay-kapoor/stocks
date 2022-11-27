@@ -502,6 +502,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(portfolioJfc);
     portfolioJfc.addActionListener(evt -> {
       System.out.println(portfolioJfc.getSelectedFile());
+      features.handleCreatePortfolioThroughUpload(portfolioJfc.getSelectedFile().toString());
     });
 
 
