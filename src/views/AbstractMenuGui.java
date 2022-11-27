@@ -34,6 +34,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected JTextField commission;
   private Txn txn_type;
   private JLabel text;
+  private JLabel successMessage;
   private CardLayout cl;
   private JPanel mainPanel;
 
@@ -136,7 +137,16 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void successMessage(String ticker, Details details, Txn txnType) {
-
+    if (successMessage != null) {
+      panel4.remove(successMessage);
+      panel4.revalidate();
+    }
+    String txn = txnType == Txn.Buy ? "bought" : "sold";
+    String msg = String.format("Successfully %s %s shares of %s on %s", txn, details.getQuantity(),
+            ticker, details.getPurchaseDate());
+    successMessage = new JLabel(msg);
+    panel4.add(successMessage);
+    panel4.revalidate();
   }
 
   @Override
