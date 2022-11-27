@@ -10,9 +10,8 @@ public class MenuGuiInflexible extends AbstractMenuGui {
     super(features, caption);
   }
 
-  @Override
   protected void displaySellPanel() {
-    return;
+    throw new IllegalArgumentException("Cannot sell from Inflexible Portfolio.");
   }
 
   @Override

@@ -22,24 +22,26 @@ import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
   private JComboBox<String> portfolioListCb;
-  private String portfolioName;
-  private JTextField dateTxtFiled;
-  private final Features features;
+  protected String portfolioName;
+  protected JTextField dateTxtFiled;
+  protected final Features features;
   private final JButton exitButton;
   private final JButton goBackButton;
+  protected JButton backToP3Btn;
   private final JButton enterBtn;
-  private JTextField quantity;
-  private JTextField datePicker;
-  private JTextField commission;
+  protected JTextField ticker;
+  protected JTextField quantity;
+  protected JTextField commission;
+  private Txn txn_type;
   private JLabel text;
   private CardLayout cl;
   private JPanel mainPanel;
 
   // panel 3 does the option chosen by user, e.g. create portfolio, get composition, etc.
-  protected JPanel panel3;
+  private JPanel panel3;
 
   // panel 4 is for some uber specific requirements.
-  private JPanel panel4;
+  protected JPanel panel4;
 
   protected abstract void displaySellPanel();
 
@@ -65,6 +67,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       this.setTitle("<<Portfolio Type>>");
     });
 
+    backToP3Btn = new JButton("back");
+    backToP3Btn.addActionListener(evt -> cl.show(mainPanel, "panel 3"));
+
     exitButton = new JButton("Exit");
     exitButton.addActionListener(evt -> features.exitProgram());
 
@@ -74,11 +79,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     this.add(mainPanel);
 
-
 //    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
-
-//    getCompositionButton.addActionListener(evt ->);
-//    getValueButton.addActionListener(evt -> );
 
 //    this.pack();
     setVisible(true);
@@ -162,13 +163,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton addShareBtn = new JButton("Add share");
     addShareBtn.setPreferredSize(new Dimension(40, 40));
-    addShareBtn.addActionListener(evt -> getTickerSymbol());
+    addShareBtn.addActionListener(evt -> {
+      cl.show(mainPanel, "panel 4");
+      displayBuyPanel();
+    });
     panel3.add(addShareBtn);
 
 
     JButton createStrategyBtn = new JButton("Create DCA strategy");
     createStrategyBtn.setPreferredSize(new Dimension(40, 40));
     panel3.add(createStrategyBtn);
+
+    panel3.add(goBackButton);
 
     panel3.revalidate();
   }
@@ -180,39 +186,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getTickerSymbol() {
-    panel3.removeAll();
 
-    panel3.add(new JLabel("Ticker symbol : "));
-
-    JTextField ticker = new JTextField(10);
-    panel3.add(ticker);
-
-    getQuantity();
-    getDateChoice();
-    getCommissionFee();
-
-    JButton addBtn = new JButton("Add");
-    panel3.add(addBtn);
-    panel3.add(goBackButton);
-    panel3.revalidate();
-
-    addBtn.addActionListener(e ->
-            features.buyStock(
-                    ticker.getText(),
-                    quantity.getText(),
-                    dateTxtFiled.getText(),
-                    commission.getText()
-            ));
-
-    panel3.revalidate();
+    panel4.add(new JLabel("Ticker symbol : "));
+    this.ticker = new JTextField(10);
+    panel4.add(ticker);
   }
 
   @Override
   public void getQuantity() {
-    panel3.add(new JLabel("Number of shares : "));
+    panel4.add(new JLabel("Number of shares : "));
 
-    quantity = new JTextField(10);
-    panel3.add(quantity);
+    this.quantity = new JTextField(10);
+    panel4.add(quantity);
     quantity.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
         quantity.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
@@ -223,10 +208,24 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getDateChoice() {
-    panel3.add(new JLabel("Date (YYYY-MM-DD) : "));
+    panel4.add(new JLabel("Date (YYYY-MM-DD) : "));
 
-    dateTxtFiled = new JTextField(10);
-    panel3.add(dateTxtFiled);
+    this.dateTxtFiled = new JTextField(10);
+    panel4.add(dateTxtFiled);
+  }
+
+  @Override
+  public void getCommissionFee() {
+    panel4.add(new JLabel("Commission Fee : "));
+
+    commission = new JTextField(10);
+    panel4.add(commission);
+    commission.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        commission.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
+                || key.getKeyCode() == 8 || key.getKeyChar() == '.');
+      }
+    });
   }
 
 
@@ -350,8 +349,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     getAllPortfolios();
 
-    JButton buyOptionBtn = new JButton("Buy");
-    JButton sellOptionBtn = new JButton("Sell");
+    JButton buyOptionBtn = new JButton("Buy Shares");
+    JButton sellOptionBtn = new JButton("Sell Shares");
 
     panel3.add(buyOptionBtn);
     panel3.add(sellOptionBtn);
@@ -359,30 +358,42 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     panel3.revalidate();
 
-    buyOptionBtn.addActionListener(evt -> displayBuyPanel());
-    sellOptionBtn.addActionListener(evt -> displaySellPanel());
+    buyOptionBtn.addActionListener(evt -> {
+      cl.show(mainPanel, "panel 4");
+      displayBuyPanel();
+    });
+    sellOptionBtn.addActionListener(evt -> {
+      cl.show(mainPanel, "panel 4");
+      displaySellPanel();
+    });
 
   }
 
-  protected void displayBuyPanel() {
+  private void displayBuyPanel() {
+    panel4.removeAll();
 
     getTickerSymbol();
+    getQuantity();
+    getDateChoice();
+    getCommissionFee();
 
+    JButton addBtn = new JButton("Buy");
+    panel4.add(addBtn);
+
+    panel4.add(backToP3Btn);
+
+    addBtn.addActionListener(e ->
+            features.buyStock(
+                    portfolioName,
+                    ticker.getText(),
+                    quantity.getText(),
+                    dateTxtFiled.getText(),
+                    commission.getText()
+            ));
+
+    panel4.revalidate();
   }
 
-  @Override
-  public void getCommissionFee() {
-    printMessage("Commission Fee : ");
-
-    commission = new JTextField(10);
-    panel3.add(commission);
-    commission.addKeyListener(new KeyAdapter() {
-      public void keyPressed(KeyEvent key) {
-        commission.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
-                || key.getKeyCode() == 8 || key.getKeyChar() == '.');
-      }
-    });
-  }
 
   protected void getPortfolioPerformanceOption() {
     cl.show(mainPanel, "panel 3");
@@ -539,7 +550,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     //panel 2 gives portfolio specific features options in the menu
     JPanel panel2 = getPanel2();
     this.panel3 = new JPanel(new GridLayout(0, 2, 10, 80));
-    this.panel4 = new JPanel();
+    this.panel4 = new JPanel(new GridLayout(0, 2, 10, 80));
 
     mainPanel.add(panel1, "Main Menu");
     mainPanel.add(panel2, "Portfolio Features");

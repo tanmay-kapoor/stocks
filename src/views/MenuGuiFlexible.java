@@ -5,11 +5,9 @@ import javax.swing.*;
 import controllers.Features;
 
 public class MenuGuiFlexible extends AbstractMenuGui {
-  private Features features;
 
   public MenuGuiFlexible(Features features, String caption) {
     super(features, caption);
-    this.features = features;
   }
 
   @Override
@@ -39,7 +37,28 @@ public class MenuGuiFlexible extends AbstractMenuGui {
 
 
   protected void displaySellPanel() {
+    panel4.removeAll();
+
     getTickerSymbol();
+    getQuantity();
+    getDateChoice();
+    getCommissionFee();
+
+    JButton addBtn = new JButton("Sell");
+    panel4.add(addBtn);
+
+    panel4.add(backToP3Btn);
+
+    addBtn.addActionListener(e ->
+            features.sellStock(
+                    portfolioName,
+                    ticker.getText(),
+                    quantity.getText(),
+                    dateTxtFiled.getText(),
+                    commission.getText()
+            ));
+
+    panel4.revalidate();
   }
 
 
