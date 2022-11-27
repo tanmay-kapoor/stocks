@@ -18,21 +18,21 @@ public class MenuGuiFlexible extends AbstractMenuGui {
     panel2.add(buySellButton);
     buySellButton.addActionListener(evt -> {
       this.setTitle("Trade Shares");
-      getAllPortfolios();
+      getBuySellChoice();
     });
 
     JButton seePerformance = new JButton("See portfolio performance");
     panel2.add(seePerformance);
     seePerformance.addActionListener(evt -> {
       this.setTitle("See Portfolio Performance");
-      getAllPortfolios();
+//      getPortfolioPerformanceOption();
     });
 
     JButton getCostBasisButton = new JButton("Get Cost basis");
     panel2.add(getCostBasisButton);
     getCostBasisButton.addActionListener(evt -> {
       this.setTitle("Portfolio Cost Basis");
-      getAllPortfolios();
+      getPortfolioCostBasisOptions();
     });
 
   }
