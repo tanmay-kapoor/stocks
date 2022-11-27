@@ -115,7 +115,13 @@ public class FeaturesImpl implements Features {
   @Override
   public void buyStock(String portfolioName, String ticker, String quant, String d, String commission) {
     try {
-      Portfolio portfolio = findPortfolio(portfolioName);
+      Portfolio portfolio;
+      if(allPortfolios.contains(portfolioName)) {
+        portfolio = findPortfolio(portfolioName);
+      } else {
+        portfolio = this.portfolio;
+      }
+
       ticker = ticker.toUpperCase();
       double quantity = Double.parseDouble(quant);
       double commissionFee = Double.parseDouble(commission);
