@@ -461,7 +461,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     String[] colNames = {"Ticker", "Quantity"};
-    System.out.println();
     JTable table = new JTable(data, colNames);
     JScrollPane sp = new JScrollPane(table);
     panel3.add(sp);

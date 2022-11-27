@@ -290,7 +290,6 @@ public class FeaturesImpl implements Features {
   }
 
   private Portfolio findPortfolio(String name) {
-    System.out.println(name);
     Portfolio portfolio;
     if (allPortfolioObjects.containsKey(name)) {
       portfolio = allPortfolioObjects.get(name);

@@ -248,9 +248,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       for(String ticker: stockWeightage.keySet()) {
         double stockPrice = api.getShareDetails(ticker, date).get("close");
         double stockBudget = totalAmount / stockWeightage.get(ticker);
-        System.out.println("Amount to invest on " + ticker + ": " + stockBudget);
         double quantityToBuy = stockBudget / stockPrice;
-        System.out.println(ticker + " quantity bought : " + quantityToBuy);
         buy(ticker, new Details(quantityToBuy, date), dca.getCommission());
       }
     }
