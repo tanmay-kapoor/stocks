@@ -289,7 +289,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       int count = 0;
       for(Map.Entry<String,Double> entry : weightage.entrySet()){
         data[count][0] = entry.getKey();
-        data[count][1] = entry.getValue().toString();
+        data[count][1] = entry.getValue().toString()+"%";
         count++;
       }
 

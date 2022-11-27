@@ -153,16 +153,20 @@ public class FeaturesImpl implements Features {
     try {
       Portfolio portfolio = findPortfolio(portfolioName);
       LocalDate d = LocalDate.parse(date);
-      Map<String, Log> composition = portfolio.getComposition(d);
-      Map<String, Double> vals = new HashMap<>();
-      for (String ticker : composition.keySet()) {
-        double quantity = 0.0;
-        for (Details details : composition.get(ticker).getDetailsSet()) {
-          quantity = details.getQuantity();
+      if (d.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("Cannot get composition on future dates");
+      } else {
+        Map<String, Log> composition = portfolio.getComposition(d);
+        Map<String, Double> vals = new HashMap<>();
+        for (String ticker : composition.keySet()) {
+          double quantity = 0.0;
+          for (Details details : composition.get(ticker).getDetailsSet()) {
+            quantity = details.getQuantity();
+          }
+          vals.put(ticker, quantity);
         }
-        vals.put(ticker, quantity);
+        return vals;
       }
-      return vals;
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
     }
@@ -179,13 +183,31 @@ public class FeaturesImpl implements Features {
         total += composition.get(ticker);
       }
       for (String ticker : composition.keySet()) {
-        composition.put(ticker, Math.round(composition.get(ticker) / (total + 0.0)) * 100.0);
+        double weightage = Math.round((composition.get(ticker) / total) * 10000) / 100.0;
+        composition.put(ticker, weightage);
       }
       return composition;
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
     }
     return null;
+  }
+
+  @Override
+  public double getPortfolioValue(String portfolioName, String date) {
+    double val = 0.0;
+    try {
+      Portfolio portfolio = findPortfolio(portfolioName);
+      LocalDate d = LocalDate.parse(date);
+      if(d.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("Cannot get value for future dates");
+      } else {
+        return portfolio.getValue(d);
+      }
+    } catch(DateTimeParseException e) {
+      menu.printMessage("Invalid date format");
+    }
+    return val;
   }
 
   private Portfolio findPortfolio(String name) {

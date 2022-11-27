@@ -20,4 +20,5 @@ public interface Features {
   List<String> getAllPortfolios();
   Map<String, Double> getPortfolioContents(String portfolioName, String date);
   Map<String, Double> getPortfolioWeightage(String portfolioName, String date);
+  double getPortfolioValue(String portfolioName, String date);
 }
