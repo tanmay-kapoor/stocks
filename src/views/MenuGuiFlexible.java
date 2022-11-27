@@ -39,8 +39,8 @@ public class MenuGuiFlexible extends AbstractMenuGui {
 
 
   protected void displaySellPanel() {
-    panel3.removeAll();
     getTickerSymbol();
   }
+
 
 }
