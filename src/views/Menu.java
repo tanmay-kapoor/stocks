@@ -42,12 +42,14 @@ public interface Menu {
 
   /**
    * Take the choice that determines the kind of portfolio the user wants to work with.
+   *
    * @return choice of the user.
    */
   void getAddToPortfolioChoice();
 
   /**
    * Take filepath form the user.
+   *
    * @return file path of the csv file.
    */
   void getFilePath();
@@ -83,18 +85,21 @@ public interface Menu {
 
   /**
    * Choose the type of composition from the user.
+   *
    * @return User's choice.
    */
   void getPortfolioCompositionOption();
 
   /**
    * Choose the type of transaction from the user.
+   *
    * @return user's choice.
    */
   void getBuySellChoice();
 
   /**
    * get commission fee from the broker.
+   *
    * @return brokers fee form the user.
    */
   void getCommissionFee();
@@ -102,6 +107,7 @@ public interface Menu {
   void getStrategyName();
 
   void getWeightage();
+
   void getStrategyAmount();
 
   void getInterval();

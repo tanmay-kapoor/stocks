@@ -3,12 +3,15 @@ package views;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 import controllers.Features;
 import models.Details;
@@ -48,7 +51,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected JPanel panel3;
 
   protected abstract void displaySellPanel();
-
 
   protected abstract void getRestIfApplicable(JPanel panel2);
 
@@ -155,6 +157,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton uploadButton = new JButton("File upload");
     panel3.add(uploadButton);
+    uploadButton.addActionListener(evt -> getFiles());
 
     panel3.add(goBackButton);
 
@@ -168,8 +171,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton addShareBtn = new JButton("Add share");
     addShareBtn.setPreferredSize(new Dimension(40, 40));
-    panel3.add(addShareBtn);
     addShareBtn.addActionListener(evt -> getTickerSymbol());
+    panel3.add(addShareBtn);
+
 
     JButton createStrategyBtn = new JButton("Create DCA strategy");
     createStrategyBtn.setPreferredSize(new Dimension(40, 40));
@@ -187,11 +191,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void getTickerSymbol() {
     panel3.removeAll();
 
-    printMessage("Ticker symbol : ");
+    panel3.add(new JLabel("Ticker symbol : "));
 
     JTextField ticker = new JTextField(10);
     panel3.add(ticker);
-    System.out.println("in getTickerSymbol");
+
     getQuantity();
     getDateChoice();
     getCommissionFee();
@@ -214,7 +218,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getQuantity() {
-    printMessage("Number of shares : ");
+    panel3.add(new JLabel("Number of shares : "));
 
     quantity = new JTextField(10);
     panel3.add(quantity);
@@ -350,7 +354,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getBuySellChoice() {
+    cl.show(mainPanel, "panel 3");
     panel3.removeAll();
+
+    getAllPortfolios();
 
     JButton buyOptionBtn = new JButton("Buy");
     JButton sellOptionBtn = new JButton("Sell");
@@ -367,7 +374,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   protected void displayBuyPanel() {
-    panel3.removeAll();
+
     getTickerSymbol();
 
   }
@@ -406,7 +413,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  protected void getAllPortfolios() {
+  private void getAllPortfolios() {
 
     List<String> portfolios = features.getAllPortfolios();
     if (portfolios.size() == 0) {
@@ -430,21 +437,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(portfolioListCb);
 
     panel3.revalidate();
-
-//    switch (this.getTitle()) {
-//      case "Portfolio Composition":
-//        getPortfolioCompositionOption();
-//      case "Portfolio Value":
-//        getPortfolioValueOptions();   //can change the name probably
-//      case "Portfolio Cost Basis":
-//        getPortfolioCostBasisOptions();
-//      case "Portfolio Performance":
-//        // call relevant methods
-////        showgraph();
-//    }
-
-
-
   }
 
   private void showTable(String[][] data) {
@@ -456,6 +448,39 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JScrollPane sp = new JScrollPane(table);
     panel3.add(sp);
     panel3.add(goBackButton);
+
+    panel3.revalidate();
+  }
+
+  private void getFiles() {
+    panel3.removeAll();
+
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV only", "csv");
+
+    panel3.add(new JLabel("Add Portfolio file"));
+    JFileChooser portfolioJfc = new JFileChooser(FileSystemView.getFileSystemView());
+    portfolioJfc.setFileFilter(filter);
+    panel3.add(portfolioJfc);
+    portfolioJfc.addActionListener(evt -> {
+      System.out.println(portfolioJfc.getSelectedFile());
+    });
+
+
+    panel3.add(new JLabel("Add Dollar Cost Average file [Optional]"));
+    JFileChooser dcaFfc = new JFileChooser(FileSystemView.getFileSystemView());
+    dcaFfc.setFileFilter(filter);
+    panel3.add(dcaFfc);
+    dcaFfc.addActionListener(evt -> {
+      int result = dcaFfc.showOpenDialog(this);
+      if (result == JFileChooser.APPROVE_OPTION) {
+        File selectedFile = dcaFfc.getSelectedFile();
+        System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+      }
+    });
+
+    JButton createPortfolioBtn = new JButton("Create Portfolio");
+    panel3.add(createPortfolioBtn);
+//    createPortfolioBtn.addActionListener(evt -> features.gePortfolioFromCsv);
 
     panel3.revalidate();
   }

@@ -214,12 +214,12 @@ public class FeaturesImpl implements Features {
     try {
       Portfolio portfolio = findPortfolio(portfolioName);
       LocalDate d = LocalDate.parse(date);
-      if(d.compareTo(LocalDate.now()) > 0) {
+      if (d.compareTo(LocalDate.now()) > 0) {
         menu.printMessage("Cannot get value for future dates");
       } else {
         return portfolio.getCostBasis(d);
       }
-    } catch(DateTimeParseException e) {
+    } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
     }
     return -1;

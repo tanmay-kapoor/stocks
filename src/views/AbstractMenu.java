@@ -32,6 +32,7 @@ abstract class AbstractMenu implements Menu {
   protected abstract void getWeightageIfApplicable();
 
   protected abstract void getStrategyAmountIfApplicable();
+
   protected abstract void getIntervalIfApplicable();
 
   protected abstract void printAddToPortfolioChoicesDifferently();
@@ -50,7 +51,6 @@ abstract class AbstractMenu implements Menu {
   public void printMessage(String msg) {
     this.print(msg + "\n");
   }
-
 
 
   @Override
