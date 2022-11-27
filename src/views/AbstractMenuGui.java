@@ -550,6 +550,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton backToTextUi = new JButton("Back To Text UI");
     panel1.add(backToTextUi);
+    backToTextUi.addActionListener(e -> this.dispose());
 
     panel1.add(exitButton);
 
