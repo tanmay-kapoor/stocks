@@ -272,30 +272,38 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     getContentsBtn.addActionListener(e -> {
       Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
-      //data cleaning
-      String[][] data = new String[composition.size()][2];
-      int count = 0;
-      for(Map.Entry<String,Double> entry : composition.entrySet()){
-        data[count][0] = entry.getKey();
-        data[count][1] = entry.getValue().toString();
-        count++;
-      }
+      if (!composition.isEmpty()) {
+        //data cleaning
+        String[][] data = new String[composition.size()][2];
+        int count = 0;
+        for (Map.Entry<String, Double> entry : composition.entrySet()) {
+          data[count][0] = entry.getKey();
+          data[count][1] = entry.getValue().toString();
+          count++;
+        }
 
-      showTable(data);
+        showTable(data);
+      } else {
+        printMessage("No stocks existed on this date");
+      }
     });
 
     getWeightageBtn.addActionListener(e -> {
       Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName, dateTxtFiled.getText());
-      //data cleaning
-      String[][] data = new String[weightage.size()][2];
-      int count = 0;
-      for(Map.Entry<String,Double> entry : weightage.entrySet()){
-        data[count][0] = entry.getKey();
-        data[count][1] = entry.getValue().toString()+"%";
-        count++;
-      }
+      if (weightage.isEmpty()) {
+        printMessage("No stocks existed on this date");
+      } else {
+        //data cleaning
+        String[][] data = new String[weightage.size()][2];
+        int count = 0;
+        for (Map.Entry<String, Double> entry : weightage.entrySet()) {
+          data[count][0] = entry.getKey();
+          data[count][1] = entry.getValue().toString() + "%";
+          count++;
+        }
 
-      showTable(data);
+        showTable(data);
+      }
     });
 
     panel3.revalidate();
@@ -310,13 +318,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton getValueBtn = new JButton("Get Portfolio Value");
     panel3.add(getValueBtn);
     getValueBtn.addActionListener(evt -> {
-//      Double value= features.getPortfolioValue(portfolioName, dateTxtFiled.getText());
-      Double value = 12312.000;
+      double value = features.getPortfolioValue(portfolioName, dateTxtFiled.getText());
       //data cleaning
-      panel3.add(new JLabel("Value of " + portfolioName
-              + " on " + dateTxtFiled.getText()
-              + " is: " + value));
-      panel3.validate();
+      if (value != -1) {
+        printMessage("Value of " + portfolioName
+                + " on " + dateTxtFiled.getText()
+                + " is: $" + value);
+      }
     });
 
     panel3.add(goBackButton);
@@ -426,13 +434,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  private void showTable (String[][] data) {
+  private void showTable(String[][] data) {
     panel3.removeAll();
 
     String[] colNames = {"Ticker", "Quantity"};
     System.out.println();
     JTable table = new JTable(data, colNames);
-    JScrollPane sp =new JScrollPane(table);
+    JScrollPane sp = new JScrollPane(table);
     panel3.add(sp);
     panel3.add(goBackButton);
 
