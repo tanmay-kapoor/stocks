@@ -113,26 +113,56 @@ public class FeaturesImpl implements Features {
   }
 
   @Override
-  public void buyStock(String ticker, String quant, String date, String commission) {
+  public void buyStock(String portfolioName, String ticker, String quant, String d, String commission) {
     try {
+      Portfolio portfolio = findPortfolio(portfolioName);
+      ticker = ticker.toUpperCase();
       double quantity = Double.parseDouble(quant);
       double commissionFee = Double.parseDouble(commission);
-      LocalDate purchaseDate = LocalDate.parse(date);
+      LocalDate date = LocalDate.parse(d);
 
       if (!api.isTickerPresent(ticker)) {
         api.getShareDetails(ticker, LocalDate.now());
       }
-      if (purchaseDate.compareTo(LocalDate.now()) > 0) {
+      if (date.compareTo(LocalDate.now()) > 0) {
         menu.printMessage("Cannot buy on a future date");
       } else {
-        Details details = new Details(quantity, purchaseDate);
+        Details details = new Details(quantity, date);
         portfolio.buy(ticker, details, commissionFee);
+        portfolio.savePortfolio();
         menu.successMessage(ticker, details, Txn.Buy);
       }
     } catch (NumberFormatException e) {
       menu.printMessage("Invalid format for 1 or more fields");
     } catch (IllegalArgumentException e) {
       menu.printMessage("This ticker is not associated with any company");
+    } catch (DateTimeParseException e) {
+      menu.printMessage("Invalid Date format");
+    }
+  }
+
+  @Override
+  public void sellStock(String portfolioName, String ticker, String quant, String d, String commission) {
+    try {
+      Portfolio portfolio = findPortfolio(portfolioName);
+      ticker = ticker.toUpperCase();
+      double quantity = Double.parseDouble(quant);
+      double commissionFee = Double.parseDouble(commission);
+      LocalDate date = LocalDate.parse(d);
+      Map<String, Log> portfolioComposition = portfolio.getComposition();
+      if (!portfolioComposition.containsKey(ticker)) {
+        menu.printMessage(ticker + " is not in this portfolio");
+      } else {
+        Details details = new Details(quantity, date);
+        portfolio.sell(ticker, details, commissionFee);
+        portfolio.savePortfolio();
+        menu.successMessage(ticker, details, Txn.Sell);
+      }
+
+    } catch (NumberFormatException e) {
+      menu.printMessage("Invalid format for 1 or more fields");
+    } catch (IllegalArgumentException e) {
+      menu.printMessage(e.getMessage());
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid Date format");
     }

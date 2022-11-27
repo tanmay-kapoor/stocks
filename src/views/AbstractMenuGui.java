@@ -198,6 +198,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     addBtn.addActionListener(e ->
             features.buyStock(
+                    portfolioName,
                     ticker.getText(),
                     quantity.getText(),
                     dateTxtFiled.getText(),
@@ -511,14 +512,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     String scale = report.getScale();
     String baseValue = report.getBaseValue();
 
-    for(LocalDate date: dateWisePerformance.keySet()) {
+    for (LocalDate date : dateWisePerformance.keySet()) {
       panel4.add(new JLabel(date.toString()));
 
       String precisionAdjusted = dateWisePerformance.get(date).getPrecisionAdjusted();
       int stars = dateWisePerformance.get(date).getStars();
 
       panel4.add(new JLabel(precisionAdjusted));
-      panel4.add(new JLabel(""+stars));
+      panel4.add(new JLabel("" + stars));
     }
 
     panel4.add(new JLabel("scale: " + scale));
