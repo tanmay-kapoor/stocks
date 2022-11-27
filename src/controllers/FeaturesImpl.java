@@ -157,12 +157,31 @@ public class FeaturesImpl implements Features {
       Map<String, Double> vals = new HashMap<>();
       for (String ticker : composition.keySet()) {
         double quantity = 0.0;
-        for(Details details : composition.get(ticker).getDetailsSet()) {
+        for (Details details : composition.get(ticker).getDetailsSet()) {
           quantity = details.getQuantity();
         }
         vals.put(ticker, quantity);
       }
       return vals;
+    } catch (DateTimeParseException e) {
+      menu.printMessage("Invalid date format");
+    }
+    return null;
+  }
+
+  @Override
+  public Map<String, Double> getPortfolioWeightage(String portfolioName, String date) {
+    try {
+      LocalDate.parse(date);
+      Map<String, Double> composition = getPortfolioContents(portfolioName, date);
+      double total = 0.0;
+      for (String ticker : composition.keySet()) {
+        total += composition.get(ticker);
+      }
+      for (String ticker : composition.keySet()) {
+        composition.put(ticker, Math.round(composition.get(ticker) / (total + 0.0)) * 100.0);
+      }
+      return composition;
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
     }

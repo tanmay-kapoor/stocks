@@ -365,11 +365,12 @@ abstract class AbstractController implements SpecificController {
         Set<Details> detailsSet = log.getDetailsSet();
         double tickerQuantity = 0;
 
+        double n = 0.0;
         for (Details details : detailsSet) {
-          double n = details.getQuantity();
-          totalShare += n;
-          tickerQuantity += n;
+          n = details.getQuantity();
         }
+        totalShare += n;
+        tickerQuantity = n;
         shareQuantity.put(ticker, tickerQuantity);
       }
 
