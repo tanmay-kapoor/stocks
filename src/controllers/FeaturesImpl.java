@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +22,15 @@ import java.util.TreeSet;
 import models.Details;
 import models.Log;
 import models.api.ShareApi;
+import models.portfolio.Performance;
 import models.portfolio.Portfolio;
+import models.portfolio.Report;
 import models.portfolio.StockPortfolioFlexible;
 import models.portfolio.Txn;
 import views.Menu;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 public class FeaturesImpl implements Features {
 
@@ -207,6 +213,64 @@ public class FeaturesImpl implements Features {
       menu.printMessage("Invalid date format");
     }
     return -1;
+  }
+
+  @Override
+  public Report getPortfolioPerformance(String portfolioName, String f, String t) {
+    try {
+      Portfolio portfolio = findPortfolio(portfolioName);
+      LocalDate from = LocalDate.parse(f);
+      LocalDate to = LocalDate.parse(t);
+      if (from.compareTo(LocalDate.now()) > 0 || to.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("Cannot get performance for future dates");
+      } else if (from.compareTo(to) > 0) {
+        menu.printMessage("Start date must be before end date");
+      } else {
+        Map<LocalDate, Double> performance = portfolio.getPortfolioPerformance(from, to);
+        Map<LocalDate, Performance> performanceOnEachDate = new TreeMap<>();
+
+        //scale performance
+        Double min = Collections.min(performance.values());
+        Double max = Collections.max(performance.values());
+
+        int count = 0;
+        double prevVal = 0.00;
+        int prevStars = 0;
+        double valueDiffSum = 0;
+
+        for (LocalDate date : performance.keySet()) {
+          double valueOnDate = performance.get(date);
+          int scaled = (int) round(scaleBetween(valueOnDate, min, max));
+          int stars = scaled == 0 ? 1 : scaled;
+
+          if (prevStars != 0) {
+            int starDiff = abs(stars - prevStars);
+            if (starDiff != 0) {
+              double avg_star_val = (abs(valueOnDate - prevVal) / starDiff) * stars;
+              valueDiffSum += avg_star_val;
+              count += stars;
+            }
+          }
+
+          prevVal = valueOnDate;
+          prevStars = stars;
+          String precisionAdjusted = String.format("%.2f", performance.get(date));
+          performanceOnEachDate.put(date, new Performance(precisionAdjusted, stars));
+        }
+        Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
+        return new Report(performanceOnEachDate, String.format("%.02f", scale_val), String.format("%.02f", min));
+      }
+    } catch (DateTimeParseException e) {
+      menu.printMessage("Invalid date format");
+    }
+    return null;
+  }
+
+  private double scaleBetween(double x, double min, double max) {
+    double minAllowed = 1;
+    double maxAllowed = 50;
+
+    return (maxAllowed - minAllowed) * (x - min) / (max - min) + minAllowed;
   }
 
   @Override
