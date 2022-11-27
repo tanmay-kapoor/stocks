@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import models.Log;
+import models.portfolio.Report;
 import views.Menu;
 
 public interface Features {
@@ -21,5 +22,6 @@ public interface Features {
   Map<String, Double> getPortfolioContents(String portfolioName, String date);
   Map<String, Double> getPortfolioWeightage(String portfolioName, String date);
   double getPortfolioValue(String portfolioName, String date);
+  Report getPortfolioPerformance(String portfolioName, String f, String t);
   double getCostBasis(String portfolioName, String date);
 }
