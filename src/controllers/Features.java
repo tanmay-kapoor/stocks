@@ -19,4 +19,5 @@ public interface Features {
   void savePortfolio(String portfolioName);
   List<String> getAllPortfolios();
   Map<String, Double> getPortfolioContents(String portfolioName, String date);
+  Map<String, Double> getPortfolioWeightage(String portfolioName, String date);
 }
