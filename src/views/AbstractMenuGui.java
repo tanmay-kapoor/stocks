@@ -64,11 +64,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
-      cl.previous(mainPanel);
-      System.out.print("back" + cl.getClass());
-      if (true) {
+      cl.show(mainPanel, "Portfolio Features");
+
+      if (Objects.equals(this.getTitle(), "Create Portfolio")) {
         features.savePortfolio(portfolioName);
       }
+      this.setTitle("<<Portfolio Type>>");
     });
 
     exitButton = new JButton("Exit");
@@ -227,7 +228,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getDateChoice() {
-    printMessage("Date (YYYY-MM-DD) : ");
+    panel3.add(new JLabel("Date (YYYY-MM-DD) : "));
 
     dateTxtFiled = new JTextField(10);
     panel3.add(dateTxtFiled);
@@ -471,7 +472,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 //    this.panel3 = new JPanel(new GridBagLayout());
 
     mainPanel.add(panel1, "Main Menu");
-    mainPanel.add(panel2, "2");
+    mainPanel.add(panel2, "Portfolio Features");
     mainPanel.add(panel3, "panel 3");
 
     return mainPanel;
@@ -521,7 +522,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       getPortfolioValueOptions();
     });
 
-    panel2.add(goBackButton);
+    JButton backP1Btn = new JButton("Back to Main Menu");
+    backP1Btn.addActionListener(evt -> cl.show(mainPanel, "Main Menu"));
+    panel2.add(backP1Btn);
 
     //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
     getRestIfApplicable(panel2);
