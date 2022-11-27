@@ -1,10 +1,8 @@
 package controllers;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import models.Log;
 import models.portfolio.Report;
 import views.Menu;
 
@@ -21,7 +19,9 @@ public interface Features {
 
   void createPortfolio(String portfolioName);
 
-  void buyStock(String ticker, String quant, String purchaseDate, String commission);
+  void buyStock(String portfolioName, String ticker, String quant, String purchaseDate, String commission);
+
+  void sellStock(String portfolioName, String ticker, String quant, String d, String commission);
 
   void savePortfolio(String portfolioName);
 
@@ -32,6 +32,7 @@ public interface Features {
   Map<String, Double> getPortfolioWeightage(String portfolioName, String date);
 
   double getPortfolioValue(String portfolioName, String date);
+
   Report getPortfolioPerformance(String portfolioName, String f, String t);
 
   double getCostBasis(String portfolioName, String date);
