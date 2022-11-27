@@ -118,25 +118,6 @@ abstract class AbstractMenu implements Menu {
     getCommissionFeeIfApplicable();
   }
 
-  @Override
-  public void getStrategyName() {
-    getStrategyNameIfApplicable();
-  }
-
-  @Override
-  public void getWeightage() {
-    getWeightageIfApplicable();
-  }
-
-  @Override
-  public void getStrategyAmount() {
-    getStrategyAmountIfApplicable();
-  }
-
-  @Override
-  public void getInterval() {
-    getIntervalIfApplicable();
-  }
 
   protected void print(String msg) {
     this.out.print(msg);

@@ -64,4 +64,24 @@ public class StockMenuInflexible extends AbstractMenu {
   private void printNotAllowed() {
     print("\nNot allowed for inflexible portfolio\n");
   }
+
+  @Override
+  public void getInterval() {
+
+  }
+
+  @Override
+  public void getWeightage() {
+
+  }
+
+  @Override
+  public void getStrategyAmount() {
+
+  }
+
+  @Override
+  public void getStrategyName() {
+
+  }
 }

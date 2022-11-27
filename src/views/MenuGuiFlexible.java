@@ -12,6 +12,13 @@ public class MenuGuiFlexible extends AbstractMenuGui {
 
   @Override
   public void getRestIfApplicable(JPanel panel2) {
+    JButton dcaButton = new JButton("Create DCA");
+    panel2.add(dcaButton);
+    dcaButton.addActionListener(evt -> {
+      this.setTitle("Create DCA");
+      getDcaOptions();
+    });
+
     JButton buySellButton = new JButton("Buy/Sell shares");
     panel2.add(buySellButton);
     buySellButton.addActionListener(evt -> {

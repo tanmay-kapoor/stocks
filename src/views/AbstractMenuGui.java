@@ -35,11 +35,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private Txn txn_type;
   private JLabel text;
   private JLabel successMessage;
-  private CardLayout cl;
+  protected CardLayout cl;
   private JPanel mainPanel;
 
   // panel 3 does the option chosen by user, e.g. create portfolio, get composition, etc.
-  private JPanel panel3;
+  protected JPanel panel3;
 
   // panel 4 is for some uber specific requirements.
   protected JPanel panel4;
@@ -52,7 +52,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     super(caption);
     this.features = features;
 
-    setSize(400, 500);
+    setSize(600, 600);
     setLocation(900, 100);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -238,6 +238,26 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
   }
 
+  @Override
+  public void getInterval() {
+
+  }
+
+  @Override
+  public void getWeightage() {
+
+  }
+
+  @Override
+  public void getStrategyAmount() {
+
+  }
+
+  @Override
+  public void getStrategyName() {
+
+  }
+
 
   @Override
   public void getDateForValue() {
@@ -361,6 +381,45 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
 
+  protected void getDcaOptions() {
+    cl.show(mainPanel, "panel 3");
+    panel3.removeAll();
+
+    getAllPortfolios();
+
+    panel3.add(new JLabel("Enter DCA strategy name"));
+    JTextField strategy = new JTextField("");
+    panel3.add(strategy);
+
+    panel3.add(new JLabel("Start Date (YYYY-MM-DD): "));
+    JTextField fromDate = new JTextField(10);
+    panel3.add(fromDate);
+
+    panel3.add(new JLabel("Optional End Date (YYYY-MM-DD): "));
+    JTextField toDate = new JTextField(10);
+    panel3.add(toDate);
+
+    panel3.add(new JLabel("Enter investment interval (days): "));
+    JTextField interval = new JTextField(10);
+    panel3.add(interval);
+
+    panel3.add(new JLabel("Enter investment amount ($): "));
+    JTextField amount = new JTextField(10);
+    panel3.add(amount);
+
+    panel3.add(new JLabel("Enter commission: "));
+    JTextField commission = new JTextField(10);
+    panel3.add(commission);
+
+    JButton addShareWeightageBtn = new JButton("Choose share weightage");
+    panel3.add(addShareWeightageBtn);
+
+    panel3.add(goBackButton);
+
+    panel3.revalidate();
+
+  }
+
   @Override
   public void getBuySellChoice() {
     cl.show(mainPanel, "panel 3");
@@ -426,7 +485,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     panel3.add(new JLabel("End Date (YYYY-MM-DD) : "));
     JTextField toDate = new JTextField(10);
-    ;
     panel3.add(toDate);
 
     JButton getPerformanceBtn = new JButton("Get Performance");
@@ -444,27 +502,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
   }
 
-
-  @Override
-  public void getStrategyName() {
-
-  }
-
-  @Override
-  public void getWeightage() {
-
-  }
-
-  @Override
-  public void getStrategyAmount() {
-
-  }
-
-  // this is for dca
-  @Override
-  public void getInterval() {
-
-  }
 
   private void getAllPortfolios() {
 
@@ -582,6 +619,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private JPanel getPanel1() {
     JPanel panel1 = new JPanel();
+    panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
 
     JButton flexibleButton = new JButton("Flexible");
     panel1.add(flexibleButton);
@@ -603,6 +641,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private JPanel getPanel2() {
     JPanel panel2 = new JPanel();
+    panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
 
     JButton createPortfolioButton = new JButton("Create portfolio");
     panel2.add(createPortfolioButton);
@@ -625,12 +664,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       getPortfolioValueOptions();
     });
 
+    //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
+    getRestIfApplicable(panel2);
+
     JButton backP1Btn = new JButton("Back to Main Menu");
     backP1Btn.addActionListener(evt -> cl.show(mainPanel, "Main Menu"));
     panel2.add(backP1Btn);
-
-    //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
-    getRestIfApplicable(panel2);
 
     return panel2;
   }

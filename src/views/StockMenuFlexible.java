@@ -67,4 +67,24 @@ public class StockMenuFlexible extends AbstractMenu {
             + "Press any other key to go back.\n"
             + "\nEnter your choice : ");
   }
+
+  @Override
+  public void getInterval() {
+
+  }
+
+  @Override
+  public void getWeightage() {
+
+  }
+
+  @Override
+  public void getStrategyAmount() {
+
+  }
+
+  @Override
+  public void getStrategyName() {
+
+  }
 }
