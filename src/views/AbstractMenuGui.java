@@ -253,7 +253,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     getAllPortfolios();
-    getDateChoice();
+
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
+    JTextField dateField = new JTextField(10);
+    panel3.add(dateField);
 
     JButton getContentsBtn = new JButton("Get Contents");
     panel3.add(getContentsBtn);
@@ -264,7 +267,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(goBackButton);
 
     getContentsBtn.addActionListener(e -> {
-      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateTxtFiled.getText());
+      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateField.getText());
       if (!composition.isEmpty()) {
         //data cleaning
         String[][] data = new String[composition.size()][2];
@@ -282,7 +285,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
 
     getWeightageBtn.addActionListener(e -> {
-      Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName, dateTxtFiled.getText());
+      Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName, dateField.getText());
       if (weightage.isEmpty()) {
         printMessage("No stocks existed on this date");
       } else {
@@ -308,16 +311,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     getAllPortfolios();
-    getDateChoice();
+
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
+    JTextField dateField = new JTextField(10);
+    panel3.add(dateField);
 
     JButton getValueBtn = new JButton("Get Portfolio Value");
     panel3.add(getValueBtn);
     getValueBtn.addActionListener(evt -> {
-      double value = features.getPortfolioValue(portfolioName, dateTxtFiled.getText());
+      double value = features.getPortfolioValue(portfolioName, dateField.getText());
       //data cleaning
       if (value != -1) {
         printMessage("Value of " + portfolioName
-                + " on " + dateTxtFiled.getText()
+                + " on " + dateField.getText()
                 + " is: $" + value);
       }
     });
@@ -332,16 +338,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     getAllPortfolios();
-    getDateChoice();
+
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
+    JTextField dateField = new JTextField(10);
+    panel3.add(dateField);
 
     JButton getCostBasisBtn = new JButton("Get Cost Basis");
     panel3.add(getCostBasisBtn);
     getCostBasisBtn.addActionListener(evt -> {
-      double value = features.getCostBasis(portfolioName, dateTxtFiled.getText());
+      double value = features.getCostBasis(portfolioName, dateField.getText());
       //data cleaning
       if (value != -1) {
         printMessage("Value of " + portfolioName
-                + " on " + dateTxtFiled.getText()
+                + " on " + dateField.getText()
                 + " is: $" + value);
       }
     });
