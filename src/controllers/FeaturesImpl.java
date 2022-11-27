@@ -209,6 +209,22 @@ public class FeaturesImpl implements Features {
     return -1;
   }
 
+  @Override
+  public double getCostBasis(String portfolioName, String date) {
+    try {
+      Portfolio portfolio = findPortfolio(portfolioName);
+      LocalDate d = LocalDate.parse(date);
+      if(d.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("Cannot get value for future dates");
+      } else {
+        return portfolio.getCostBasis(d);
+      }
+    } catch(DateTimeParseException e) {
+      menu.printMessage("Invalid date format");
+    }
+    return -1;
+  }
+
   private Portfolio findPortfolio(String name) {
     System.out.println(name);
     Portfolio portfolio;

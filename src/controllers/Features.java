@@ -21,4 +21,5 @@ public interface Features {
   Map<String, Double> getPortfolioContents(String portfolioName, String date);
   Map<String, Double> getPortfolioWeightage(String portfolioName, String date);
   double getPortfolioValue(String portfolioName, String date);
+  double getCostBasis(String portfolioName, String date);
 }
