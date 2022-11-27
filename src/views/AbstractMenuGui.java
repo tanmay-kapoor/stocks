@@ -264,7 +264,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
     panel3.add(getWeightageBtn);
-//    getWeightageBtn.addActionListener(e -> features.getWeightage(portfolioName, dateTxtFiled.getText()));
 
     panel3.add(goBackButton);
     panel3.revalidate();
@@ -282,6 +281,21 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
       showTable(data);
     });
+
+    getWeightageBtn.addActionListener(e -> {
+      Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName, dateTxtFiled.getText());
+      //data cleaning
+      String[][] data = new String[weightage.size()][2];
+      int count = 0;
+      for(Map.Entry<String,Double> entry : weightage.entrySet()){
+        data[count][0] = entry.getKey();
+        data[count][1] = entry.getValue().toString();
+        count++;
+      }
+
+      showTable(data);
+    });
+
 
   }
 
@@ -391,7 +405,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     String[] colNames = {"Ticker", "Quantity"};
-
     JTable table = new JTable(data, colNames);
     panel3.add(table);
 //    panel3.add(goBackButton);
