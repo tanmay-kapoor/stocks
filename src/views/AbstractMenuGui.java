@@ -271,25 +271,23 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getPortfolioCompositionOption() {
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
+    if (showP3()) return;
 
-    boolean res = getAllPortfolios();
-    if(!res) {
-      return;
-    }
-
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
+    gbcNewline();
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
     JTextField dateField = new JTextField(10);
-    panel3.add(dateField);
+    gbc.gridx = 1;
+    panel3.add(dateField, gbc);
 
+    gbcNewline();
     JButton getContentsBtn = new JButton("Get Contents");
-    panel3.add(getContentsBtn);
+    panel3.add(getContentsBtn, gbc);
 
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
-    panel3.add(getWeightageBtn);
-
-    panel3.add(goBackButton);
+    gbc.gridx = 1;
+    panel3.add(getWeightageBtn, gbc);
+    gbc.gridx = 2;
+    panel3.add(goBackButton, gbc);
 
     getContentsBtn.addActionListener(e -> {
       setDateToNowIfEmpty(dateField);
@@ -334,16 +332,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
 
   private void getPortfolioValueOptions() {
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
-    resetGbc();
-    panel3.setLayout(new GridBagLayout());
-    setGbcSize(25,20);
-
-    boolean res = getAllPortfolios();
-    if(!res) {
-      return;
-    }
+    if (showP3()) return;
 
     setGbcXY(0, 1);
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
@@ -371,8 +360,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
   }
 
-
-  protected void getPortfolioCostBasisOptions() {
+  private boolean showP3() {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
     resetGbc();
@@ -381,8 +369,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     boolean res = getAllPortfolios();
     if(!res) {
-      return;
+      return true;
     }
+    return false;
+  }
+
+
+  protected void getPortfolioCostBasisOptions() {
+    if (showP3()) return;
 
     gbcNewline();
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
@@ -625,14 +619,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   private void showTable(String[][] data) {
-    panel3.removeAll();
-
+    gbcNewline();
     String[] colNames = {"Ticker", "Quantity"};
+    panel3.remove(6);
     JTable table = new JTable(data, colNames);
     JScrollPane sp = new JScrollPane(table);
-    panel3.add(sp);
-    panel3.add(goBackButton);
+    gbc.gridwidth = 2;
+    gbc.ipady = 250;
+    panel3.add(sp, gbc);
 
+//    gbcNewline();
+//    gbc.ipady = 30;
+//    panel3.add(goBackButton, gbc);
     panel3.revalidate();
   }
 
