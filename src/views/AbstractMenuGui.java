@@ -23,6 +23,7 @@ import models.portfolio.Report;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
+  protected GridBagConstraints gbc;
   private JComboBox<String> portfolioListCb;
   protected String portfolioName;
   protected JTextField dateTxtFiled;
@@ -54,7 +55,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     super(caption);
     this.features = features;
 
-    setSize(600, 600);
+    setSize(1000, 600);
     setLocation(900, 100);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,6 +77,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     exitButton = new JButton("Exit");
     exitButton.addActionListener(evt -> features.exitProgram());
+
+    gbc = new GridBagConstraints();
 
     this.mainPanel = getMainPanel();
     this.cl = (CardLayout) (mainPanel.getLayout());
@@ -124,13 +127,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void printMessage(String msg) {
+    gbcNewline();
+    gbc.gridwidth = 2;
+    gbc.ipady = 60;
     if (text != null) {
       //don't always remove this or don't use printMessage() all the time
       panel3.remove(text);
       panel3.revalidate();
     }
     text = new JLabel(msg);
-    panel3.add(text);
+    panel3.add(text, gbc);
+
     panel3.revalidate();
   }
 
@@ -329,42 +336,55 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void getPortfolioValueOptions() {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
+    resetGbc();
+    panel3.setLayout(new GridBagLayout());
+    setGbcSize(25,20);
 
     getAllPortfolios();
-
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
+    setGbcXY(0, 1);
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
     JTextField dateField = new JTextField(10);
-    panel3.add(dateField);
+    gbc.gridx = 1;
+    panel3.add(dateField, gbc);
 
+    gbcNewline();
     JButton getValueBtn = new JButton("Get Portfolio Value");
-    panel3.add(getValueBtn);
+    panel3.add(getValueBtn, gbc);
     getValueBtn.addActionListener(evt -> {
       double value = features.getPortfolioValue(portfolioName, dateField.getText());
       //data cleaning
       if (value != -1) {
         printMessage("Value of " + portfolioName
-                + " on " + dateField.getText()
-                + " is: $" + value);
+                + " as of " + dateField.getText()
+                + " closing was: $" + value);
       }
     });
 
-    panel3.add(goBackButton);
+    setGbcXY(1, 2);
+    panel3.add(goBackButton, gbc);
 
     panel3.revalidate();
   }
 
+
   protected void getPortfolioCostBasisOptions() {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
+    resetGbc();
+    panel3.setLayout(new GridBagLayout());
+    setGbcSize(25,20);
 
     getAllPortfolios();
 
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
+    gbcNewline();
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
     JTextField dateField = new JTextField(10);
-    panel3.add(dateField);
+    gbc.gridx = 1;
+    panel3.add(dateField, gbc);
 
+    gbcNewline();
     JButton getCostBasisBtn = new JButton("Get Cost Basis");
-    panel3.add(getCostBasisBtn);
+    panel3.add(getCostBasisBtn, gbc);
     getCostBasisBtn.addActionListener(evt -> {
       double value = features.getCostBasis(portfolioName, dateField.getText());
       //data cleaning
@@ -375,7 +395,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       }
     });
 
-    panel3.add(goBackButton);
+    gbc.gridx = 1;
+    panel3.add(goBackButton, gbc);
 
     panel3.revalidate();
   }
@@ -423,7 +444,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       features.addTickerToStrategy(tickerChosen.getText(), weightage.getText());
       stockWeightage.put(tickerChosen.getText(), Double.parseDouble(weightage.getText()));
 
-      if(features.getWeightageLeft() > 0) {
+      if (features.getWeightageLeft() > 0) {
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
         System.out.println(portfolioName);
@@ -436,7 +457,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton addShareWeightageBtn = new JButton("Choose share weightage");
     addShareWeightageBtn.addActionListener(evt -> {
       if (strategy.getText() == "" || fromDate.getText() == ""
-            || interval.getText() == "" || amount.getText() == "" || commission.getText() == "") {
+              || interval.getText() == "" || amount.getText() == "" || commission.getText() == "") {
         printMessage("Please Fill all the necessary fields.");
         // IDK WHAT TO DO HERE
       }
@@ -456,7 +477,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
                               JTextField weightage, JButton addBtn) {
     panel4.removeAll();
 
-    for(String ticker: stockWeightage.keySet()) {
+    for (String ticker : stockWeightage.keySet()) {
       panel4.add(new JLabel(ticker));
       panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"));
     }
@@ -559,21 +580,29 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void getAllPortfolios() {
 
     List<String> portfolios = features.getAllPortfolios();
+
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+
     if (portfolios.size() == 0) {
       printMessage("No Portfolios. Please Create atleast one and come back again.");
-      panel3.add(goBackButton);
+      panel3.add(goBackButton, gbc);
       panel3.revalidate();
       return;
     }
 
-    panel3.add(new JLabel("Choose a portfolio from the list"));
+    panel3.add(new JLabel("Choose a portfolio from the list"), gbc);
+
+    gbc.gridx = 1;
+    gbc.gridy = 0;
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
     portfolioListCb = new JComboBox<>(portfolioList);
     portfolioName = portfolioListCb.getItemAt(0);
     portfolioListCb.addActionListener(evt ->
             portfolioName = Objects.requireNonNull(portfolioListCb.getSelectedItem()).toString());
-    panel3.add(portfolioListCb);
+    panel3.add(portfolioListCb, gbc);
 
     panel3.revalidate();
   }
@@ -670,24 +699,20 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private JPanel getPanel1() {
     JPanel panel1 = new JPanel();
-//    panel1.setLayout(new GridLayout(0, 1, 20, 20));
-//    panel1.setBorder(new EmptyBorder(100,200,100,200));
-    panel1.setLayout(new BorderLayout());
+    panel1.setLayout(new GridLayout(0, 1, 20, 20));
+    panel1.setBorder(new EmptyBorder(100,200,100,200));
 
     JButton flexibleButton = new JButton("Flexible");
-//    panel1.add(flexibleButton);
-    panel1.add(flexibleButton, BorderLayout.NORTH);
+    panel1.add(flexibleButton);
 
     JButton inflexibleButton = new JButton("Inflexible");
-//    panel1.add(inflexibleButton);
-    panel1.add(inflexibleButton, BorderLayout.EAST);
+    panel1.add(inflexibleButton);
 
     JButton backToTextUi = new JButton("Back To Text UI");
-//    panel1.add(backToTextUi);
+    panel1.add(backToTextUi);
     backToTextUi.addActionListener(e -> this.dispose());
 
-//    panel1.add(exitButton);
-    panel1.add(exitButton, BorderLayout.SOUTH);
+    panel1.add(exitButton);
 
     flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
 
@@ -696,8 +721,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private JPanel getPanel2() {
     JPanel panel2 = new JPanel();
-    panel2.setLayout(new GridLayout(0,2,10,10));
-    panel2.setBorder( new EmptyBorder(7,10,7,10) );
+    panel2.setLayout(new GridLayout(0, 2, 10, 10));
+    panel2.setBorder(new EmptyBorder(7, 10, 7, 10));
 
     JButton createPortfolioButton = new JButton("Create portfolio");
     panel2.add(createPortfolioButton);
@@ -728,6 +753,25 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel2.add(backP1Btn);
 
     return panel2;
+  }
+
+  protected void setGbcXY(int c, int r) {
+    gbc.gridx = c;
+    gbc.gridy = r;
+  }
+
+  protected void setGbcSize(int w, int h) {
+    gbc.ipadx = w;
+    gbc.ipady = h;
+  }
+
+  protected void gbcNewline() {
+    gbc.gridy += 1;
+    gbc.gridx = 0;
+  }
+
+  public void resetGbc() {
+    gbc = new GridBagConstraints();
   }
 
 }
