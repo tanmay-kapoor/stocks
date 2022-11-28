@@ -23,7 +23,9 @@ import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
+import models.TimeLine;
 import models.api.ShareApi;
+import models.portfolio.Dca;
 import models.portfolio.Performance;
 import models.portfolio.Portfolio;
 import models.portfolio.Report;
@@ -36,6 +38,8 @@ import static java.lang.Math.round;
 
 public class FeaturesImpl implements Features {
 
+  private double totalWeightage;
+  private Map<String, Double> stocksWeightage;
   private Menu menu;
   private final ShareApi api;
   private final String commonPath;
@@ -327,6 +331,99 @@ public class FeaturesImpl implements Features {
     return -1;
   }
 
+  @Override
+  public void resetTotalWeightage() {
+    this.totalWeightage = 100.0;
+    stocksWeightage = new HashMap<>();
+  }
+
+  private boolean satisfiesWeightageTotal(double val) {
+    if (totalWeightage - val < 0.0) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public void addTickerToStrategy(String ticker, String weightage) {
+    try {
+      ticker = ticker.toUpperCase();
+      if (!api.isTickerPresent(ticker)) {
+        api.getShareDetails(ticker, LocalDate.now());
+      }
+      double w = Double.parseDouble(weightage);
+      if (w <= 0) {
+        menu.printMessage("Weightage of a ticker must be > 0");
+      } else if (!satisfiesWeightageTotal(w)) {
+        menu.printMessage("Total weightage should be < 100%");
+      } else {
+        if (!stocksWeightage.containsKey(ticker)) {
+          stocksWeightage.put(ticker, w);
+        } else {
+          stocksWeightage.put(ticker, stocksWeightage.get(ticker) + w);
+        }
+        totalWeightage -= w;
+
+        if (totalWeightage != 0) {
+          menu.printMessage("Successfully added ticker to strategy");
+        } else {
+          menu.printMessage("100% weightage completed");
+        }
+      }
+    } catch (NumberFormatException e) {
+      menu.printMessage("Invalid format for 1 or more fields");
+    } catch (IllegalArgumentException e) {
+      menu.printMessage("Invalid ticker");
+    }
+  }
+
+  @Override
+  public void saveDca(String portfolioName, String strategyName, String amt, String f, String t,
+                      String interval, String commission) {
+    try {
+      Portfolio portfolio;
+      if (allPortfolios.contains(portfolioName)) {
+        portfolio = findPortfolio(portfolioName);
+      } else {
+        portfolio = this.portfolio;
+      }
+      double amount = Double.parseDouble(amt);
+      LocalDate from = LocalDate.parse(f);
+      LocalDate to = !t.equals("") ? LocalDate.parse(t) : LocalDate.parse("2100-12-31");
+
+      if (from.compareTo(to) > 0) {
+        menu.printMessage("Start date should be before end date");
+      } else {
+        TimeLine timeline = new TimeLine(from, to);
+        int intervalVal = Integer.parseInt(interval);
+        if (intervalVal < 1) {
+          menu.printMessage("Interval should be at least 1 day");
+        } else {
+          double commissionFee = Double.parseDouble(commission);
+          doDca(portfolio, strategyName, amount, stocksWeightage,
+                  timeline, intervalVal, commissionFee);
+        }
+      }
+    } catch (NumberFormatException e) {
+      menu.printMessage("Invalid format for 1 or more fields");
+    } catch (IllegalArgumentException e) {
+      menu.printMessage("Invalid date format");
+    }
+  }
+
+  private void doDca(Portfolio portfolio, String strategyName, double amount,
+                     Map<String, Double> stocksWeightage, TimeLine timeline,
+                     int interval, double commission) {
+
+    if (this.totalWeightage != 0) {
+      menu.printMessage("Total weightage is not 100%");
+    } else {
+      Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
+      portfolio.doDca(strategyName, dca);
+      menu.printMessage("Success!!!!!!!");
+    }
+  }
+
   private Portfolio findPortfolio(String name) {
     Portfolio portfolio;
     if (allPortfolioObjects.containsKey(name)) {
@@ -430,7 +527,7 @@ public class FeaturesImpl implements Features {
       File file = new File(filePath);
       String fileName = file.getName();
       String portfolioName = fileName.substring(0, fileName.lastIndexOf("."));
-      if(allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
+      if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
         menu.printMessage(String.format("\n\"%s\" named portfolio already exists. "
                 + "Portfolio names are case insensitive! Please rename your file "
                 + "and try again!", portfolioName));
