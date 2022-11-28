@@ -54,6 +54,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     setSize(600, 600);
     setLocation(900, 100);
+
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     enterBtn = new JButton("Enter");
@@ -80,9 +81,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     this.add(mainPanel);
 
-//    inflexibleButton.addActionListener(evt -> features.handleInflexibleSelected());
-
-//    this.pack();
     setVisible(true);
   }
 
@@ -412,12 +410,52 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(commission);
 
     JButton addShareWeightageBtn = new JButton("Choose share weightage");
+
+    addShareWeightageBtn.addActionListener(evt -> {
+      if (strategy.getText() == "" || fromDate.getText() == ""
+            || interval.getText() == "" || amount.getText() == "" || commission.getText() == "") {
+        printMessage("Please Fill all the necessary fields.");
+        // IDK WHAT TO DO HERE
+      }
+
+      cl.show(mainPanel, "panel 4");
+      displayShareWeightage(strategy.getText(), LocalDate.parse(fromDate.getText()),
+              LocalDate.parse(toDate.getText()), Integer.parseInt(interval.getText()),
+              Double.parseDouble(amount.getText()), Double.parseDouble(commission.getText()));
+    });
     panel3.add(addShareWeightageBtn);
 
     panel3.add(goBackButton);
 
     panel3.revalidate();
 
+  }
+
+  private void displayShareWeightage(String strategy, LocalDate from, LocalDate to,
+                                     int interval, double amount, double commission) {
+    double weightLeft = 100;
+    panel4.removeAll();
+//    features.resetWeightage()
+
+    do {
+      panel4.add(new JLabel("Weight left: "));
+      panel4.add(new JLabel(weightLeft + "%"));
+
+      panel4.add(new JLabel("Add ticker: "));
+      JTextField ticker = new JTextField(10);
+      panel4.add(ticker);
+
+      JButton addBtn = new JButton("Add");
+      panel4.add(addBtn);
+      addBtn.addActionListener(evt -> {
+//        weightLeft = weightLeft - 30;
+//        features.dca();
+      });
+      weightLeft -= 30;
+    }
+    while (weightLeft > 0);
+
+    panel4.revalidate();
   }
 
   @Override
@@ -606,8 +644,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JPanel panel1 = getPanel1();
     //panel 2 gives portfolio specific features options in the menu
     JPanel panel2 = getPanel2();
-    this.panel3 = new JPanel(new GridLayout(0, 2, 10, 80));
-    this.panel4 = new JPanel(new GridLayout(0, 2, 10, 80));
+    this.panel3 = new JPanel(new GridLayout(0, 2, 10, 10));
+    this.panel4 = new JPanel(new GridLayout(0, 2, 10, 10));
 
     mainPanel.add(panel1, "Main Menu");
     mainPanel.add(panel2, "Portfolio Features");
