@@ -287,6 +287,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(goBackButton);
 
     getContentsBtn.addActionListener(e -> {
+      setDateToNowIfEmpty(dateField);
       Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateField.getText());
       if (!composition.isEmpty()) {
         //data cleaning
@@ -305,6 +306,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
 
     getWeightageBtn.addActionListener(e -> {
+      setDateToNowIfEmpty(dateField);
       Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName, dateField.getText());
       if (weightage.isEmpty()) {
         printMessage("No stocks existed on this date");
@@ -339,6 +341,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton getValueBtn = new JButton("Get Portfolio Value");
     panel3.add(getValueBtn);
     getValueBtn.addActionListener(evt -> {
+      setDateToNowIfEmpty(dateField);
       double value = features.getPortfolioValue(portfolioName, dateField.getText());
       //data cleaning
       if (value != -1) {
@@ -366,10 +369,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton getCostBasisBtn = new JButton("Get Cost Basis");
     panel3.add(getCostBasisBtn);
     getCostBasisBtn.addActionListener(evt -> {
+      setDateToNowIfEmpty(dateField);
       double value = features.getCostBasis(portfolioName, dateField.getText());
       //data cleaning
       if (value != -1) {
-        printMessage("Value of " + portfolioName
+        printMessage("Cost basis of " + portfolioName
                 + " on " + dateField.getText()
                 + " is: $" + value);
       }
@@ -731,4 +735,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     return panel2;
   }
 
+  private void setDateToNowIfEmpty(JTextField dateField) {
+    if (dateField.getText().equals("")) {
+      dateField.setText(LocalDate.now().toString());
+    }
+  }
 }
