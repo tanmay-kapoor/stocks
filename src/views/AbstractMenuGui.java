@@ -279,7 +279,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
-    getAllPortfolios();
+    boolean res = getAllPortfolios();
+    if(!res) {
+      return;
+    }
 
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "));
     JTextField dateField = new JTextField(10);
@@ -342,7 +345,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.setLayout(new GridBagLayout());
     setGbcSize(25,20);
 
-    getAllPortfolios();
+    boolean res = getAllPortfolios();
+    if(!res) {
+      return;
+    }
+
     setGbcXY(0, 1);
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
     JTextField dateField = new JTextField(10);
@@ -377,7 +384,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.setLayout(new GridBagLayout());
     setGbcSize(25,20);
 
-    getAllPortfolios();
+    boolean res = getAllPortfolios();
+    if(!res) {
+      return;
+    }
 
     gbcNewline();
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
@@ -412,7 +422,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
-    getAllPortfolios();
+    boolean res = getAllPortfolios();
+    if(!res) {
+      return;
+    }
 
     Map<String, Double> stockWeightage = new HashMap<>();
 
@@ -504,7 +517,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
-    getAllPortfolios();
+    boolean res = getAllPortfolios();
+    if(!res) {
+      return;
+    }
 
     JButton buyOptionBtn = new JButton("Buy Shares");
     JButton sellOptionBtn = new JButton("Sell Shares");
@@ -556,7 +572,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
-    getAllPortfolios();
+    boolean res = getAllPortfolios();
+    if(!res) {
+      return;
+    }
 
     panel3.add(new JLabel("Start Date (YYYY-MM-DD) : "));
     JTextField fromDate = new JTextField(10);
@@ -582,19 +601,16 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
 
-  private void getAllPortfolios() {
+  private boolean getAllPortfolios() {
 
     List<String> portfolios = features.getAllPortfolios();
 
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-
     if (portfolios.size() == 0) {
       printMessage("No Portfolios. Please Create atleast one and come back again.");
+      gbcNewline();
       panel3.add(goBackButton, gbc);
       panel3.revalidate();
-      return;
+      return false;
     }
 
     panel3.add(new JLabel("Choose a portfolio from the list"), gbc);
@@ -610,6 +626,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(portfolioListCb, gbc);
 
     panel3.revalidate();
+    return true;
   }
 
   private void showTable(String[][] data) {
@@ -783,6 +800,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   public void resetGbc() {
     gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
   }
 
 }
