@@ -23,7 +23,6 @@ import models.portfolio.Report;
 import models.portfolio.Txn;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
-  protected GridBagConstraints gbc;
   private JComboBox<String> portfolioListCb;
   protected String portfolioName;
   protected JTextField dateTxtFiled;
@@ -35,7 +34,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected JTextField ticker;
   protected JTextField quantity;
   protected JTextField commission;
-  private Txn txn_type;
   private JLabel text;
   private JLabel successMessage;
   protected CardLayout cl;
@@ -46,6 +44,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   // panel 4 is for some uber specific requirements.
   protected JPanel panel4;
+  protected GridBagConstraints gbc3;
+  protected GridBagConstraints gbc4;
 
   protected abstract void displaySellPanel();
 
@@ -78,7 +78,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     exitButton = new JButton("Exit");
     exitButton.addActionListener(evt -> features.exitProgram());
 
-    gbc = new GridBagConstraints();
+    gbc3 = new GridBagConstraints();
+    gbc4 = new GridBagConstraints();
 
     this.mainPanel = getMainPanel();
     this.cl = (CardLayout) (mainPanel.getLayout());
@@ -123,15 +124,15 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   @Override
   public void printMessage(String msg) {
     gbcNewline();
-    gbc.gridwidth = 2;
-    gbc.ipady = 60;
+    gbc3.gridwidth = 2;
+    gbc3.ipady = 60;
     if (text != null) {
       //don't always remove this or don't use printMessage() all the time
       panel3.remove(text);
       panel3.revalidate();
     }
     text = new JLabel(msg);
-    panel3.add(text, gbc);
+    panel3.add(text, gbc3);
 
     panel3.revalidate();
   }
@@ -274,20 +275,20 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     if (showP3()) return;
 
     gbcNewline();
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
     JTextField dateField = new JTextField(10);
-    gbc.gridx = 1;
-    panel3.add(dateField, gbc);
+    gbc3.gridx = 1;
+    panel3.add(dateField, gbc3);
 
     gbcNewline();
     JButton getContentsBtn = new JButton("Get Contents");
-    panel3.add(getContentsBtn, gbc);
+    panel3.add(getContentsBtn, gbc3);
 
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
-    gbc.gridx = 1;
-    panel3.add(getWeightageBtn, gbc);
-    gbc.gridx = 2;
-    panel3.add(goBackButton, gbc);
+    gbc3.gridx = 1;
+    panel3.add(getWeightageBtn, gbc3);
+    gbc3.gridx = 2;
+    panel3.add(goBackButton, gbc3);
 
     getContentsBtn.addActionListener(e -> {
       setDateToNowIfEmpty(dateField);
@@ -335,14 +336,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     if (showP3()) return;
 
     setGbcXY(0, 1);
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
     JTextField dateField = new JTextField(10);
-    gbc.gridx = 1;
-    panel3.add(dateField, gbc);
+    gbc3.gridx = 1;
+    panel3.add(dateField, gbc3);
 
     gbcNewline();
     JButton getValueBtn = new JButton("Get Portfolio Value");
-    panel3.add(getValueBtn, gbc);
+    panel3.add(getValueBtn, gbc3);
     getValueBtn.addActionListener(evt -> {
       setDateToNowIfEmpty(dateField);
       double value = features.getPortfolioValue(portfolioName, dateField.getText());
@@ -355,7 +356,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
 
     setGbcXY(1, 2);
-    panel3.add(goBackButton, gbc);
+    panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
   }
@@ -363,15 +364,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private boolean showP3() {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
-    resetGbc();
+    resetGbc3();
     panel3.setLayout(new GridBagLayout());
-    setGbcSize(25,20);
+//    setGbcSize(25,20);
 
     boolean res = getAllPortfolios();
-    if(!res) {
-      return true;
-    }
-    return false;
+    return !res;
   }
 
 
@@ -379,14 +377,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     if (showP3()) return;
 
     gbcNewline();
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc);
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
     JTextField dateField = new JTextField(10);
-    gbc.gridx = 1;
-    panel3.add(dateField, gbc);
+    gbc3.gridx = 1;
+    panel3.add(dateField, gbc3);
 
     gbcNewline();
     JButton getCostBasisBtn = new JButton("Get Cost Basis");
-    panel3.add(getCostBasisBtn, gbc);
+    panel3.add(getCostBasisBtn, gbc3);
     getCostBasisBtn.addActionListener(evt -> {
       setDateToNowIfEmpty(dateField);
       double value = features.getCostBasis(portfolioName, dateField.getText());
@@ -398,8 +396,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       }
     });
 
-    gbc.gridx = 1;
-    panel3.add(goBackButton, gbc);
+    gbc3.gridx = 1;
+    panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
   }
@@ -408,40 +406,47 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected void getDcaOptions() {
     features.resetTotalWeightage();
 
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
-
-    boolean res = getAllPortfolios();
-    if(!res) {
-      return;
-    }
+    if (showP3()) return;
 
     Map<String, Double> stockWeightage = new HashMap<>();
 
-    panel3.add(new JLabel("Enter DCA strategy name"));
+    gbcNewline();
+    panel3.add(new JLabel("Enter DCA strategy name"), gbc3);
     JTextField strategy = new JTextField("");
-    panel3.add(strategy);
+    gbc3.gridx = 1;
+    panel3.add(strategy, gbc3);
 
-    panel3.add(new JLabel("Start Date (YYYY-MM-DD): "));
+    gbcNewline();
+    panel3.add(new JLabel("Start Date (YYYY-MM-DD): "), gbc3);
     JTextField fromDate = new JTextField(10);
-    panel3.add(fromDate);
+    gbc3.gridx = 1;
+    panel3.add(fromDate, gbc3);
 
-    panel3.add(new JLabel("Optional End Date (YYYY-MM-DD): "));
+    gbcNewline();
+    panel3.add(new JLabel("Optional End Date (YYYY-MM-DD): "), gbc3);
     JTextField toDate = new JTextField(10);
-    panel3.add(toDate);
+    gbc3.gridx = 1;
+    panel3.add(toDate, gbc3);
 
-    panel3.add(new JLabel("Enter investment interval (days): "));
+    gbcNewline();
+    panel3.add(new JLabel("Enter investment interval (days): "), gbc3);
     JTextField interval = new JTextField(10);
-    panel3.add(interval);
+    gbc3.gridx = 1;
+    panel3.add(interval, gbc3);
 
-    panel3.add(new JLabel("Enter investment amount ($): "));
+    gbcNewline();
+    panel3.add(new JLabel("Enter investment amount ($): "), gbc3);
     JTextField amount = new JTextField(10);
-    panel3.add(amount);
+    gbc3.gridx = 1;
+    panel3.add(amount, gbc3);
 
-    panel3.add(new JLabel("Enter commission: "));
+    gbcNewline();
+    panel3.add(new JLabel("Enter commission: "), gbc3);
     JTextField commission = new JTextField(10);
-    panel3.add(commission);
+    gbc3.gridx = 1;
+    panel3.add(commission, gbc3);
 
+    gbcNewline();
     JTextField tickerChosen = new JTextField(10);
     JTextField weightage = new JTextField(10);
     JButton addBtn = new JButton("Add to strategy");
@@ -451,6 +456,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       stockWeightage.put(tickerChosen.getText(), Double.parseDouble(weightage.getText()));
 
       if (features.getWeightageLeft() > 0) {
+        cl.show(mainPanel, "panel 4");
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
         System.out.println(portfolioName);
@@ -472,9 +478,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       cl.show(mainPanel, "panel 4");
       addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
     });
-    panel3.add(addShareWeightageBtn);
+    panel3.add(addShareWeightageBtn, gbc3);
 
-    panel3.add(goBackButton);
+    gbc3.gridx = 1;
+    panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
 
@@ -483,20 +490,32 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void addTickerPanel(Map<String, Double> stockWeightage, JTextField tickerChosen,
                               JTextField weightage, JButton addBtn) {
     panel4.removeAll();
+    tickerChosen.setText("");
+    weightage.setText("");
+    resetGbc4();
+    panel4.setLayout(new GridBagLayout());
 
     for (String ticker : stockWeightage.keySet()) {
-      panel4.add(new JLabel(ticker));
-      panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"));
+      gbc4Newline();
+      panel4.add(new JLabel(ticker), gbc4);
+      gbc4.gridx = 1;
+      panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"), gbc4);
     }
 
-    panel4.add(new JLabel("Add ticker: "));
-    panel4.add(tickerChosen);
+    gbc4Newline();
+    panel4.add(new JLabel("Add ticker: "), gbc4);
+    gbc4.gridx = 1;
+    panel4.add(tickerChosen, gbc4);
 
-    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft() + ") left"));
-    panel4.add(weightage);
+    gbc4Newline();
+    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft() + "% left)"), gbc4);
+    gbc4.gridx = 1;
+    panel4.add(weightage, gbc4);
 
-    panel4.add(addBtn);
-    panel4.add(backToP3Btn);
+    gbc4Newline();
+    panel4.add(addBtn, gbc4);
+    gbc4.gridx = 1;
+    panel4.add(backToP3Btn, gbc4);
     panel4.revalidate();
   }
 
@@ -597,22 +616,22 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     if (portfolios.size() == 0) {
       printMessage("No Portfolios. Please Create atleast one and come back again.");
       gbcNewline();
-      panel3.add(goBackButton, gbc);
+      panel3.add(goBackButton, gbc3);
       panel3.revalidate();
       return false;
     }
 
-    panel3.add(new JLabel("Choose a portfolio from the list"), gbc);
+    panel3.add(new JLabel("Choose a portfolio from the list"), gbc3);
 
-    gbc.gridx = 1;
-    gbc.gridy = 0;
+    gbc3.gridx = 1;
+    gbc3.gridy = 0;
 
     String[] portfolioList = Arrays.copyOf(portfolios.toArray(), portfolios.size(), String[].class);
     portfolioListCb = new JComboBox<>(portfolioList);
     portfolioName = portfolioListCb.getItemAt(0);
     portfolioListCb.addActionListener(evt ->
             portfolioName = Objects.requireNonNull(portfolioListCb.getSelectedItem()).toString());
-    panel3.add(portfolioListCb, gbc);
+    panel3.add(portfolioListCb, gbc3);
 
     panel3.revalidate();
     return true;
@@ -624,13 +643,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.remove(6);
     JTable table = new JTable(data, colNames);
     JScrollPane sp = new JScrollPane(table);
-    gbc.gridwidth = 2;
-    gbc.ipady = 250;
-    panel3.add(sp, gbc);
+    gbc3.gridwidth = 2;
+    gbc3.ipady = 250;
+    panel3.add(sp, gbc3);
 
 //    gbcNewline();
-//    gbc.ipady = 30;
-//    panel3.add(goBackButton, gbc);
+//    gbc3.ipady = 30;
+//    panel3.add(goBackButton, gbc3);
     panel3.revalidate();
   }
 
@@ -777,23 +796,35 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   protected void setGbcXY(int c, int r) {
-    gbc.gridx = c;
-    gbc.gridy = r;
+    gbc3.gridx = c;
+    gbc3.gridy = r;
   }
 
   protected void setGbcSize(int w, int h) {
-    gbc.ipadx = w;
-    gbc.ipady = h;
+    gbc3.ipadx = w;
+    gbc3.ipady = h;
   }
 
   protected void gbcNewline() {
-    gbc.gridy += 1;
-    gbc.gridx = 0;
+    gbc3.gridy += 1;
+    gbc3.gridx = 0;
   }
 
-  public void resetGbc() {
-    gbc = new GridBagConstraints();
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+  protected void gbc4Newline() {
+    gbc4.gridy += 1;
+    gbc4.gridx = 0;
   }
 
+  public void resetGbc3() {
+    gbc3 = new GridBagConstraints();
+    gbc3.fill = GridBagConstraints.HORIZONTAL;
+    setGbcSize(25,20);
+  }
+
+  public void resetGbc4() {
+    gbc4 = new GridBagConstraints();
+    gbc4.fill = GridBagConstraints.HORIZONTAL;
+    gbc4.ipadx = 25;
+    gbc4.ipady = 20;
+  }
 }
