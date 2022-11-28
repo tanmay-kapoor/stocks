@@ -3,7 +3,6 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
-import models.TimeLine;
 import models.portfolio.Report;
 import views.Menu;
 
@@ -44,4 +43,6 @@ public interface Features {
 
   void saveDca(String portfolioName, String strategyName, String amt, String f, String t,
                String interval, String commission);
+
+  double getWeightageLeft();
 }

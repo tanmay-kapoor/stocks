@@ -104,17 +104,7 @@ public class FeaturesImpl implements Features {
       menu.printMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
     } else {
       portfolio = new StockPortfolioFlexible(portfolioName, path, api);
-//      menu.clearTextIfDisplayed();
       menu.getAddToPortfolioChoice();
-//      boolean shouldExit;
-//      menu.getAddToPortfolioChoice();
-//      char option = getCharVal();
-//      try {
-//        shouldExit = this.handleCreatePortfolioOption(option, portfolio, portfolioName);
-//      } catch (IllegalArgumentException e) {
-//        menu.printMessage("\n" + e.getMessage());
-//        shouldExit = false;
-//      }
     }
   }
 
@@ -338,10 +328,12 @@ public class FeaturesImpl implements Features {
   }
 
   private boolean satisfiesWeightageTotal(double val) {
-    if (totalWeightage - val < 0.0) {
-      return false;
-    }
-    return true;
+    return totalWeightage - val >= 0.0;
+  }
+
+  @Override
+  public double getWeightageLeft() {
+    return this.totalWeightage;
   }
 
   @Override
