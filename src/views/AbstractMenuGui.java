@@ -543,6 +543,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       cl.show(mainPanel, "panel 4");
       displayBuyPanel();
     });
+
     sellOptionBtn.addActionListener(evt -> {
       cl.show(mainPanel, "panel 4");
       displaySellPanel();
@@ -577,22 +578,21 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
 
   protected void getPortfolioPerformanceOption() {
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
+    if (showP3()) return;
 
-    boolean res = getAllPortfolios();
-    if(!res) {
-      return;
-    }
-
-    panel3.add(new JLabel("Start Date (YYYY-MM-DD) : "));
+    gbcNewline();
+    panel3.add(new JLabel("Start Date (YYYY-MM-DD) : "), gbc3);
     JTextField fromDate = new JTextField(10);
-    panel3.add(fromDate);
+    gbc3.gridx = 1;
+    panel3.add(fromDate, gbc3);
 
-    panel3.add(new JLabel("End Date (YYYY-MM-DD) : "));
+    gbcNewline();
+    panel3.add(new JLabel("End Date (YYYY-MM-DD) : "), gbc3);
     JTextField toDate = new JTextField(10);
-    panel3.add(toDate);
+    gbc3.gridx = 1;
+    panel3.add(toDate, gbc3);
 
+    gbcNewline();
     JButton getPerformanceBtn = new JButton("Get Performance");
     getPerformanceBtn.addActionListener(evt -> {
       Report performanceReport = features.getPortfolioPerformance(portfolioName,
@@ -601,9 +601,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         showPerformanceGraph(performanceReport);
       }
     });
-    panel3.add(getPerformanceBtn);
+    panel3.add(getPerformanceBtn, gbc3);
 
-    panel3.add(goBackButton);
+    gbc3.gridx = 1;
+    panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
   }
@@ -690,6 +691,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void showPerformanceGraph(Report report) {
     cl.show(mainPanel, "panel 4");
     panel4.removeAll();
+    resetGbc4();
 
     Map<LocalDate, Performance> dateWisePerformance = report.getPerformanceOnEachDate();
     String scale = report.getScale();
