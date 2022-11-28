@@ -33,11 +33,17 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
 
   @Override
   protected LocalDate getDate(String d) {
+    if (d.equals("")) {
+      return LocalDate.now();
+    }
     return LocalDate.parse(d);
   }
 
   @Override
   protected double getCommissionFee(String commission) {
+    if (commission.equals("")) {
+      commission = "0";
+    }
     return Double.parseDouble(commission);
   }
 
@@ -182,7 +188,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
 
   @Override
   protected void saveDcaIfAllowed(String portfolioName, String strategyName, String amt, String f, String t,
-                         String interval, String commission) {
+                                  String interval, String commission) {
     try {
       Portfolio portfolio;
       if (allPortfolios.contains(portfolioName)) {

@@ -22,9 +22,7 @@ import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
-import models.TimeLine;
 import models.api.ShareApi;
-import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import models.portfolio.Report;
 import models.portfolio.StockPortfolioFlexible;
@@ -159,6 +157,12 @@ abstract class FeaturesImpl implements Features {
 
   @Override
   public void savePortfolio(String portfolioName) {
+    Portfolio portfolio;
+    if (allPortfolios.contains(portfolioName)) {
+      portfolio = findPortfolio(portfolioName);
+    } else {
+      portfolio = this.portfolio;
+    }
     boolean saved;
     saved = portfolio.savePortfolio();
     if (saved) {
