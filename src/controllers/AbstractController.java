@@ -351,9 +351,9 @@ abstract class AbstractController implements SpecificController {
       for (String ticker : portfolioContent.keySet()) {
         Log log = portfolioContent.get(ticker);
         Set<Details> detailsSet = log.getDetailsSet();
-        int quantity = 0;
+        double quantity = 0.0;
         for (Details details : detailsSet) {
-          quantity += details.getQuantity();
+          quantity = details.getQuantity();
         }
 
         composition
@@ -377,17 +377,16 @@ abstract class AbstractController implements SpecificController {
       composition.append("\nshare\t\tpercentage");
 
       Map<String, Double> shareQuantity = new HashMap<>();
-      long totalShare = 0;
+      double totalShare = 0.0;
       for (String ticker : portfolioContent.keySet()) {
         Log log = portfolioContent.get(ticker);
         Set<Details> detailsSet = log.getDetailsSet();
-        double tickerQuantity = 0;
 
+        double tickerQuantity = 0.0;
         for (Details details : detailsSet) {
-          double n = details.getQuantity();
-          totalShare += n;
-          tickerQuantity += n;
+          tickerQuantity = details.getQuantity();
         }
+        totalShare += tickerQuantity;
         shareQuantity.put(ticker, tickerQuantity);
       }
 

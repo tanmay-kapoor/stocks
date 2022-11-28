@@ -215,7 +215,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public Map<String, Log> getComposition() {
-    return new HashMap<>(stocks);
+    return getComposition(LocalDate.now());
   }
 
   @Override
@@ -230,12 +230,14 @@ abstract class AbstractPortfolio implements Portfolio {
     for (String stock : stocks.keySet()) {
       Log log = stocks.get(stock);
       Set<Details> d = new TreeSet<>(Comparator.comparing(Details::getPurchaseDate));
+      Details latest = null;
       for (Details details : log.getDetailsSet()) {
         if (details.getPurchaseDate().compareTo(date) <= 0) {
-          d.add(details);
+          latest = details;
         }
       }
-      if (d.size() > 0) {
+      if(latest != null) {
+        d.add(latest);
         Log logCopy = new Log(d, log.getLastSoldDate());
         filteredStocks.put(stock, logCopy);
       }
