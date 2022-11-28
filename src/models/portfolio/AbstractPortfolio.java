@@ -219,7 +219,7 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public Map<String, Log> getComposition() {
-    return new HashMap<>(stocks);
+    return getComposition(LocalDate.now());
   }
 
   @Override
@@ -240,7 +240,7 @@ abstract class AbstractPortfolio implements Portfolio {
           latest = details;
         }
       }
-      if(latest != null) {
+      if (latest != null) {
         d.add(latest);
         Log logCopy = new Log(d, log.getLastSoldDate());
         filteredStocks.put(stock, logCopy);
