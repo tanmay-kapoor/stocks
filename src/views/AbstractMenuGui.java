@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -388,6 +389,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     getAllPortfolios();
 
+    Map<String, Double> stockWeightage = new HashMap<>();
+
     panel3.add(new JLabel("Enter DCA strategy name"));
     JTextField strategy = new JTextField("");
     panel3.add(strategy);
@@ -412,8 +415,25 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JTextField commission = new JTextField(10);
     panel3.add(commission);
 
-    JButton addShareWeightageBtn = new JButton("Choose share weightage");
+    JTextField tickerChosen = new JTextField(10);
+    JTextField weightage = new JTextField(10);
+    JButton addBtn = new JButton("Add to strategy");
+    addBtn.addActionListener(evt -> {
+      //might throw error
+      features.addTickerToStrategy(tickerChosen.getText(), weightage.getText());
+      stockWeightage.put(tickerChosen.getText(), Double.parseDouble(weightage.getText()));
 
+      if(features.getWeightageLeft() > 0) {
+        addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
+      } else {
+        System.out.println(portfolioName);
+        features.saveDca(portfolioName, strategy.getText(), amount.getText(), fromDate.getText(),
+                toDate.getText(), interval.getText(), commission.getText());
+        features.savePortfolio(portfolioName);
+      }
+    });
+
+    JButton addShareWeightageBtn = new JButton("Choose share weightage");
     addShareWeightageBtn.addActionListener(evt -> {
       if (strategy.getText() == "" || fromDate.getText() == ""
             || interval.getText() == "" || amount.getText() == "" || commission.getText() == "") {
@@ -422,9 +442,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       }
 
       cl.show(mainPanel, "panel 4");
-      displayShareWeightage(strategy.getText(), LocalDate.parse(fromDate.getText()),
-              LocalDate.parse(toDate.getText()), Integer.parseInt(interval.getText()),
-              Double.parseDouble(amount.getText()), Double.parseDouble(commission.getText()));
+      addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
     });
     panel3.add(addShareWeightageBtn);
 
@@ -434,28 +452,23 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  private void displayShareWeightage(String strategy, LocalDate from, LocalDate to,
-                                     int interval, double amount, double commission) {
+  private void addTickerPanel(Map<String, Double> stockWeightage, JTextField tickerChosen,
+                              JTextField weightage, JButton addBtn) {
     panel4.removeAll();
-    int x =100;
-    do {
-      panel4.add(new JLabel("Add ticker: "));
-      JTextField ticker = new JTextField(10);
-      panel4.add(ticker);
 
-      panel4.add(new JLabel("Choose Weightage: "));
-      JTextField weightage = new JTextField(10);
-      panel4.add(weightage);
-
-      JButton addBtn = new JButton("Add");
-      panel4.add(addBtn);
-      addBtn.addActionListener(evt -> {
-        features.addTickerToStrategy(ticker.getText(), weightage.getText());
-      });
+    for(String ticker: stockWeightage.keySet()) {
+      panel4.add(new JLabel(ticker));
+      panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"));
     }
-//    while (features.WeightLeft > 0);
-    while (x < 100);
 
+    panel4.add(new JLabel("Add ticker: "));
+    panel4.add(tickerChosen);
+
+    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft() + ") left"));
+    panel4.add(weightage);
+
+    panel4.add(addBtn);
+    panel4.add(backToP3Btn);
     panel4.revalidate();
   }
 
