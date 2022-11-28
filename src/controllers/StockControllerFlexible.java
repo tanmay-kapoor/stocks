@@ -37,45 +37,6 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   @Override
-  protected void getWhatToDoOnStart() {
-    char choice;
-    do {
-      menu.getMainMenuChoice();
-      choice = getCharVal();
-
-      switch (choice) {
-        case '1':
-          handleCreatePortfolioChoice();
-          break;
-
-        case '2':
-          filterBasedOnFunction(Function.Composition);
-          break;
-
-        case '3':
-          filterBasedOnFunction(Function.GetValue);
-          break;
-
-        case '4':
-          filterBasedOnFunction(Function.BuySell);
-          break;
-
-        case '5':
-          filterBasedOnFunction(Function.SeePerformance);
-          break;
-
-        case '6':
-          filterBasedOnFunction(Function.CostBasis);
-          break;
-
-        default:
-          break;
-      }
-    }
-    while (choice >= '1' && choice <= getLastOption());
-  }
-
-  @Override
   protected Portfolio createPortfolio(String portfolioName) {
     return new StockPortfolioFlexible(portfolioName, path, api);
   }
