@@ -94,11 +94,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.next(mainPanel);
   }
 
-  private void refresh() {
-    this.revalidate();
-    this.repaint();
-  }
-
   @Override
   public void getPortfolioName() {
     cl.show(mainPanel, "panel 3");
