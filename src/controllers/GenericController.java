@@ -3,8 +3,6 @@ package controllers;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-
 import models.api.ShareApi;
 import views.MainMenu;
 import views.MainMenuImpl;
@@ -54,7 +52,8 @@ public class GenericController implements Controller {
 
       switch (ch) {
         case '1':
-          Features controller = new FeaturesImpl(this.api, this.commonPath);
+          Features controller = new StockControllerFlexibleGui(this.api,
+                  this.commonPath + "stocks/flexible/");
           Menu menuGui = new MenuGuiFlexible(controller, "Choose portfolio type");
           controller.setView(menuGui);
           break;
