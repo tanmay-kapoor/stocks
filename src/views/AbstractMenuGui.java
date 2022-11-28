@@ -423,7 +423,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       features.addTickerToStrategy(tickerChosen.getText(), weightage.getText());
       stockWeightage.put(tickerChosen.getText(), Double.parseDouble(weightage.getText()));
 
-      if(features.getWeightageLeft() > 0) {
+      if (features.getWeightageLeft() > 0) {
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
         System.out.println(portfolioName);
@@ -435,8 +435,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton addShareWeightageBtn = new JButton("Choose share weightage");
     addShareWeightageBtn.addActionListener(evt -> {
-      if (strategy.getText() == "" || fromDate.getText() == ""
-            || interval.getText() == "" || amount.getText() == "" || commission.getText() == "") {
+      if (strategy.getText().equals("") || fromDate.getText().equals("")
+              || interval.getText().equals("") || amount.getText().equals("")
+              || commission.getText().equals("")) {
         printMessage("Please Fill all the necessary fields.");
         // IDK WHAT TO DO HERE
       }
@@ -456,7 +457,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
                               JTextField weightage, JButton addBtn) {
     panel4.removeAll();
 
-    for(String ticker: stockWeightage.keySet()) {
+    for (String ticker : stockWeightage.keySet()) {
       panel4.add(new JLabel(ticker));
       panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"));
     }
@@ -696,8 +697,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private JPanel getPanel2() {
     JPanel panel2 = new JPanel();
-    panel2.setLayout(new GridLayout(0,2,10,10));
-    panel2.setBorder( new EmptyBorder(7,10,7,10) );
+    panel2.setLayout(new GridLayout(0, 2, 10, 10));
+    panel2.setBorder(new EmptyBorder(7, 10, 7, 10));
 
     JButton createPortfolioButton = new JButton("Create portfolio");
     panel2.add(createPortfolioButton);
