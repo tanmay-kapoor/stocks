@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
@@ -380,6 +381,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
 
   protected void getDcaOptions() {
+    features.resetTotalWeightage();
+
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
 
@@ -433,30 +436,29 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private void displayShareWeightage(String strategy, LocalDate from, LocalDate to,
                                      int interval, double amount, double commission) {
-    double weightLeft = 100;
     panel4.removeAll();
-//    features.resetWeightage()
-
+    int x =100;
     do {
-      panel4.add(new JLabel("Weight left: "));
-      panel4.add(new JLabel(weightLeft + "%"));
-
       panel4.add(new JLabel("Add ticker: "));
       JTextField ticker = new JTextField(10);
       panel4.add(ticker);
 
+      panel4.add(new JLabel("Choose Weightage: "));
+      JTextField weightage = new JTextField(10);
+      panel4.add(weightage);
+
       JButton addBtn = new JButton("Add");
       panel4.add(addBtn);
       addBtn.addActionListener(evt -> {
-//        weightLeft = weightLeft - 30;
-//        features.dca();
+        features.addTickerToStrategy(ticker.getText(), weightage.getText());
       });
-      weightLeft -= 30;
     }
-    while (weightLeft > 0);
+//    while (features.WeightLeft > 0);
+    while (x < 100);
 
     panel4.revalidate();
   }
+
 
   @Override
   public void getBuySellChoice() {
@@ -640,9 +642,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private JPanel getMainPanel() {
     JPanel mainPanel = new JPanel(new CardLayout());
 
-    // panel 1 stores choice between flexible and inflexible menu
     JPanel panel1 = getPanel1();
-    //panel 2 gives portfolio specific features options in the menu
     JPanel panel2 = getPanel2();
     this.panel3 = new JPanel(new GridLayout(0, 2, 10, 10));
     this.panel4 = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -657,29 +657,34 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private JPanel getPanel1() {
     JPanel panel1 = new JPanel();
-    panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
+//    panel1.setLayout(new GridLayout(0, 1, 20, 20));
+//    panel1.setBorder(new EmptyBorder(100,200,100,200));
+    panel1.setLayout(new BorderLayout());
 
     JButton flexibleButton = new JButton("Flexible");
-    panel1.add(flexibleButton);
+//    panel1.add(flexibleButton);
+    panel1.add(flexibleButton, BorderLayout.NORTH);
 
     JButton inflexibleButton = new JButton("Inflexible");
-    panel1.add(inflexibleButton);
+//    panel1.add(inflexibleButton);
+    panel1.add(inflexibleButton, BorderLayout.EAST);
 
     JButton backToTextUi = new JButton("Back To Text UI");
-    panel1.add(backToTextUi);
+//    panel1.add(backToTextUi);
     backToTextUi.addActionListener(e -> this.dispose());
 
-    panel1.add(exitButton);
+//    panel1.add(exitButton);
+    panel1.add(exitButton, BorderLayout.SOUTH);
 
     flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
-//    inflexibleButton.addActionListener(evt -> cl.show(mainPanel, "2"));
 
     return panel1;
   }
 
   private JPanel getPanel2() {
     JPanel panel2 = new JPanel();
-    panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
+    panel2.setLayout(new GridLayout(0,2,10,10));
+    panel2.setBorder( new EmptyBorder(7,10,7,10) );
 
     JButton createPortfolioButton = new JButton("Create portfolio");
     panel2.add(createPortfolioButton);
