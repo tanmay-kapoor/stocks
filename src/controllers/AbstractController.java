@@ -41,8 +41,6 @@ abstract class AbstractController implements SpecificController {
   protected final List<String> allPortfolios;
   protected final Map<String, Portfolio> allPortfolioObjects;
 
-  protected abstract void getWhatToDoOnStart();
-
   protected abstract Portfolio createPortfolio(String portfolioName);
 
   protected abstract Portfolio createPortfolio(String portfolioName,
@@ -102,7 +100,41 @@ abstract class AbstractController implements SpecificController {
 
   @Override
   public void start() {
-    getWhatToDoOnStart();
+    char choice;
+    do {
+      menu.getMainMenuChoice();
+      choice = getCharVal();
+
+      switch (choice) {
+        case '1':
+          handleCreatePortfolioChoice();
+          break;
+
+        case '2':
+          filterBasedOnFunction(Function.Composition);
+          break;
+
+        case '3':
+          filterBasedOnFunction(Function.GetValue);
+          break;
+
+        case '4':
+          filterBasedOnFunction(Function.BuySell);
+          break;
+
+        case '5':
+          filterBasedOnFunction(Function.SeePerformance);
+          break;
+
+        case '6':
+          filterBasedOnFunction(Function.CostBasis);
+          break;
+
+        default:
+          break;
+      }
+    }
+    while (choice >= '1' && choice <= getLastOption());
   }
 
   protected void handleCreatePortfolioChoice() {

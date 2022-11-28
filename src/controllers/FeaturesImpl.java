@@ -85,7 +85,7 @@ public class FeaturesImpl implements Features {
   @Override
   public void handleFlexibleSelected() {
     this.path = this.commonPath + "stocks/flexible/";
-    new StockControllerFlexibleGui(menu, api, path).start();
+    menu.getMainMenuChoice();
   }
 
   @Override

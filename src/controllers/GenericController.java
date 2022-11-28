@@ -3,6 +3,8 @@ package controllers;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+
 import models.api.ShareApi;
 import views.MainMenu;
 import views.MainMenuImpl;
