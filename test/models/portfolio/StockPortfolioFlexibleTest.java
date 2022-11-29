@@ -44,11 +44,27 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     quantity = 115;
     purchaseDate = LocalDate.parse("2014-09-09");
-    check2(ticker, quantity, purchaseDate, commission, detailsSet, expected);
+    Details details = new Details(quantity, purchaseDate);
+    portfolio.buy(ticker, details, commission);
+    Map<String, Log> composition = portfolio.getComposition();
+    details.setQuantity(quantity + 22);
+    details.setPurchaseDate(LocalDate.parse("2022-10-10"));
+    detailsSet = newTreeSet();
+    detailsSet.add(details);
+    expected.put(ticker.toUpperCase(), newLog(detailsSet));
+    checkHashMapEquality(expected, composition);
 
     quantity = 10;
     purchaseDate = LocalDate.parse("2021-12-10");
-    check2(ticker, quantity, purchaseDate, commission, detailsSet, expected);
+    details = new Details(quantity, purchaseDate);
+    portfolio.buy(ticker, details, commission);
+    composition = portfolio.getComposition();
+    details.setQuantity(quantity + 10);
+    details.setPurchaseDate(LocalDate.parse("2022-10-10"));
+    detailsSet = newTreeSet();
+    detailsSet.add(details);
+    expected.put(ticker.toUpperCase(), newLog(detailsSet));
+    checkHashMapEquality(expected, composition);
 
     ticker = "gOoG";
     quantity = 254;
@@ -64,7 +80,15 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     quantity = 13;
     purchaseDate = LocalDate.parse("2017-10-07");
-    check2(ticker, quantity, purchaseDate, commission, detailsSet, expected);
+    details = new Details(quantity, purchaseDate);
+    portfolio.buy(ticker, details, commission);
+    composition = portfolio.getComposition();
+    details.setQuantity(quantity + 22);
+    details.setPurchaseDate(LocalDate.parse("2021-10-07"));
+    detailsSet = newTreeSet();
+    detailsSet.add(details);
+    expected.put(ticker.toUpperCase(), newLog(detailsSet));
+    checkHashMapEquality(expected, composition);
   }
 
   @Test
@@ -121,6 +145,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     composition = portfolio.getComposition(LocalDate.now());
     Log log = expected.get("META");
+    log.getDetailsSet().clear();
     log.getDetailsSet().add(new Details(44, LocalDate.parse("2022-10-10")));
     expected.put("META", log);
     checkHashMapEquality(expected, composition);
@@ -347,5 +372,10 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     detailsSet.add(new Details(50, now));
     expected.put("META", new Log(detailsSet, now));
     checkHashMapEquality(expected, test);
+  }
+
+  @Test
+  public void testDca() {
+
   }
 }
