@@ -44,8 +44,11 @@ public class MenuGuiFlexible extends AbstractMenuGui {
 
 
   protected void displaySellPanel() {
-    panel4.removeAll();
+    gbc4.gridwidth = 2;
+    panel4.add(new JLabel("Fill details to sell stock from " + portfolioName + " portfolio"),
+            gbc4);
 
+    gbc4.gridwidth = 1;
     getTickerSymbol();
     getQuantity();
     getDateChoice();

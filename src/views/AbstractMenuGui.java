@@ -147,8 +147,20 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     String msg = String.format("Successfully %s %s shares of %s on %s", txn, details.getQuantity(),
             ticker, details.getPurchaseDate());
     successMessage = new JLabel(msg);
-    panel4.add(successMessage);
+    gbc4Newline();
+    gbc4.gridwidth = 2;
+    panel4.add(successMessage, gbc4);
+
+    resetFields();
+
     panel4.revalidate();
+  }
+
+  private void resetFields() {
+    ticker.setText("");
+    quantity.setText("");
+    dateTxtFiled.setText("");
+    commission.setText("");
   }
 
   @Override
@@ -556,7 +568,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   private void displayBuyPanel() {
+    gbc4.gridwidth = 2;
+    panel4.add(new JLabel("Fill details to buy stock in " + portfolioName + " portfolio"),
+            gbc4);
 
+    gbc4.gridwidth = 1;
     getTickerSymbol();
     getQuantity();
     getDateChoice();
@@ -756,10 +772,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel1.setLayout(new GridLayout(0, 1, 20, 20));
     panel1.setBorder(new EmptyBorder(100,200,100,200));
 
-    JButton flexibleButton = new JButton("Flexible");
+    JButton flexibleButton = new JButton("Flexible Portfolio");
     panel1.add(flexibleButton);
 
-    JButton inflexibleButton = new JButton("Inflexible");
+    JButton inflexibleButton = new JButton("Inflexible Portfolio");
     panel1.add(inflexibleButton);
 
     JButton backToTextUi = new JButton("Back To Text UI");
@@ -840,5 +856,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbc4.fill = GridBagConstraints.HORIZONTAL;
     gbc4.ipadx = 25;
     gbc4.ipady = 20;
+    gbc4Newline();
   }
 }
