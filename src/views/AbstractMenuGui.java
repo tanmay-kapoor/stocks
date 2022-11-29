@@ -1,5 +1,7 @@
 package views;
 
+import org.jfree.chart.ChartPanel;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -18,7 +20,6 @@ import javax.swing.filechooser.FileSystemView;
 
 import controllers.Features;
 import models.Details;
-import models.portfolio.Performance;
 import models.portfolio.Report;
 import models.portfolio.Txn;
 
@@ -74,7 +75,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
 
     backToP3Btn = new JButton("back");
-    backToP3Btn.addActionListener(evt -> cl.show(mainPanel, "panel 3"));
+    backToP3Btn.addActionListener(evt -> {
+//      setSize(1000, 600);
+      cl.show(mainPanel, "panel 3");
+    });
 
     exitButton = new JButton("Exit");
     exitButton.addActionListener(evt -> features.exitProgram());
@@ -632,18 +636,33 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(toDate, gbc3);
 
     gbcNewline();
-    JButton getPerformanceBtn = new JButton("Get Performance");
-    getPerformanceBtn.addActionListener(evt -> {
+    JButton getBarChartBtn = new JButton("Get Bar Chart");
+    getBarChartBtn.addActionListener(evt -> {
       Report performanceReport = features.getPortfolioPerformance(portfolioName,
               fromDate.getText(), toDate.getText());
       if (performanceReport != null) {
-        showPerformanceGraph(performanceReport);
+        showPerformanceGraph(performanceReport, ChartType.BAR_CHART);
       }
     });
-    panel3.add(getPerformanceBtn, gbc3);
+    panel3.add(getBarChartBtn, gbc3);
 
+    JButton getLineChartBtn = new JButton("Get Line Chart");
+    getLineChartBtn.addActionListener(evt -> {
+      Report performanceReport = features.getPortfolioPerformance(portfolioName,
+              fromDate.getText(), toDate.getText());
+      if (performanceReport != null) {
+        showPerformanceGraph(performanceReport, ChartType.LINE_CHART);
+      }
+    });
     gbc3.gridx = 1;
+    panel3.add(getLineChartBtn, gbc3);
+
+    gbcNewline();
     panel3.add(goBackButton, gbc3);
+
+    gbcNewline();
+    gbc3.gridwidth = 2;
+    panel3.add(new JLabel("Generating performance report may take some time. Please wait."), gbc3);
 
     panel3.revalidate();
   }
@@ -722,33 +741,27 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton createPortfolioBtn = new JButton("Create Portfolio");
     panel3.add(createPortfolioBtn);
-//    createPortfolioBtn.addActionListener(evt -> features.gePortfolioFromCsv);
 
     panel3.revalidate();
   }
 
-  private void showPerformanceGraph(Report report) {
+  private void showPerformanceGraph(Report report, ChartType chartType) {
+    Chart chart = new Chart(report, portfolioName);
+    ChartPanel cp;
+
+    if(chartType == ChartType.BAR_CHART) {
+      cp = chart.getBartChart();
+    }
+    else {
+      cp = chart.getLineChart();
+    }
+
     goToPanel4();
+    gbc4.weightx = 1;
+    panel4.add(cp, gbc4);
 
-    BarChart barChart = new BarChart(report, portfolioName);
-    panel4.add(barChart.getChart());
-
-//    LineChart lineChart = new LineChart(report, portfolioName);
-//    panel4.add(lineChart.getLineChart());
-
-
-//    Map<LocalDate, Performance> dateWisePerformance = report.getPerformanceOnEachDate();
-
-//    for (LocalDate date : dateWisePerformance.keySet()) {
-//      panel4.add(new JLabel(date.toString()));
-//
-//      String precisionAdjusted = dateWisePerformance.get(date).getPrecisionAdjusted();
-//      int stars = dateWisePerformance.get(date).getStars();
-//
-//      panel4.add(new JLabel(precisionAdjusted));
-//      panel4.add(new JLabel("" + stars));
-//    }
-
+    gbc4Newline();
+    panel4.add(backToP3Btn, gbc4);
 
 //    panel4.add(goBackButton);
     panel4.revalidate();
