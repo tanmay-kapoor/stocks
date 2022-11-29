@@ -522,20 +522,19 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getBuySellChoice() {
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
-
-    boolean res = getAllPortfolios();
-    if(!res) {
-      return;
-    }
+    if (showP3()) return;
 
     JButton buyOptionBtn = new JButton("Buy Shares");
     JButton sellOptionBtn = new JButton("Sell Shares");
 
-    panel3.add(buyOptionBtn);
-    panel3.add(sellOptionBtn);
-    panel3.add(goBackButton);
+    gbcNewline();
+    panel3.add(buyOptionBtn, gbc3);
+    gbc3.gridx = 1;
+    panel3.add(sellOptionBtn, gbc3);
+
+    gbcNewline();
+    gbc3.gridwidth = 2;
+    panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
 
