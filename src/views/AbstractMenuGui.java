@@ -693,8 +693,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel4.removeAll();
     resetGbc4();
 
-    BarChart barChart = new BarChart(report);
+    BarChart barChart = new BarChart(report, portfolioName);
     panel4.add(barChart.getChart());
+
+//    LineChart lineChart = new LineChart(report, portfolioName);
+//    panel4.add(lineChart.getLineChart());
 
 
 //    Map<LocalDate, Performance> dateWisePerformance = report.getPerformanceOnEachDate();
@@ -710,8 +713,14 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 //    }
 
 
-    panel4.add(goBackButton);
+//    panel4.add(goBackButton);
     panel4.revalidate();
+  }
+
+  private void goToPanel4() {
+    cl.show(mainPanel, "panel 4");
+    panel4.removeAll();
+    resetGbc4();
   }
 
   private void setDateToNowIfEmpty(JTextField dateField) {
