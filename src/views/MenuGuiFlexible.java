@@ -51,10 +51,11 @@ public class MenuGuiFlexible extends AbstractMenuGui {
     getDateChoice();
     getCommissionFee();
 
+    gbc4Newline();
     JButton addBtn = new JButton("Sell");
-    panel4.add(addBtn);
-
-    panel4.add(backToP3Btn);
+    panel4.add(addBtn, gbc4);
+    gbc4.gridx = 1;
+    panel4.add(backToP3Btn, gbc4);
 
     addBtn.addActionListener(e ->
             features.sellStock(

@@ -48,7 +48,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected GridBagConstraints gbc4;
 
   protected abstract void displaySellPanel();
-
   protected abstract void getRestIfApplicable(JPanel panel2);
 
   protected AbstractMenuGui(Features features, String caption) {
@@ -177,7 +176,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton addShareBtn = new JButton("Add share");
     addShareBtn.setPreferredSize(new Dimension(40, 40));
     addShareBtn.addActionListener(evt -> {
-      cl.show(mainPanel, "panel 4");
+      goToPanel4();
       displayBuyPanel();
     });
     panel3.add(addShareBtn);
@@ -199,18 +198,21 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getTickerSymbol() {
-
-    panel4.add(new JLabel("Ticker symbol : "));
+    gbc4Newline();
+    panel4.add(new JLabel("Ticker symbol : "), gbc4);
     this.ticker = new JTextField(10);
-    panel4.add(ticker);
+    gbc4.gridx = 1;
+    panel4.add(ticker, gbc4);
   }
 
   @Override
   public void getQuantity() {
-    panel4.add(new JLabel("Number of shares : "));
+    gbc4Newline();
+    panel4.add(new JLabel("Number of shares : "), gbc4);
 
     this.quantity = new JTextField(10);
-    panel4.add(quantity);
+    gbc4.gridx = 1;
+    panel4.add(quantity, gbc4);
     quantity.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
         quantity.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
@@ -221,18 +223,22 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getDateChoice() {
-    panel4.add(new JLabel("Date (YYYY-MM-DD) : "));
+    gbc4Newline();
+    panel4.add(new JLabel("Date (YYYY-MM-DD) : "), gbc4);
 
     this.dateTxtFiled = new JTextField(10);
-    panel4.add(dateTxtFiled);
+    gbc4.gridx = 1;
+    panel4.add(dateTxtFiled, gbc4);
   }
 
   @Override
   public void getCommissionFee() {
-    panel4.add(new JLabel("Commission Fee : "));
+    gbc4Newline();
+    panel4.add(new JLabel("Commission Fee : "), gbc4);
 
     commission = new JTextField(10);
-    panel4.add(commission);
+    gbc4.gridx = 1;
+    panel4.add(commission, gbc4);
     commission.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
         commission.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
@@ -456,7 +462,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       stockWeightage.put(tickerChosen.getText(), Double.parseDouble(weightage.getText()));
 
       if (features.getWeightageLeft() > 0) {
-        cl.show(mainPanel, "panel 4");
+        goToPanel4();
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
         System.out.println(portfolioName);
@@ -475,7 +481,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         // IDK WHAT TO DO HERE
       }
 
-      cl.show(mainPanel, "panel 4");
+      goToPanel4();
       addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
     });
     panel3.add(addShareWeightageBtn, gbc3);
@@ -489,11 +495,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   private void addTickerPanel(Map<String, Double> stockWeightage, JTextField tickerChosen,
                               JTextField weightage, JButton addBtn) {
-    panel4.removeAll();
     tickerChosen.setText("");
     weightage.setText("");
-    resetGbc4();
-    panel4.setLayout(new GridBagLayout());
+
+    goToPanel4();
 
     for (String ticker : stockWeightage.keySet()) {
       gbc4Newline();
@@ -539,29 +544,29 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
 
     buyOptionBtn.addActionListener(evt -> {
-      cl.show(mainPanel, "panel 4");
+      goToPanel4();
       displayBuyPanel();
     });
 
     sellOptionBtn.addActionListener(evt -> {
-      cl.show(mainPanel, "panel 4");
+      goToPanel4();
       displaySellPanel();
     });
 
   }
 
   private void displayBuyPanel() {
-    panel4.removeAll();
 
     getTickerSymbol();
     getQuantity();
     getDateChoice();
     getCommissionFee();
 
+    gbc4Newline();
     JButton addBtn = new JButton("Buy");
-    panel4.add(addBtn);
-
-    panel4.add(backToP3Btn);
+    panel4.add(addBtn, gbc4);
+    gbc4.gridx = 1;
+    panel4.add(backToP3Btn, gbc4);
 
     addBtn.addActionListener(e ->
             features.buyStock(
@@ -688,9 +693,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   private void showPerformanceGraph(Report report) {
-    cl.show(mainPanel, "panel 4");
-    panel4.removeAll();
-    resetGbc4();
+    goToPanel4();
 
     BarChart barChart = new BarChart(report, portfolioName);
     panel4.add(barChart.getChart());
@@ -719,6 +722,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void goToPanel4() {
     cl.show(mainPanel, "panel 4");
     panel4.removeAll();
+    panel4.setLayout(new GridBagLayout());
     resetGbc4();
   }
 
