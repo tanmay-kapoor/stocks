@@ -23,6 +23,7 @@ import models.Details;
 import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Composition;
+import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import models.portfolio.Txn;
 import views.Menu;
@@ -45,13 +46,16 @@ abstract class AbstractController implements SpecificController {
 
   protected abstract Portfolio createPortfolio(String portfolioName,
                                                Map<String, Log> stocks,
-                                               Map<LocalDate, Double> costBasisHistory);
+                                               Map<LocalDate, Double> costBasisHistory,
+                                               Map<String, Dca> dcaMap);
 
   protected abstract Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
           throws FileNotFoundException;
 
   protected abstract Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
           throws FileNotFoundException;
+
+  protected abstract Map<String, Dca> readDcaFromCsv(File dcaFile) throws FileNotFoundException;
 
   protected abstract LocalDate getPurchaseDate();
 
@@ -261,10 +265,12 @@ abstract class AbstractController implements SpecificController {
         try {
           String logPath = this.path + "logs/";
           String costBasisPath = this.path + "costbasis/";
+          String dcaFilePath = this.path + "dca/";
           portfolio = createPortfolioFromCsv(name,
                   new File(String.format("%s%s.csv", this.path, name)),
                   new File(String.format("%s%s.csv", logPath, name)),
-                  new File(String.format("%s%s.csv", costBasisPath, name)));
+                  new File(String.format("%s%s.csv", costBasisPath, name)),
+                  new File(String.format("%s%s.csv", dcaFilePath, name)));
           allPortfolioObjects.put(name, portfolio);
         } catch (FileNotFoundException e) {
           throw new RuntimeException(e);
@@ -478,17 +484,20 @@ abstract class AbstractController implements SpecificController {
     //creating costBasis file
     File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
 
-    return createPortfolioFromCsv(pName, file, logFile, costBasisFile);
+    File dcaFile = createCsvFile(pName, FileType.DcaFile);
+
+    return createPortfolioFromCsv(pName, file, logFile, costBasisFile, dcaFile);
   }
 
   private Portfolio createPortfolioFromCsv(String pName, File file, File logFile,
-                                           File costBasisFile) throws FileNotFoundException {
+                                           File costBasisFile, File dcaFile) throws FileNotFoundException {
     //implement try catch here
     Map<String, LocalDate> lastSoldDateList = readLastSoldDateFromCsv(logFile);
     Map<String, Log> stocks = readStocksFromCsv(file, lastSoldDateList);
     Map<LocalDate, Double> costBasisHistory = readStockBasisHistoryFromCsv(costBasisFile);
+    Map<String, Dca> dcaMap = readDcaFromCsv(dcaFile);
 
-    return createPortfolio(pName, stocks, costBasisHistory);
+    return createPortfolio(pName, stocks, costBasisHistory, dcaMap);
   }
 
 
@@ -526,14 +535,24 @@ abstract class AbstractController implements SpecificController {
   }
 
   private File createCsvFile(String name, FileType type) throws IOException {
-    String subFolder = type == FileType.CostBasisFile ? "costbasis/" : "logs/";
+    String subFolder = "";
+    String header = "";
+
+    if(type == FileType.LogFile) {
+      subFolder = "logs/";
+      header = "Date, lastSellDate\n";
+    } else if(type == FileType.DcaFile) {
+      subFolder = "dca/";
+      header = "strategy name, investment amount, start date, end date, interval,commission, last purchase date";
+    } else {
+      subFolder = "costbasis/";
+      header = "Date, CostBasis\n";
+    }
     String creationPath = this.path + subFolder;
     Files.createDirectories(Paths.get(creationPath));
     String fileName = String.format(creationPath + "%s.csv", name);
     FileWriter csvWriter = new FileWriter(fileName);
-    csvWriter.append(
-            type == FileType.CostBasisFile ? "Date, CostBasis\n" : "Date, lastSellDate\n"
-    );
+    csvWriter.append(header);
     csvWriter.close();
 
     String createdFilePath = creationPath + name + ".csv";

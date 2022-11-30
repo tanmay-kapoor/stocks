@@ -36,8 +36,9 @@ public class StockPortfolioInflexible extends AbstractPortfolio {
    * @param costBasisHistory cost basis for the portfolio.
    */
   public StockPortfolioInflexible(String portfolioName, Map<String, Log> stocks, String path,
-                                  ShareApi api, Map<LocalDate, Double> costBasisHistory) {
-    super(portfolioName, stocks, path, api, costBasisHistory);
+                                  ShareApi api, Map<LocalDate, Double> costBasisHistory,
+                                  Map<String, Dca> dcaMap) {
+    super(portfolioName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {

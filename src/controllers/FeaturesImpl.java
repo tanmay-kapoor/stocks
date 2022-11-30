@@ -22,7 +22,9 @@ import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
+import models.TimeLine;
 import models.api.ShareApi;
+import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import models.portfolio.Report;
 import models.portfolio.StockPortfolioFlexible;
@@ -278,10 +280,12 @@ abstract class FeaturesImpl implements Features {
       try {
         String logPath = this.path + "logs/";
         String costBasisPath = this.path + "costbasis/";
+        String dcaFilePath = this.path + "dca/";
         portfolio = createPortfolioFromCsv(name,
                 new File(String.format("%s%s.csv", this.path, name)),
                 new File(String.format("%s%s.csv", logPath, name)),
-                new File(String.format("%s%s.csv", costBasisPath, name)));
+                new File(String.format("%s%s.csv", costBasisPath, name)),
+                new File(String.format("%s%s.csv", dcaFilePath, name)));
         allPortfolioObjects.put(name, portfolio);
       } catch (FileNotFoundException e) {
         throw new RuntimeException(e);
@@ -291,13 +295,15 @@ abstract class FeaturesImpl implements Features {
   }
 
   private Portfolio createPortfolioFromCsv(String pName, File file, File logFile,
-                                           File costBasisFile) throws FileNotFoundException {
+                                           File costBasisFile, File dcaFile)
+          throws FileNotFoundException {
     //implement try catch here
     Map<String, LocalDate> lastSoldDateList = readLastSoldDateFromCsv(logFile);
     Map<String, Log> stocks = readStocksFromCsv(file, lastSoldDateList);
     Map<LocalDate, Double> costBasisHistory = readStockBasisHistoryFromCsv(costBasisFile);
+    Map<String, Dca> dcaMap = readDcaFromCsv(dcaFile);
 
-    return new StockPortfolioFlexible(pName, stocks, path, api, costBasisHistory);
+    return new StockPortfolioFlexible(pName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   private Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
@@ -366,6 +372,37 @@ abstract class FeaturesImpl implements Features {
     return costBasisHistory;
   }
 
+  private Map<String, Dca> readDcaFromCsv(File dcaFile) throws FileNotFoundException {
+    Scanner csvReader = new Scanner(dcaFile);
+    csvReader.nextLine();
+
+    Map<String, Dca> dcaMap= new HashMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+
+      Map<String, Double> stockWeightage = new HashMap<>();
+      TimeLine timeLine;
+      if(Objects.equals(vals[3], "null")) {
+        timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
+      } else {
+        timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
+      }
+
+      dcaMap.put(vals[0], new Dca(
+              Double.parseDouble(vals[1]),
+              stockWeightage,
+              timeLine,
+              Integer.parseInt(vals[4]),
+              Double.parseDouble(vals[5]),
+              LocalDate.parse(vals[6])
+      ));
+    }
+
+    return dcaMap;
+  }
+
+
   @Override
   public void handleCreatePortfolioThroughUpload(String filePath) {
     try {
@@ -398,18 +435,30 @@ abstract class FeaturesImpl implements Features {
     //creating costBasis file
     File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
 
-    return createPortfolioFromCsv(pName, file, logFile, costBasisFile);
+    File dcaFile = createCsvFile(pName, FileType.DcaFile);
+
+    return createPortfolioFromCsv(pName, file, logFile, costBasisFile, dcaFile);
   }
 
   private File createCsvFile(String name, FileType type) throws IOException {
-    String subFolder = type == FileType.CostBasisFile ? "costbasis/" : "logs/";
+    String subFolder = "";
+    String header = "";
+
+    if(type == FileType.LogFile) {
+      subFolder = "logs/";
+      header = "Date, lastSellDate\n";
+    } else if(type == FileType.DcaFile) {
+      subFolder = "dca/";
+      header = "strategy name, investment amount, start date, end date, interval,commission, last purchase date";
+    } else {
+      subFolder = "costbasis/";
+      header = "Date, CostBasis\n";
+    }
     String creationPath = this.path + subFolder;
     Files.createDirectories(Paths.get(creationPath));
     String fileName = String.format(creationPath + "%s.csv", name);
     FileWriter csvWriter = new FileWriter(fileName);
-    csvWriter.append(
-            type == FileType.CostBasisFile ? "Date, CostBasis\n" : "Date, lastSellDate\n"
-    );
+    csvWriter.append(header);
     csvWriter.close();
 
     String createdFilePath = creationPath + name + ".csv";
