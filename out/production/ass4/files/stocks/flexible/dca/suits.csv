@@ -1,0 +1,2 @@
+strategy_name,investment_amount,start_date,end_date,interval,commission,last_purchase_date,stock,1,weightage,1
+testDca,10000.0,2014-01-09,2015-10-10,45,1.0,2015-10-01,TSLA,34.0,QCOM,32.0,V,34.0
