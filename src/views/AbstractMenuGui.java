@@ -161,6 +161,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     String msg = String.format("Successfully %s %s shares of %s on %s", txn, details.getQuantity(),
             ticker, details.getPurchaseDate());
     successMessage = new JLabel(msg);
+
     gbc4Newline();
     gbc4.gridwidth = 2;
     panel4.add(successMessage, gbc4);
@@ -181,7 +182,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void getCreatePortfolioThroughWhichMethod() {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
-    panel3.setLayout(new GridBagLayout());
     resetGbc3();
 
     JButton interfaceButton = new JButton("Create through interface");
@@ -203,18 +203,16 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   @Override
   public void getAddToPortfolioChoice() {
     panel3.remove(enterBtn);
+
     gbcNewline();
     JButton addShareBtn = new JButton("Add share");
-    addShareBtn.addActionListener(evt -> {
-      goToPanel4();
-      displayBuyPanel();
-    });
+    addShareBtn.addActionListener(evt -> displayBuyPanel());
     panel3.add(addShareBtn, gbc3);
 
     gbc3.gridx = 1;
     JButton createStrategyBtn = new JButton("Create DCA strategy");
     createStrategyBtn.addActionListener(evt -> {
-      String chosenName = portfolioName;  //how to avoid this ... ?
+      String chosenName = portfolioName;
       getDcaOptions();
       panel3.remove(0);
       panel3.remove(portfolioListCb);
@@ -282,26 +280,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
                 || key.getKeyCode() == 8 || key.getKeyChar() == '.');
       }
     });
-  }
-
-  @Override
-  public void getInterval() {
-
-  }
-
-  @Override
-  public void getWeightage() {
-
-  }
-
-  @Override
-  public void getStrategyAmount() {
-
-  }
-
-  @Override
-  public void getStrategyName() {
-
   }
 
 
@@ -408,8 +386,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     cl.show(mainPanel, "panel 3");
     panel3.removeAll();
     resetGbc3();
-    panel3.setLayout(new GridBagLayout());
-//    setGbcSize(25,20);
 
     boolean res = getAllPortfolios();
     return !res;
@@ -580,10 +556,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     panel3.revalidate();
 
-    buyOptionBtn.addActionListener(evt -> {
-      goToPanel4();
-      displayBuyPanel();
-    });
+    buyOptionBtn.addActionListener(evt -> displayBuyPanel());
 
     sellOptionBtn.addActionListener(evt -> {
       goToPanel4();
@@ -593,6 +566,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   private void displayBuyPanel() {
+    goToPanel4();
+
     gbc4.gridwidth = 2;
     panel4.add(new JLabel("Fill details to buy stock in " + portfolioName + " portfolio"),
             gbc4);
@@ -783,7 +758,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void goToPanel4() {
     cl.show(mainPanel, "panel 4");
     panel4.removeAll();
-    panel4.setLayout(new GridBagLayout());
     resetGbc4();
   }
 
@@ -801,8 +775,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JPanel panel1 = getPanel1();
     JPanel panel2 = getPanel2();
-    this.panel3 = new JPanel(new GridLayout(0, 2, 10, 10));
-    this.panel4 = new JPanel(new GridLayout(0, 2, 10, 10));
+    this.panel3 = new JPanel(new GridBagLayout());
+    this.panel4 = new JPanel(new GridBagLayout());
 
     mainPanel.add(panel1, "Main Menu");
     mainPanel.add(panel2, "Portfolio Features");

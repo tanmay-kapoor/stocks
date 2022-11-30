@@ -105,12 +105,4 @@ public interface Menu {
    */
   void getCommissionFee();
 
-
-  void getInterval();
-
-  void getWeightage();
-
-  void getStrategyAmount();
-
-  void getStrategyName();
 }
