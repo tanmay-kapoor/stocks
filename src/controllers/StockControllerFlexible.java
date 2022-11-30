@@ -189,14 +189,14 @@ public class StockControllerFlexible extends AbstractController {
     Scanner csvReader = new Scanner(dcaFile);
     csvReader.nextLine();
 
-    Map<String, Dca> dcaMap= new HashMap<>();
+    Map<String, Dca> dcaMap = new HashMap<>();
 
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
 
       Map<String, Double> stockWeightage = new HashMap<>();
       TimeLine timeLine;
-      if(Objects.equals(vals[3], "null")) {
+      if (Objects.equals(vals[3], "null")) {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
       } else {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
@@ -487,20 +487,20 @@ public class StockControllerFlexible extends AbstractController {
   }
 
   private void displayDcaStuff(Portfolio portfolio) {
-    String strategy = getStrategyName(portfolio);
-    if(portfolio.getDcaStrategies().containsKey(strategy)) {
-      menu.printMessage("DCA with same strategy name already exists.");
-      return;
+    try {
+      String strategy = getStrategyName(portfolio);
+
+      TimeLine timeline = getTimeline();
+      double amount = getAmount();
+      Map<String, Double> stocksWeightage = getStocksWeightage();
+      int interval = getInterval();
+      double commission = getCommissionFee();
+
+      Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
+      portfolio.doDca(strategy, dca);
+    } catch (IllegalArgumentException e) {
+      menu.printMessage(e.getMessage());
     }
-
-    TimeLine timeline = getTimeline();
-    double amount = getAmount();
-    Map<String, Double> stocksWeightage = getStocksWeightage();
-    int interval = getInterval();
-    double commission = getCommissionFee();
-
-    Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
-    portfolio.doDca(strategy, dca);
   }
 
   private String getStrategyName(Portfolio portfolio) {
