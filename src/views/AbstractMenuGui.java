@@ -379,7 +379,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       }
     });
 
-    setGbcXY(1, 2);
+    gbc3.gridx = 1;
     panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
@@ -515,6 +515,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     weightage.setText("");
 
     goToPanel4();
+
     gbc4Newline();
     for (String ticker : stockWeightage.keySet()) {
       panel4.add(new JLabel(ticker), gbc4);
@@ -522,7 +523,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"), gbc4);
       gbc4Newline();
     }
-
 
     panel4.add(new JLabel("Add ticker: "), gbc4);
     gbc4.gridx = 1;
@@ -538,9 +538,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel4.add(addBtn, gbc4);
     gbc4.gridx = 1;
     panel4.add(backToP3Btn, gbc4);
+
     panel4.revalidate();
   }
-
 
   @Override
   public void getBuySellChoice() {
@@ -595,7 +595,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
                     quantity.getText(),
                     dateTxtFiled.getText(),
                     commission.getText()
-            ));
+            )
+    );
 
     panel4.revalidate();
   }
@@ -643,7 +644,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     gbcNewline();
     gbc3.gridwidth = 2;
-    panel3.add(new JLabel("Generating performance report may take some time. Please wait."), gbc3);
+    panel3.add(new JLabel("Generating performance report may take some time. Please wait."),
+            gbc3);
 
     panel3.revalidate();
   }
@@ -741,21 +743,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       scaleLabel.setText("Scale: 1 unit on y axis ~ $" + report.getScale()
               + " relative to the base value of $" + report.getBaseValue());
     }
-//
-//    this.setSize(1400, 800);
+
     goToPanel4();
     gbc4.weightx = 1;
     panel4.add(cp, gbc4);
 
     gbc4Newline();
     gbc4.weightx = 0;
-
     panel4.add(scaleLabel, gbc4);
 
     gbc4Newline();
     panel4.add(backToP3Btn, gbc4);
 
-//    panel4.add(goBackButton);
     panel4.revalidate();
   }
 
@@ -851,10 +850,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     return panel2;
   }
 
-  protected void setGbcXY(int c, int r) {
-    gbc3.gridx = c;
-    gbc3.gridy = r;
-  }
 
   protected void gbcNewline() {
     gbc3.gridy += 1;
