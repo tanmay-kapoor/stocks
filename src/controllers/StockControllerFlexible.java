@@ -33,7 +33,6 @@ import static java.lang.Math.round;
 public class StockControllerFlexible extends AbstractController {
   protected StockControllerFlexible(InputStream in, Menu menu, ShareApi api, String path) {
     super(in, menu, api, path);
-    sc = new Scanner(this.in);
   }
 
   @Override

@@ -42,6 +42,10 @@ abstract class FeaturesImpl implements Features {
   protected Portfolio portfolio;
 
   protected abstract Portfolio createPortfolioObject(String portfolioName);
+  protected abstract Portfolio createPortfolioObject(String portfolioName, Map<String, Log> stocks,
+                                            String path, ShareApi api,
+                                            Map<LocalDate, Double> costBasisHistory,
+                                            Map<String, Dca> dcaMap);
 
   protected abstract LocalDate getDate(String d);
 
@@ -127,10 +131,15 @@ abstract class FeaturesImpl implements Features {
         portfolio = this.portfolio;
       }
 
+      System.out.println(portfolioName);
       ticker = ticker.toUpperCase();
+      System.out.println(ticker);
       double quantity = Double.parseDouble(quant);
+      System.out.println(quantity);
       double commissionFee = getCommissionFee(commission);
+      System.out.println(commissionFee);
       LocalDate date = getDate(d);
+      System.out.println(date);
 
       if (!api.isTickerPresent(ticker)) {
         api.getShareDetails(ticker, LocalDate.now());
@@ -304,7 +313,7 @@ abstract class FeaturesImpl implements Features {
     Map<LocalDate, Double> costBasisHistory = readStockBasisHistoryFromCsv(costBasisFile);
     Map<String, Dca> dcaMap = readDcaFromCsv(dcaFile);
 
-    return new StockPortfolioFlexible(pName, stocks, path, api, costBasisHistory, dcaMap);
+    return createPortfolioObject(pName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   private Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
@@ -377,14 +386,14 @@ abstract class FeaturesImpl implements Features {
     Scanner csvReader = new Scanner(dcaFile);
     csvReader.nextLine();
 
-    Map<String, Dca> dcaMap= new HashMap<>();
+    Map<String, Dca> dcaMap = new HashMap<>();
 
     while (csvReader.hasNext()) {
       String[] vals = csvReader.nextLine().split(",");
 
       Map<String, Double> stockWeightage = new HashMap<>();
       TimeLine timeLine;
-      if(Objects.equals(vals[3], "null")) {
+      if (Objects.equals(vals[3], "null")) {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
       } else {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
@@ -445,10 +454,10 @@ abstract class FeaturesImpl implements Features {
     String subFolder = "";
     String header = "";
 
-    if(type == FileType.LogFile) {
+    if (type == FileType.LogFile) {
       subFolder = "logs/";
       header = "Date, lastSellDate\n";
-    } else if(type == FileType.DcaFile) {
+    } else if (type == FileType.DcaFile) {
       subFolder = "dca/";
       header = "strategy name, investment amount, start date, end date, interval,commission, last purchase date";
     } else {

@@ -1,9 +1,6 @@
 package views;
 
-import java.io.InputStream;
 import java.io.PrintStream;
-
-import controllers.Features;
 
 /**
  * View that is meant to specifically deal with menu while interacting with user about
@@ -11,8 +8,8 @@ import controllers.Features;
  */
 public class StockMenuInflexible extends AbstractMenu {
 
-  public StockMenuInflexible(InputStream in, PrintStream out) {
-    super(in, out);
+  public StockMenuInflexible(PrintStream out) {
+    super(out);
   }
 
   @Override

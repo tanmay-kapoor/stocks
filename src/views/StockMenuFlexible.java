@@ -1,6 +1,5 @@
 package views;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 
 /**
@@ -9,8 +8,8 @@ import java.io.PrintStream;
  * would like to perform on the stocks present in the portfolio.
  */
 public class StockMenuFlexible extends AbstractMenu {
-  public StockMenuFlexible(InputStream in, PrintStream out) {
-    super(in, out);
+  public StockMenuFlexible(PrintStream out) {
+    super(out);
   }
 
   @Override
