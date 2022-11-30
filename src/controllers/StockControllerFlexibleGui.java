@@ -199,7 +199,6 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
   protected void saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
                                   String f, String t, String interval, String commission,
                                   Map<String, Double> stockWeightage) {
-    System.out.println("here trying to save");
     try {
       Portfolio portfolio;
       if (allPortfolios.contains(portfolioName)) {
