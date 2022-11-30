@@ -27,6 +27,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
   private JComboBox<String> portfolioListCb;
+  private final JButton enterBtn;
   protected String portfolioName;
   protected JTextField dateTxtFiled;
   protected JLabel text;
@@ -34,7 +35,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private final JButton exitButton;
   private final JButton goBackButton;
   protected JButton backToP3Btn;
-  private final JButton enterBtn;
+
   protected JTextField ticker;
   protected JTextField quantity;
   protected JTextField commission;
@@ -54,7 +55,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   protected abstract void getRestIfApplicable(JPanel panel2);
 
-  protected AbstractMenuGui(Features features, String caption) {
+  public AbstractMenuGui(Features features, String caption) {
     super(caption);
     this.features = features;
 
@@ -169,13 +170,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     resetFields();
 
     panel4.revalidate();
-  }
-
-  private void resetFields() {
-    ticker.setText("");
-    quantity.setText("");
-    dateTxtFiled.setText("");
-    commission.setText("");
   }
 
   @Override
@@ -355,43 +349,31 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
   }
 
-
-  private void getPortfolioValueOptions() {
+  @Override
+  public void getBuySellChoice() {
     if (showP3()) return;
 
-    gbcNewline();
-    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
-    JTextField dateField = new JTextField(10);
-    gbc3.gridx = 1;
-    panel3.add(dateField, gbc3);
+    JButton buyOptionBtn = new JButton("Buy Shares");
+    JButton sellOptionBtn = new JButton("Sell Shares");
 
     gbcNewline();
-    JButton getValueBtn = new JButton("Get Portfolio Value");
-    panel3.add(getValueBtn, gbc3);
-    getValueBtn.addActionListener(evt -> {
-      setDateToNowIfEmpty(dateField);
-      double value = features.getPortfolioValue(portfolioName, dateField.getText());
-      //data cleaning
-      if (value != -1) {
-        printMessage("Value of " + portfolioName
-                + " as of " + dateField.getText()
-                + " closing was: $" + value);
-      }
-    });
-
+    panel3.add(buyOptionBtn, gbc3);
     gbc3.gridx = 1;
+    panel3.add(sellOptionBtn, gbc3);
+
+    gbcNewline();
+    gbc3.gridwidth = 2;
     panel3.add(goBackButton, gbc3);
 
     panel3.revalidate();
-  }
 
-  private boolean showP3() {
-    cl.show(mainPanel, "panel 3");
-    panel3.removeAll();
-    resetGbc3();
+    buyOptionBtn.addActionListener(evt -> displayBuyPanel());
 
-    boolean res = getAllPortfolios();
-    return !res;
+    sellOptionBtn.addActionListener(evt -> {
+      goToPanel4();
+      displaySellPanel();
+    });
+
   }
 
 
@@ -509,98 +491,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  private void addTickerPanel(Map<String, Double> stockWeightage, JTextField tickerChosen,
-                              JTextField weightage, JButton addBtn) {
-    tickerChosen.setText("");
-    weightage.setText("");
-
-    goToPanel4();
-
-    gbc4Newline();
-    for (String ticker : stockWeightage.keySet()) {
-      panel4.add(new JLabel(ticker), gbc4);
-      gbc4.gridx = 1;
-      panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"), gbc4);
-      gbc4Newline();
-    }
-
-    panel4.add(new JLabel("Add ticker: "), gbc4);
-    gbc4.gridx = 1;
-    panel4.add(tickerChosen, gbc4);
-
-    gbc4Newline();
-    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft()
-            + "% left)"), gbc4);
-    gbc4.gridx = 1;
-    panel4.add(weightage, gbc4);
-
-    gbc4Newline();
-    panel4.add(addBtn, gbc4);
-    gbc4.gridx = 1;
-    panel4.add(backToP3Btn, gbc4);
-
-    panel4.revalidate();
-  }
-
-  @Override
-  public void getBuySellChoice() {
-    if (showP3()) return;
-
-    JButton buyOptionBtn = new JButton("Buy Shares");
-    JButton sellOptionBtn = new JButton("Sell Shares");
-
-    gbcNewline();
-    panel3.add(buyOptionBtn, gbc3);
-    gbc3.gridx = 1;
-    panel3.add(sellOptionBtn, gbc3);
-
-    gbcNewline();
-    gbc3.gridwidth = 2;
-    panel3.add(goBackButton, gbc3);
-
-    panel3.revalidate();
-
-    buyOptionBtn.addActionListener(evt -> displayBuyPanel());
-
-    sellOptionBtn.addActionListener(evt -> {
-      goToPanel4();
-      displaySellPanel();
-    });
-
-  }
-
-  private void displayBuyPanel() {
-    goToPanel4();
-
-    gbc4.gridwidth = 2;
-    panel4.add(new JLabel("Fill details to buy stock in " + portfolioName + " portfolio"),
-            gbc4);
-
-    gbc4.gridwidth = 1;
-    getTickerSymbol();
-    getQuantity();
-    getDateChoice();
-    getCommissionFee();
-
-    gbc4Newline();
-    JButton addBtn = new JButton("Buy");
-    panel4.add(addBtn, gbc4);
-    gbc4.gridx = 1;
-    panel4.add(backToP3Btn, gbc4);
-
-    addBtn.addActionListener(e ->
-            features.buyStock(
-                    portfolioName,
-                    ticker.getText(),
-                    quantity.getText(),
-                    dateTxtFiled.getText(),
-                    commission.getText()
-            )
-    );
-
-    panel4.revalidate();
-  }
-
 
   protected void getPortfolioPerformanceOption() {
     if (showP3()) return;
@@ -650,6 +540,160 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.revalidate();
   }
 
+
+  protected void gbcNewline() {
+    gbc3.gridy += 1;
+    gbc3.gridx = 0;
+  }
+
+  protected void gbc4Newline() {
+    gbc4.gridy += 1;
+    gbc4.gridx = 0;
+  }
+
+  protected void resetGbc3() {
+    gbc3 = new GridBagConstraints();
+    gbc3.fill = GridBagConstraints.HORIZONTAL;
+    gbc3.ipadx = 25;
+    gbc3.ipady = 20;
+    gbcNewline();
+  }
+
+  protected void resetGbc4() {
+    gbc4 = new GridBagConstraints();
+    gbc4.fill = GridBagConstraints.HORIZONTAL;
+    gbc4.ipadx = 25;
+    gbc4.ipady = 20;
+    gbc4Newline();
+  }
+
+
+  //////////////////////////////////FRAME RELATED SHIT//////////////////////
+
+  private JPanel getMainPanel() {
+    JPanel mainPanel = new JPanel(new CardLayout());
+
+    JPanel panel1 = getPanel1();
+    JPanel panel2 = getPanel2();
+    this.panel3 = new JPanel(new GridBagLayout());
+    this.panel4 = new JPanel(new GridBagLayout());
+
+    mainPanel.add(panel1, "Main Menu");
+    mainPanel.add(panel2, "Portfolio Features");
+    mainPanel.add(panel3, "panel 3");
+    mainPanel.add(panel4, "panel 4");
+
+    return mainPanel;
+  }
+
+  private JPanel getPanel1() {
+    JPanel panel1 = new JPanel();
+    panel1.setLayout(new GridLayout(0, 1, 20, 20));
+    panel1.setBorder(new EmptyBorder(100, 200, 100, 200));
+
+    JButton flexibleButton = new JButton("Flexible Portfolio");
+    panel1.add(flexibleButton);
+
+    JButton inflexibleButton = new JButton("Inflexible Portfolio");
+    panel1.add(inflexibleButton);
+
+    JButton backToTextUi = new JButton("Back To Text UI");
+    panel1.add(backToTextUi);
+    backToTextUi.addActionListener(e -> this.dispose());
+
+    panel1.add(exitButton);
+
+    flexibleButton.addActionListener(evt -> {
+      this.setTitle("Flexible Portfolio");
+      features.handleFlexibleSelected();
+    });
+
+    return panel1;
+  }
+
+  private JPanel getPanel2() {
+    JPanel panel2 = new JPanel();
+    panel2.setLayout(new GridLayout(0, 2, 10, 10));
+    panel2.setBorder(new EmptyBorder(7, 10, 7, 10));
+
+    JButton createPortfolioButton = new JButton("Create portfolio");
+    panel2.add(createPortfolioButton);
+    createPortfolioButton.addActionListener(evt -> {
+      this.setTitle("Create Portfolio");
+      getCreatePortfolioThroughWhichMethod();
+    });
+
+    JButton getCompositionButton = new JButton("See portfolio composition");
+    panel2.add(getCompositionButton);
+    getCompositionButton.addActionListener(evt -> {
+      this.setTitle("Portfolio Composition");
+      getPortfolioCompositionOption();
+    });
+
+    JButton getValueButton = new JButton("Check portfolio value");
+    panel2.add(getValueButton);
+    getValueButton.addActionListener(evt -> {
+      this.setTitle("Portfolio Value");
+      getPortfolioValueOptions();
+    });
+
+    //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
+    getRestIfApplicable(panel2);
+
+    JButton backP1Btn = new JButton("Back to Main Menu");
+    backP1Btn.addActionListener(evt -> cl.show(mainPanel, "Main Menu"));
+    panel2.add(backP1Btn);
+
+    return panel2;
+  }
+
+
+  private void resetFields() {
+    ticker.setText("");
+    quantity.setText("");
+    dateTxtFiled.setText("");
+    commission.setText("");
+  }
+
+
+
+  private void getPortfolioValueOptions() {
+    if (showP3()) return;
+
+    gbcNewline();
+    panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
+    JTextField dateField = new JTextField(10);
+    gbc3.gridx = 1;
+    panel3.add(dateField, gbc3);
+
+    gbcNewline();
+    JButton getValueBtn = new JButton("Get Portfolio Value");
+    panel3.add(getValueBtn, gbc3);
+    getValueBtn.addActionListener(evt -> {
+      setDateToNowIfEmpty(dateField);
+      double value = features.getPortfolioValue(portfolioName, dateField.getText());
+      //data cleaning
+      if (value != -1) {
+        printMessage("Value of " + portfolioName
+                + " as of " + dateField.getText()
+                + " closing was: $" + value);
+      }
+    });
+
+    gbc3.gridx = 1;
+    panel3.add(goBackButton, gbc3);
+
+    panel3.revalidate();
+  }
+
+  private boolean showP3() {
+    cl.show(mainPanel, "panel 3");
+    panel3.removeAll();
+    resetGbc3();
+
+    boolean res = getAllPortfolios();
+    return !res;
+  }
 
   private boolean getAllPortfolios() {
 
@@ -758,6 +802,73 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel4.revalidate();
   }
 
+  private void addTickerPanel(Map<String, Double> stockWeightage, JTextField tickerChosen,
+                              JTextField weightage, JButton addBtn) {
+    tickerChosen.setText("");
+    weightage.setText("");
+
+    goToPanel4();
+
+    gbc4Newline();
+    for (String ticker : stockWeightage.keySet()) {
+      panel4.add(new JLabel(ticker), gbc4);
+      gbc4.gridx = 1;
+      panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"), gbc4);
+      gbc4Newline();
+    }
+
+    panel4.add(new JLabel("Add ticker: "), gbc4);
+    gbc4.gridx = 1;
+    panel4.add(tickerChosen, gbc4);
+
+    gbc4Newline();
+    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft()
+            + "% left)"), gbc4);
+    gbc4.gridx = 1;
+    panel4.add(weightage, gbc4);
+
+    gbc4Newline();
+    panel4.add(addBtn, gbc4);
+    gbc4.gridx = 1;
+    panel4.add(backToP3Btn, gbc4);
+
+    panel4.revalidate();
+  }
+
+
+
+  private void displayBuyPanel() {
+    goToPanel4();
+
+    gbc4.gridwidth = 2;
+    panel4.add(new JLabel("Fill details to buy stock in " + portfolioName + " portfolio"),
+            gbc4);
+
+    gbc4.gridwidth = 1;
+    getTickerSymbol();
+    getQuantity();
+    getDateChoice();
+    getCommissionFee();
+
+    gbc4Newline();
+    JButton addBtn = new JButton("Buy");
+    panel4.add(addBtn, gbc4);
+    gbc4.gridx = 1;
+    panel4.add(backToP3Btn, gbc4);
+
+    addBtn.addActionListener(e ->
+            features.buyStock(
+                    portfolioName,
+                    ticker.getText(),
+                    quantity.getText(),
+                    dateTxtFiled.getText(),
+                    commission.getText()
+            )
+    );
+
+    panel4.revalidate();
+  }
+
   private void goToPanel4() {
     cl.show(mainPanel, "panel 4");
     panel4.removeAll();
@@ -768,112 +879,5 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     if (dateField.getText().equals("")) {
       dateField.setText(LocalDate.now().toString());
     }
-  }
-
-
-  //////////////////////////////////FRAME RELATED SHIT//////////////////////
-
-  private JPanel getMainPanel() {
-    JPanel mainPanel = new JPanel(new CardLayout());
-
-    JPanel panel1 = getPanel1();
-    JPanel panel2 = getPanel2();
-    this.panel3 = new JPanel(new GridBagLayout());
-    this.panel4 = new JPanel(new GridBagLayout());
-
-    mainPanel.add(panel1, "Main Menu");
-    mainPanel.add(panel2, "Portfolio Features");
-    mainPanel.add(panel3, "panel 3");
-    mainPanel.add(panel4, "panel 4");
-
-    return mainPanel;
-  }
-
-  private JPanel getPanel1() {
-    JPanel panel1 = new JPanel();
-    panel1.setLayout(new GridLayout(0, 1, 20, 20));
-    panel1.setBorder(new EmptyBorder(100, 200, 100, 200));
-
-    JButton flexibleButton = new JButton("Flexible Portfolio");
-    panel1.add(flexibleButton);
-
-    JButton inflexibleButton = new JButton("Inflexible Portfolio");
-    panel1.add(inflexibleButton);
-
-    JButton backToTextUi = new JButton("Back To Text UI");
-    panel1.add(backToTextUi);
-    backToTextUi.addActionListener(e -> this.dispose());
-
-    panel1.add(exitButton);
-
-    flexibleButton.addActionListener(evt -> {
-      this.setTitle("Flexible Portfolio");
-      features.handleFlexibleSelected();
-    });
-
-    return panel1;
-  }
-
-  private JPanel getPanel2() {
-    JPanel panel2 = new JPanel();
-    panel2.setLayout(new GridLayout(0, 2, 10, 10));
-    panel2.setBorder(new EmptyBorder(7, 10, 7, 10));
-
-    JButton createPortfolioButton = new JButton("Create portfolio");
-    panel2.add(createPortfolioButton);
-    createPortfolioButton.addActionListener(evt -> {
-      this.setTitle("Create Portfolio");
-      getCreatePortfolioThroughWhichMethod();
-    });
-
-    JButton getCompositionButton = new JButton("See portfolio composition");
-    panel2.add(getCompositionButton);
-    getCompositionButton.addActionListener(evt -> {
-      this.setTitle("Portfolio Composition");
-      getPortfolioCompositionOption();
-    });
-
-    JButton getValueButton = new JButton("Check portfolio value");
-    panel2.add(getValueButton);
-    getValueButton.addActionListener(evt -> {
-      this.setTitle("Portfolio Value");
-      getPortfolioValueOptions();
-    });
-
-    //has to be called by controller and be implemented in MenuGuiFlexible and MenuGuiInflexible
-    getRestIfApplicable(panel2);
-
-    JButton backP1Btn = new JButton("Back to Main Menu");
-    backP1Btn.addActionListener(evt -> cl.show(mainPanel, "Main Menu"));
-    panel2.add(backP1Btn);
-
-    return panel2;
-  }
-
-
-  protected void gbcNewline() {
-    gbc3.gridy += 1;
-    gbc3.gridx = 0;
-  }
-
-  protected void gbc4Newline() {
-    gbc4.gridy += 1;
-    gbc4.gridx = 0;
-  }
-
-  public void resetGbc3() {
-    gbc3 = new GridBagConstraints();
-    gbc3.fill = GridBagConstraints.HORIZONTAL;
-    gbc3.ipadx = 25;
-    gbc3.ipady = 20;
-    gbcNewline();
-  }
-
-  public void resetGbc4() {
-    gbc4 = new GridBagConstraints();
-    gbc4.fill = GridBagConstraints.HORIZONTAL;
-    gbc4.ipadx = 25;
-    gbc4.ipady = 20;
-    gbc4Newline();
   }
 }
