@@ -6,8 +6,8 @@
         <element id="file-copy" path="$PROJECT_DIR$/res/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="ass4" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/jcommon-1.0.23.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/jfreechart-1.0.19.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../external_libs/jcommon-1.0.23.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../external_libs/jfreechart-1.0.19.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

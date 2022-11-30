@@ -19,8 +19,11 @@ Please follow the steps below to run the program:
 _If you wish to not use the jar file, you can also run the program from the `ProgramRunner` class
 in the `src` folder._
 
+For further issues, view the videos in the link below for additional help. 
+link: https://drive.google.com/drive/folders/1G9TxuIn4zU6YGdgk4RzeVmpG36JfWsuE?usp=sharing
 
-## _Initial inputs for the program._
+
+## _Initial inputs for the program [If using txt based interface]._
 
 Follow the steps mentioned below to add 3 stocks to the portfolio.
 

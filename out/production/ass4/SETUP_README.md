@@ -20,7 +20,7 @@ _If you wish to not use the jar file, you can also run the program from the `Pro
 in the `src` folder._
 
 
-## _Initial inputs for the program._
+## _Initial inputs for the program [If using txt based interface]._
 
 Follow the steps mentioned below to add 3 stocks to the portfolio.
 

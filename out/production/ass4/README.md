@@ -77,3 +77,13 @@ This type of portfolio is immutable.
 A flexible portfolio can only buy shares while it is created. It is incapable of buying  or 
 selling shares later after the portfolio has been created. It does not track cost basis or shows 
 performance of the portfolio over time for now.
+
+
+
+## Choice of UI:
+
+The client is given the option to choose between two UI options, namely: 
+
+1. Command line interface: in which they interact with the command line to give inputs and see results produced by the program, Or,
+
+2. Java Swing GUI: in which they can interact with a gui with buttons and input fields to send inputs, and view results from the program on the same frame.
