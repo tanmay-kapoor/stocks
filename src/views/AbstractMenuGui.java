@@ -37,7 +37,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected JTextField ticker;
   protected JTextField quantity;
   protected JTextField commission;
-  private JLabel text;
   private JLabel successMessage;
   protected CardLayout cl;
   private JPanel mainPanel;
@@ -59,7 +58,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     this.features = features;
 
     this.setSize(800, 600);
-    this.setLocation(600, 100);
+    this.setLocation(200, 100);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -82,7 +81,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
 
     exitButton = new JButton("Exit");
-    exitButton.addActionListener(evt -> features.exitProgram());
+    exitButton.addActionListener(evt -> this.features.exitProgram());
 
     gbc3 = new GridBagConstraints();
     gbc4 = new GridBagConstraints();
@@ -874,11 +873,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbc3.gridy = r;
   }
 
-  protected void setGbcSize(int w, int h) {
-    gbc3.ipadx = w;
-    gbc3.ipady = h;
-  }
-
   protected void gbcNewline() {
     gbc3.gridy += 1;
     gbc3.gridx = 0;
@@ -892,9 +886,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void resetGbc3() {
     gbc3 = new GridBagConstraints();
     gbc3.fill = GridBagConstraints.HORIZONTAL;
-    setGbcSize(25, 20);
-    gbc3.gridy = 0;
-    gbc3.gridx = 0;
+    gbc3.ipadx = 25;
+    gbc3.ipady = 20;
+    gbcNewline();
   }
 
   public void resetGbc4() {
