@@ -29,6 +29,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private JComboBox<String> portfolioListCb;
   protected String portfolioName;
   protected JTextField dateTxtFiled;
+  protected  JLabel text;
   protected final Features features;
   private final JButton exitButton;
   private final JButton goBackButton;
@@ -130,19 +131,23 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void printMessage(String msg) {
+    gbcNewline();
+    gbc3.gridwidth = 2;
+    gbc3.ipady = 60;
+    if (text != null) {
+      //don't always remove this or don't use printMessage() all the time
+      panel3.remove(text);
+      panel3.revalidate();
+    }
+    text = new JLabel(msg);
+    panel3.add(text, gbc3);
+
+    panel3.revalidate();
+  }
+
+  @Override
+  public void errorMsg(String msg) {
     showMessageDialog(null, msg);
-//    gbcNewline();
-//    gbc3.gridwidth = 2;
-//    gbc3.ipady = 60;
-//    if (text != null) {
-//      //don't always remove this or don't use printMessage() all the time
-//      panel3.remove(text);
-//      panel3.revalidate();
-//    }
-//    text = new JLabel(msg);
-//    panel3.add(text, gbc3);
-//
-//    panel3.revalidate();
   }
 
 

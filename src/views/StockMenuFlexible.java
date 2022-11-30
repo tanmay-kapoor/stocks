@@ -69,6 +69,11 @@ public class StockMenuFlexible extends AbstractMenu {
   }
 
   @Override
+  public void errorMsg(String msg) {
+    return;
+  }
+
+  @Override
   public void getInterval() {
 
   }

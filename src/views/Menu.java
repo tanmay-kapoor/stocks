@@ -31,6 +31,7 @@ public interface Menu {
    */
   void printMessage(String msg);
 
+ void errorMsg(String msg);
   void successMessage(String ticker, Details details, Txn txnType);
 
   /**
