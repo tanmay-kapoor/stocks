@@ -268,6 +268,9 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
   @Override
   protected void doDcaIfApplicable(String dcaName, Dca dca) {
+    if (getDcaStrategies().containsKey(dcaName)) {
+      throw new IllegalArgumentException(dcaName + " strategy already exists in this portfolio");
+    }
     dcaMap.put(dcaName, dca);
 
     if (dca.getTotalAmount() <= 0) {
