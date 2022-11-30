@@ -51,6 +51,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected GridBagConstraints gbc4;
 
   protected abstract void displaySellPanel();
+
   protected abstract void getRestIfApplicable(JPanel panel2);
 
   protected AbstractMenuGui(Features features, String caption) {
@@ -68,10 +69,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     goBackButton.addActionListener(evt -> {
       cl.show(mainPanel, "Portfolio Features");
 
-      if (Objects.equals(this.getTitle(), "Create Portfolio")) {
+      if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
         features.savePortfolio(portfolioName);
       }
-      this.setTitle("<<Portfolio Type>>");
+      this.setTitle("Flexible Portfolio");
     });
 
     backToP3Btn = new JButton("back");
@@ -104,7 +105,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void getPortfolioName() {
     panel3.removeAll();
     resetGbc3();
-    System.out.println(gbc3.gridx + "  " +  gbc3.gridy);
+    System.out.println(gbc3.gridx + "  " + gbc3.gridy);
     panel3.add(new JLabel("Enter portfolio name"), gbc3);
     gbc3.gridx = 1;
     JTextField portfolioNameTextField = new JTextField(10);
@@ -512,8 +513,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
               || commission.getText().equals("")) {
         printMessage("Please Fill all the necessary fields.");
         // IDK WHAT TO DO HERE
-      }
-      else {
+      } else {
         goToPanel4();
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       }
@@ -751,12 +751,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JLabel scaleLabel = new JLabel("");
 
-    if(chartType == ChartType.BAR_CHART) {
+    if (chartType == ChartType.BAR_CHART) {
       cp = chart.getBartChart();
       scaleLabel.setText("Scale: 1 unit on x axis ~ $" + report.getScale()
               + " relative to the base value of $" + report.getBaseValue());
-    }
-    else {
+    } else {
       cp = chart.getLineChart();
       scaleLabel.setText("Scale: 1 unit on y axis ~ $" + report.getScale()
               + " relative to the base value of $" + report.getBaseValue());
@@ -814,7 +813,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private JPanel getPanel1() {
     JPanel panel1 = new JPanel();
     panel1.setLayout(new GridLayout(0, 1, 20, 20));
-    panel1.setBorder(new EmptyBorder(100,200,100,200));
+    panel1.setBorder(new EmptyBorder(100, 200, 100, 200));
 
     JButton flexibleButton = new JButton("Flexible Portfolio");
     panel1.add(flexibleButton);
@@ -828,7 +827,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     panel1.add(exitButton);
 
-    flexibleButton.addActionListener(evt -> features.handleFlexibleSelected());
+    flexibleButton.addActionListener(evt -> {
+      this.setTitle("Flexible Portfolio");
+      features.handleFlexibleSelected();
+    });
 
     return panel1;
   }
@@ -892,7 +894,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void resetGbc3() {
     gbc3 = new GridBagConstraints();
     gbc3.fill = GridBagConstraints.HORIZONTAL;
-    setGbcSize(25,20);
+    setGbcSize(25, 20);
     gbc3.gridy = 0;
     gbc3.gridx = 0;
   }
