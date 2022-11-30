@@ -17,18 +17,13 @@ import models.portfolio.Performance;
 import models.portfolio.Report;
 
 public class Chart {
-  private static final long serialVersionUID = 1L;
-  private Report report;
-  private String scale;
-  private String baseValue;
-  private Map<LocalDate, Performance> dateWisePerformance;
-  private String portfolioName;
-  private CategoryDataset dataset;
+  private final Report report;
+  private final Map<LocalDate, Performance> dateWisePerformance;
+  private final String portfolioName;
+  private final CategoryDataset dataset;
 
   Chart(Report report, String portfolioName) {
     this.report = report;
-    this.scale = report.getScale();
-    this.baseValue = report.getBaseValue();
     this.dateWisePerformance = report.getPerformanceOnEachDate();
     this.portfolioName = portfolioName;
     this.dataset = createDataset();
@@ -37,7 +32,8 @@ public class Chart {
   public ChartPanel getBartChart() {
 
     JFreeChart barChart = ChartFactory.createBarChart(
-            portfolioName + "'s performance from 2020-20-20 to 2022-20-20",
+            portfolioName + "'s performance from " + report.getTimeLime().getStartDate()
+                    + " to " + report.getTimeLime().getEndDate(),
             "Date",
             "Valuation",
             dataset,
@@ -54,7 +50,7 @@ public class Chart {
     return new ChartPanel(barChart);
   }
 
-  public ChartPanel getLineChart( ) {
+  public ChartPanel getLineChart() {
 
     JFreeChart lineChart = ChartFactory.createLineChart(
             portfolioName + "'s performance from 2020-20-20 to 2022-20-20",
@@ -62,11 +58,11 @@ public class Chart {
             "Valuation",
             dataset,
             PlotOrientation.VERTICAL,
-            true,true,false
+            true, true, false
     );
 
-    ChartPanel chartPanel = new ChartPanel( lineChart );
-    chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
+    ChartPanel chartPanel = new ChartPanel(lineChart);
+
     return chartPanel;
   }
 

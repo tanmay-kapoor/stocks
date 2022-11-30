@@ -57,7 +57,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     super(caption);
     this.features = features;
 
-    setSize(1000, 600);
+    this.setSize(1000, 600);
     setLocation(900, 100);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +76,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     backToP3Btn = new JButton("back");
     backToP3Btn.addActionListener(evt -> {
-//      setSize(1000, 600);
+      this.setSize(1000, 600);
       cl.show(mainPanel, "panel 3");
     });
 
@@ -749,16 +749,28 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     Chart chart = new Chart(report, portfolioName);
     ChartPanel cp;
 
+    JLabel scaleLabel = new JLabel("");
+
     if(chartType == ChartType.BAR_CHART) {
       cp = chart.getBartChart();
+      scaleLabel.setText("Scale: 1 unit on x axis ~ $" + report.getScale()
+              + " relative to the base value of $" + report.getBaseValue());
     }
     else {
       cp = chart.getLineChart();
+      scaleLabel.setText("Scale: 1 unit on y axis ~ $" + report.getScale()
+              + " relative to the base value of $" + report.getBaseValue());
     }
-
+//
+//    this.setSize(1400, 800);
     goToPanel4();
     gbc4.weightx = 1;
     panel4.add(cp, gbc4);
+
+    gbc4Newline();
+    gbc4.weightx = 0;
+
+    panel4.add(scaleLabel, gbc4);
 
     gbc4Newline();
     panel4.add(backToP3Btn, gbc4);
