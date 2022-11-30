@@ -58,8 +58,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     super(caption);
     this.features = features;
 
-    this.setSize(1000, 600);
-    setLocation(900, 100);
+    this.setSize(800, 600);
+    this.setLocation(600, 100);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

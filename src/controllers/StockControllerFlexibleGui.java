@@ -118,8 +118,8 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
           performanceOnEachDate.put(date, new Performance(precisionAdjusted, stars));
         }
         Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
-        return new Report(performanceOnEachDate, String.format("%.02f", scale_val), String.format("%.02f", min),
-                new TimeLine(LocalDate.parse(f), LocalDate.parse(t)));
+        return new Report(performanceOnEachDate, String.format("%.02f", scale_val),
+                String.format("%.02f", min), new TimeLine(LocalDate.parse(f), LocalDate.parse(t)));
       }
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
@@ -188,8 +188,8 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
   }
 
   @Override
-  protected void saveDcaIfAllowed(String portfolioName, String strategyName, String amt, String f, String t,
-                                  String interval, String commission) {
+  protected void saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
+                                  String f, String t, String interval, String commission) {
     try {
       Portfolio portfolio;
       if (allPortfolios.contains(portfolioName)) {

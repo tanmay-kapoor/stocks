@@ -251,6 +251,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
         double quantityToBuy = stockBudget / stockPrice;
         buy(ticker, new Details(quantityToBuy, date), dca.getCommission());
       }
+
+      dca.setLastBought(date);
     }
   }
 
