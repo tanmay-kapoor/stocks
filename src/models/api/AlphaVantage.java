@@ -18,7 +18,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
  */
 public class AlphaVantage implements ShareApi {
   private final String apiKey;
-  private final Map<String, Map<LocalDate, Map<String, Double>>> tickerDetails;
+  private final Map<String, Map<LocalDate, DateDetails>> tickerDetails;
 
   /**
    * The API key that is going to be used by the API.
@@ -39,7 +39,7 @@ public class AlphaVantage implements ShareApi {
   }
 
   @Override
-  public Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked) {
+  public DateDetails getShareDetails(String tickerSymbol, LocalDate dateAsked) {
 
     if (dateAsked.compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot get value for a future date!");
@@ -64,9 +64,6 @@ public class AlphaVantage implements ShareApi {
               + "no longer works");
     }
 
-    String[] keys;
-    String record = "";
-
     try {
       InputStream in = url.openStream();
       Scanner sc = new Scanner(in);
@@ -82,25 +79,22 @@ public class AlphaVantage implements ShareApi {
       }
 
       String[] lines = res.split("\n");
-      keys = lines[0].split(",");
 
-      boolean found = false;
       String prevLine = null;
       for (int i = 1; i < lines.length; i++) {
         String line = lines[i];
         String[] vals = line.split(",");
-        record = line;
         LocalDate rowDate = LocalDate.parse(vals[0]);
 
         Map<String, Double> values = new HashMap<>();
         assignValues(vals, values);
-        Map<LocalDate, Map<String, Double>> allDates;
+        Map<LocalDate, DateDetails> allDates;
         if (tickerDetails.containsKey(tickerSymbol)) {
           allDates = tickerDetails.get(tickerSymbol);
         } else {
           allDates = new HashMap<>();
         }
-        allDates.put(rowDate, values);
+        allDates.put(rowDate, new DateDetails(values, false));
         tickerDetails.put(tickerSymbol, allDates);
 
         if (prevLine != null) {
@@ -109,7 +103,7 @@ public class AlphaVantage implements ShareApi {
           if (DAYS.between(rowDate, prevDate) > 1) {
             LocalDate curr = rowDate.plusDays(1);
             while (!curr.equals(prevDate)) {
-              allDates.put(curr, values);
+              allDates.put(curr, new DateDetails(values, true));
               curr = curr.plusDays(1);
             }
             tickerDetails.put(tickerSymbol, allDates);
@@ -122,14 +116,14 @@ public class AlphaVantage implements ShareApi {
       LocalDate now = LocalDate.now();
 
       LocalDate date = LocalDate.now();
-      Map<LocalDate, Map<String, Double>> allDates = tickerDetails.get(tickerSymbol);
+      Map<LocalDate, DateDetails> allDates = tickerDetails.get(tickerSymbol);
       while (!allDates.containsKey(date)) {
         date = date.minusDays(1);
       }
-      Map<String, Double> vals = allDates.get(date);
+      Map<String, Double> vals = allDates.get(date).getValues();
       date = date.plusDays(1);
       while (date.compareTo(now) <= 0) {
-        allDates.put(date, vals);
+        allDates.put(date, new DateDetails(vals, false));
         date = date.plusDays(1);
       }
       tickerDetails.put(tickerSymbol, allDates);

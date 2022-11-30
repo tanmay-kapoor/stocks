@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import models.Details;
 import models.Log;
+import models.api.DateDetails;
 import models.api.ShareApi;
 
 import static models.portfolio.Txn.Buy;
@@ -195,7 +196,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
   private double getTxnCost(String ticker, Details details, double commissionFee) {
-    Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate());
+    Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate()).getValues();
     double price = shareDetails.get("close");
 
     return price * details.getQuantity() + commissionFee;
@@ -247,10 +248,19 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     for (LocalDate date : buyOnDates) {
       for (String ticker : stockWeightage.keySet()) {
-        double stockPrice = api.getShareDetails(ticker, date).get("close");
-        double stockBudget = totalAmount / stockWeightage.get(ticker);
-        double quantityToBuy = stockBudget / stockPrice;
-        buy(ticker, new Details(quantityToBuy, date), dca.getCommission());
+        DateDetails shareDetails = api.getShareDetails(ticker, date);
+
+        while (shareDetails.getIsHoliday()) {
+          date = date.plusDays(1);
+          shareDetails = api.getShareDetails(ticker, date);
+        }
+
+        if (date.compareTo(buyOnDates.get(buyOnDates.size() - 1)) <= 0) {
+          double stockPrice = shareDetails.getValues().get("close");
+          double stockBudget = totalAmount / stockWeightage.get(ticker);
+          double quantityToBuy = stockBudget / stockPrice;
+          buy(ticker, new Details(quantityToBuy, date), dca.getCommission());
+        }
       }
 
       dca.setLastBought(date);

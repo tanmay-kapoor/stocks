@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
+import models.api.DateDetails;
 import models.api.ShareApi;
 
 /**
@@ -210,8 +211,8 @@ abstract class AbstractPortfolio implements Portfolio {
 
       if (quantity != 0.0) {
         try {
-          Map<String, Double> shareDetails = api.getShareDetails(tickerSymbol, date);
-          totalValue += (shareDetails.get("close") * quantity);
+          DateDetails shareDetails = api.getShareDetails(tickerSymbol, date);
+          totalValue += (shareDetails.getValues().get("close") * quantity);
         } catch (IllegalArgumentException e) {
           totalValue += 0;
         }

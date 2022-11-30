@@ -390,7 +390,7 @@ abstract class AbstractStockPortfolioTest {
   }
 
   private double getShareValue(String ticker, LocalDate date) {
-    return api.getShareDetails(ticker, date).get("close");
+    return api.getShareDetails(ticker, date).getValues().get("close");
   }
 
   private void check(String ticker, double quantity, Map<String, Log> expected) {
