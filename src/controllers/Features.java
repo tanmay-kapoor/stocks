@@ -42,7 +42,7 @@ public interface Features {
   void addTickerToStrategy(String ticker, String weightage);
 
   void saveDca(String portfolioName, String strategyName, String amt, String f, String t,
-               String interval, String commission);
+               String interval, String commission, Map<String, Double> stockWeightage);
 
   double getWeightageLeft();
 }

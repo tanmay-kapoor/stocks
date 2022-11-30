@@ -313,11 +313,22 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       String fileName = String.format(pathDca + "%s.csv", portfolioName);
 
       FileWriter csvWriter = new FileWriter(fileName);
-      csvWriter.append("strategy name, investment amount, " + "start date, end date, interval," +
-              "commission, last purchase date\n");
+      StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,end_date,interval," +
+              "commission,last_purchase_date");
+
+
+      int stocks = dcaMap.size();
+
+      for(int i = 0; i < 20; i++) {
+        header.append(",stock,").append(i+1).append(",weightage,").append(i+1);
+      }
+      header.append("\n");
+
+      csvWriter.append(header.toString());
 
       for (String strategy : dcaMap.keySet()) {
         Dca dca = dcaMap.get(strategy);
+        String stockWeightageAsString = getStockWeightageAsString(dca);
 
         csvWriter.append(strategy).append(",")
                 .append(String.valueOf(dca.getTotalAmount())).append(",")
@@ -325,14 +336,25 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
                 .append(dca.getTimeLine().getEndDate().toString()).append(",")
                 .append(String.valueOf(dca.getInterval())).append(",")
                 .append(String.valueOf(dca.getCommission())).append(",")
-                .append(dca.getLastBoughtDate().toString()).append("\n");
+                .append(dca.getLastBoughtDate().toString()).append(",")
+                .append(stockWeightageAsString).append("\n");
       }
 
       csvWriter.flush();
       csvWriter.close();
     } catch (IOException e) {
-      throw new RuntimeException("Something went wrong in creating log!");
+      throw new RuntimeException("Something went wrong in creating DCA log!");
     }
+  }
+
+  private String getStockWeightageAsString(Dca dca) {
+    StringBuilder res = new StringBuilder();
+    Map<String, Double> stockWeightage = dca.getStockWeightage();
+    for(String ticker : stockWeightage.keySet()) {
+      res.append(ticker).append(",").append(stockWeightage.get(ticker)).append(",");
+    }
+
+    return res.substring(0, res.length() - 1);
   }
 
   @Override

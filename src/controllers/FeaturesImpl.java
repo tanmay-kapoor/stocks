@@ -61,8 +61,9 @@ abstract class FeaturesImpl implements Features {
 
   protected abstract void addTickerToStrategyIfAllowed(String ticker, String weightage);
 
-  protected abstract void saveDcaIfAllowed(String portfolioName, String strategyName, String amt, String f, String t,
-                                           String interval, String commission);
+  protected abstract void saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
+                                           String f, String t, String interval, String commission,
+                                           Map<String, Double> stockWeightage);
 
   public FeaturesImpl(ShareApi api, String path) {
     this.api = api;
@@ -114,7 +115,7 @@ abstract class FeaturesImpl implements Features {
   @Override
   public void createPortfolio(String portfolioName) {
     if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
-      menu.printMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
+      menu.errorMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
     } else {
       portfolio = createPortfolioObject(portfolioName);
       menu.getAddToPortfolioChoice();
@@ -131,15 +132,10 @@ abstract class FeaturesImpl implements Features {
         portfolio = this.portfolio;
       }
 
-      System.out.println(portfolioName);
       ticker = ticker.toUpperCase();
-      System.out.println(ticker);
       double quantity = Double.parseDouble(quant);
-      System.out.println(quantity);
       double commissionFee = getCommissionFee(commission);
-      System.out.println(commissionFee);
       LocalDate date = getDate(d);
-      System.out.println(date);
 
       if (!api.isTickerPresent(ticker)) {
         api.getShareDetails(ticker, LocalDate.now());
@@ -278,8 +274,8 @@ abstract class FeaturesImpl implements Features {
 
   @Override
   public void saveDca(String portfolioName, String strategyName, String amt, String f, String t,
-                      String interval, String commission) {
-    saveDcaIfAllowed(portfolioName, strategyName, amt, f, t, interval, commission);
+                      String interval, String commission, Map<String, Double> stockWeightage) {
+    saveDcaIfAllowed(portfolioName, strategyName, amt, f, t, interval, commission, stockWeightage);
   }
 
   protected Portfolio findPortfolio(String name) {
@@ -383,31 +379,31 @@ abstract class FeaturesImpl implements Features {
   }
 
   private Map<String, Dca> readDcaFromCsv(File dcaFile) throws FileNotFoundException {
-    Scanner csvReader = new Scanner(dcaFile);
-    csvReader.nextLine();
+//    Scanner csvReader = new Scanner(dcaFile);
+//    csvReader.nextLine();
 
     Map<String, Dca> dcaMap = new HashMap<>();
 
-    while (csvReader.hasNext()) {
-      String[] vals = csvReader.nextLine().split(",");
-
-      Map<String, Double> stockWeightage = new HashMap<>();
-      TimeLine timeLine;
-      if (Objects.equals(vals[3], "null")) {
-        timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
-      } else {
-        timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
-      }
-
-      dcaMap.put(vals[0], new Dca(
-              Double.parseDouble(vals[1]),
-              stockWeightage,
-              timeLine,
-              Integer.parseInt(vals[4]),
-              Double.parseDouble(vals[5]),
-              LocalDate.parse(vals[6])
-      ));
-    }
+//    while (csvReader.hasNext()) {
+//      String[] vals = csvReader.nextLine().split(",");
+//
+//      Map<String, Double> stockWeightage = new HashMap<>();
+//      TimeLine timeLine;
+//      if(Objects.equals(vals[3], "null")) {
+//        timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
+//      } else {
+//        timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
+//      }
+//
+//      dcaMap.put(vals[0], new Dca(
+//              Double.parseDouble(vals[1]),
+//              stockWeightage,
+//              timeLine,
+//              Integer.parseInt(vals[4]),
+//              Double.parseDouble(vals[5]),
+//              LocalDate.parse(vals[6])
+//      ));
+//    }
 
     return dcaMap;
   }
@@ -421,7 +417,7 @@ abstract class FeaturesImpl implements Features {
       String fileName = file.getName();
       String portfolioName = fileName.substring(0, fileName.lastIndexOf("."));
       if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
-        menu.printMessage(String.format("\n\"%s\" named portfolio already exists. "
+        menu.errorMessage(String.format("\n\"%s\" named portfolio already exists. "
                 + "Portfolio names are case insensitive! Please rename your file "
                 + "and try again!", portfolioName));
       } else {
@@ -459,7 +455,8 @@ abstract class FeaturesImpl implements Features {
       header = "Date, lastSellDate\n";
     } else if (type == FileType.DcaFile) {
       subFolder = "dca/";
-      header = "strategy name, investment amount, start date, end date, interval,commission, last purchase date";
+      header = "strategy_name,investment_amount,start_date,end_date,interval," +
+              "commission,last_purchase_date";
     } else {
       subFolder = "costbasis/";
       header = "Date, CostBasis\n";
