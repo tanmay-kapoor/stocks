@@ -22,6 +22,16 @@ public class Dca {
     this.commission = commission;
   }
 
+  public Dca(double totalAmount, Map<String, Double> stocksWeightage,
+             TimeLine timeLine, int interval, double commission, LocalDate lastBoughtDate) {
+    this.totalAmount = totalAmount;
+    this.stocksWeightage = stocksWeightage;
+    this.timeLine = timeLine;
+    this.interval = interval;
+    this.commission = commission;
+    this.lastBoughtDate = lastBoughtDate;
+  }
+
   public Map<String, Double> getStockWeightage() {
     return this.stocksWeightage;
   }

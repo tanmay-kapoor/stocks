@@ -27,6 +27,7 @@ abstract class AbstractPortfolio implements Portfolio {
   protected final ShareApi api;
   final String path;
   protected Map<LocalDate, Double> costBasisHistory;
+  protected Map<String, Dca> dcaMap;
 
   protected abstract boolean portfolioBasedSell(String ticker, Details details,
                                                 double commissionFee);
@@ -65,12 +66,14 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   protected AbstractPortfolio(String portfolioName, Map<String, Log> stocks, String path,
-                              ShareApi api, Map<LocalDate, Double> costBasisHistory) {
+                              ShareApi api, Map<LocalDate, Double> costBasisHistory ,
+                              Map<String, Dca> dcaMap) {
     this.portfolioName = portfolioName;
     this.api = api;
     this.path = path;
     this.stocks = new HashMap<>(stocks);
     this.costBasisHistory = new TreeMap<>(costBasisHistory);
+    this.dcaMap = new HashMap<>(dcaMap);
   }
 
   @Override

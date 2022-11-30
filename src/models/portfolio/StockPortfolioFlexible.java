@@ -27,8 +27,6 @@ import static models.portfolio.Txn.Sell;
  */
 public class StockPortfolioFlexible extends AbstractPortfolio {
 
-  Map<String, Dca> dcaMap;
-
   /**
    * Constructor for the class that initializes the name of the portfolio,
    * date it was created and the API that it is supposed to use for the fetching relevant data.
@@ -57,8 +55,9 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
    * @param costBasisHistory cost based history log of the portfolio.
    */
   public StockPortfolioFlexible(String portfolioName, Map<String, Log> stocks, String path,
-                                ShareApi api, Map<LocalDate, Double> costBasisHistory) {
-    super(portfolioName, stocks, path, api, costBasisHistory);
+                                ShareApi api, Map<LocalDate, Double> costBasisHistory,
+                                Map<String, Dca> dcaMap) {
+    super(portfolioName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   protected boolean portfolioBasedSell(String ticker, Details details, double commissionFee) {

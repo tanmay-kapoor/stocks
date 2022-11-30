@@ -43,8 +43,9 @@ public class StockControllerFlexible extends AbstractController {
 
   @Override
   protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
-                                      Map<LocalDate, Double> costBasisHistory) {
-    return new StockPortfolioFlexible(portfolioName, stocks, path, api, costBasisHistory);
+                                      Map<LocalDate, Double> costBasisHistory,
+                                      Map<String, Dca> dcaMap) {
+    return new StockPortfolioFlexible(portfolioName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   @Override
@@ -182,7 +183,37 @@ public class StockControllerFlexible extends AbstractController {
     return costBasisHistory;
   }
 
-  // HERE MAYBE READ DCA
+  @Override
+  protected Map<String, Dca> readDcaFromCsv(File dcaFile) throws FileNotFoundException {
+
+    Scanner csvReader = new Scanner(dcaFile);
+    csvReader.nextLine();
+
+    Map<String, Dca> dcaMap= new HashMap<>();
+
+    while (csvReader.hasNext()) {
+      String[] vals = csvReader.nextLine().split(",");
+
+      Map<String, Double> stockWeightage = new HashMap<>();
+      TimeLine timeLine;
+      if(Objects.equals(vals[3], "null")) {
+        timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
+      } else {
+        timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
+      }
+
+      dcaMap.put(vals[0], new Dca(
+              Double.parseDouble(vals[1]),
+              stockWeightage,
+              timeLine,
+              Integer.parseInt(vals[4]),
+              Double.parseDouble(vals[5]),
+              LocalDate.parse(vals[6])
+      ));
+    }
+
+    return dcaMap;
+  }
 
   private void handleGetPortfolioPerformance(Portfolio portfolio) {
     LocalDate from;
@@ -457,6 +488,11 @@ public class StockControllerFlexible extends AbstractController {
 
   private void displayDcaStuff(Portfolio portfolio) {
     String strategy = getStrategyName(portfolio);
+    if(portfolio.getDcaStrategies().containsKey(strategy)) {
+      menu.printMessage("DCA with same strategy name already exists.");
+      return;
+    }
+
     TimeLine timeline = getTimeline();
     double amount = getAmount();
     Map<String, Double> stocksWeightage = getStocksWeightage();

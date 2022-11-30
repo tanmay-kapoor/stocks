@@ -11,6 +11,7 @@ import java.util.Scanner;
 import models.Log;
 import models.api.ShareApi;
 import models.portfolio.Composition;
+import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import models.portfolio.StockPortfolioInflexible;
 import views.Menu;
@@ -33,9 +34,10 @@ public class StockControllerInflexible extends AbstractController {
   }
 
   @Override
-  protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
-                                      Map<LocalDate, Double> costBasisHistory) {
-    return new StockPortfolioInflexible(portfolioName, stocks, path, api, costBasisHistory);
+  protected Portfolio createPortfolio(String pName, Map<String, Log> stocks,
+                                      Map<LocalDate, Double> costBasisHistory,
+                                      Map<String, Dca> dcaMap) {
+    return new StockPortfolioInflexible(pName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   @Override
@@ -48,6 +50,11 @@ public class StockControllerInflexible extends AbstractController {
   protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
           throws FileNotFoundException {
     return new HashMap<>();
+  }
+
+  @Override
+  protected Map<String, Dca> readDcaFromCsv(File dcaFile) {
+    return null;
   }
 
   @Override
