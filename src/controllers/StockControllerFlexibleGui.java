@@ -67,11 +67,11 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
       }
 
     } catch (NumberFormatException e) {
-      menu.printMessage("Invalid format for 1 or more fields");
+      menu.errorMessage("Invalid format for 1 or more fields");
     } catch (IllegalArgumentException e) {
-      menu.printMessage(e.getMessage());
+      menu.errorMessage(e.getMessage());
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid Date format");
+      menu.errorMessage("Invalid Date format");
     }
   }
 
@@ -82,9 +82,9 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
       LocalDate from = LocalDate.parse(f);
       LocalDate to = LocalDate.parse(t);
       if (from.compareTo(LocalDate.now()) > 0 || to.compareTo(LocalDate.now()) > 0) {
-        menu.printMessage("Cannot get performance for future dates");
+        menu.errorMessage("Cannot get performance for future dates");
       } else if (from.compareTo(to) > 0) {
-        menu.printMessage("Start date must be before end date");
+        menu.errorMessage("Start date must be before end date");
       } else {
         Map<LocalDate, Double> performance = portfolio.getPortfolioPerformance(from, to);
         Map<LocalDate, Performance> performanceOnEachDate = new TreeMap<>();
@@ -122,7 +122,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
                 String.format("%.02f", min), new TimeLine(LocalDate.parse(f), LocalDate.parse(t)));
       }
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid date format");
+      menu.errorMessage("Invalid date format");
     }
     return null;
   }
@@ -138,7 +138,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         return portfolio.getCostBasis(d);
       }
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid date format");
+      menu.errorMessage("Invalid date format");
     }
     return -1;
   }
@@ -181,9 +181,9 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         }
       }
     } catch (NumberFormatException e) {
-      menu.printMessage("Invalid format for 1 or more fields");
+      menu.errorMessage("Invalid format for 1 or more fields");
     } catch (IllegalArgumentException e) {
-      menu.printMessage("Invalid ticker");
+      menu.errorMessage("Invalid ticker");
     }
   }
 
@@ -215,11 +215,11 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         }
       }
     } catch (NumberFormatException e) {
-      menu.printMessage("Invalid format for 1 or more fields");
+      menu.errorMessage("Invalid format for 1 or more fields");
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid date format");
+      menu.errorMessage("Invalid date format");
     } catch (IllegalArgumentException e) {
-      menu.printMessage(e.getMessage());
+      menu.errorMessage(e.getMessage());
     }
   }
 
@@ -235,7 +235,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         portfolio.doDca(strategyName, dca);
         menu.printMessage("Successfully created strategy.");
       } catch (IllegalArgumentException e) {
-        menu.printMessage(e.getMessage());
+        menu.errorMessage(e.getMessage());
       }
     }
   }

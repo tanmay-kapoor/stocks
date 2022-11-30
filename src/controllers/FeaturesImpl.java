@@ -144,11 +144,11 @@ abstract class FeaturesImpl implements Features {
         menu.successMessage(ticker, details, Txn.Buy);
       }
     } catch (NumberFormatException e) {
-      menu.printMessage("Invalid format for 1 or more fields");
+      menu.errorMessage("Invalid format for 1 or more fields");
     } catch (IllegalArgumentException e) {
-      menu.printMessage("This ticker is not associated with any company");
+      menu.errorMessage("This ticker is not associated with any company");
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid Date format");
+      menu.errorMessage("Invalid Date format");
     }
   }
 
@@ -199,7 +199,8 @@ abstract class FeaturesImpl implements Features {
         return vals;
       }
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid date format");
+      menu.errorMessage("Invalid date format");
+      return null;
     }
     return new HashMap<>();
   }
@@ -219,7 +220,7 @@ abstract class FeaturesImpl implements Features {
       }
       return vals;
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid date format");
+      menu.errorMessage("Invalid date format");
     }
     return new HashMap<>();
   }
@@ -235,7 +236,7 @@ abstract class FeaturesImpl implements Features {
         return portfolio.getValue(d);
       }
     } catch (DateTimeParseException e) {
-      menu.printMessage("Invalid date format");
+      menu.errorMessage("Invalid date format");
     }
     return -1;
   }
@@ -420,9 +421,9 @@ abstract class FeaturesImpl implements Features {
         menu.printMessage("");
       }
     } catch (InvalidPathException e) {
-      menu.printMessage("Invalid file path");
+      menu.errorMessage("Invalid file path");
     } catch (FileNotFoundException | NullPointerException e) {
-      menu.printMessage("File not found. Select file with proper path");
+      menu.errorMessage("File not found. Select file with proper path");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

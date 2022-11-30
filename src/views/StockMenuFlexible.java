@@ -3,8 +3,6 @@ package views;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import controllers.Features;
-
 /**
  * View that is meant to specifically deal with menu while interacting with user about
  * flexible stock portfolio. This has the ability to ask user the type of transaction they
@@ -69,7 +67,7 @@ public class StockMenuFlexible extends AbstractMenu {
   }
 
   @Override
-  public void errorMsg(String msg) {
+  public void errorMessage(String msg) {
     return;
   }
 
