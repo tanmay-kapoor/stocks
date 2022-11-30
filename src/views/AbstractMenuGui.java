@@ -282,7 +282,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     });
   }
 
-
   @Override
   public void getDateForValue() {
     printMessage("Choose date : ");
@@ -313,7 +312,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     getContentsBtn.addActionListener(e -> {
       setDateToNowIfEmpty(dateField);
-      Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateField.getText());
+      Map<String, Double> composition = features.getPortfolioContents(portfolioName,
+              dateField.getText());
       if (composition != null) {
         if (!composition.isEmpty()) {
           //data cleaning
@@ -334,7 +334,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     getWeightageBtn.addActionListener(e -> {
       setDateToNowIfEmpty(dateField);
-      Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName, dateField.getText());
+      Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName,
+              dateField.getText());
       if (weightage.isEmpty()) {
         printMessage("No stocks existed on this date");
       } else {
@@ -358,7 +359,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private void getPortfolioValueOptions() {
     if (showP3()) return;
 
-    setGbcXY(0, 1);
+    gbcNewline();
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
     JTextField dateField = new JTextField(10);
     gbc3.gridx = 1;
@@ -514,21 +515,22 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     weightage.setText("");
 
     goToPanel4();
-
+    gbc4Newline();
     for (String ticker : stockWeightage.keySet()) {
-      gbc4Newline();
       panel4.add(new JLabel(ticker), gbc4);
       gbc4.gridx = 1;
       panel4.add(new JLabel(stockWeightage.get(ticker).toString() + "%"), gbc4);
+      gbc4Newline();
     }
 
-    gbc4Newline();
+
     panel4.add(new JLabel("Add ticker: "), gbc4);
     gbc4.gridx = 1;
     panel4.add(tickerChosen, gbc4);
 
     gbc4Newline();
-    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft() + "% left)"), gbc4);
+    panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft()
+            + "% left)"), gbc4);
     gbc4.gridx = 1;
     panel4.add(weightage, gbc4);
 

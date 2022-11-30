@@ -509,7 +509,7 @@ public class StockControllerFlexible extends AbstractController {
     String strategy;
     do {
       isValid = true;
-      menu.getStrategyName();
+//      menu.getStrategyName();
       strategy = getWordVal();
       if (existingStrategies.containsKey(strategy)) {
         isValid = false;
@@ -543,7 +543,7 @@ public class StockControllerFlexible extends AbstractController {
   private double getAmount() {
     double amount;
     do {
-      menu.getStrategyAmount();
+//      menu.getStrategyAmount();
       amount = getDoubleVal();
       if (amount < 0.0) {
         menu.printMessage("\nAmount cannot be negative.\n");
@@ -578,7 +578,7 @@ public class StockControllerFlexible extends AbstractController {
       boolean isValidWeightage;
       do {
         isValidWeightage = true;
-        menu.getWeightage();
+//        menu.getWeightage();
         weightage = getDoubleVal();
         if (total - weightage < 0.0) {
           isValidWeightage = false;
@@ -601,7 +601,7 @@ public class StockControllerFlexible extends AbstractController {
     int interval;
 
     do {
-      menu.getInterval();
+//      menu.getInterval();
       interval = getIntVal();
       if (interval < 0) {
         menu.printMessage("\nInterval cannot be negative.");
