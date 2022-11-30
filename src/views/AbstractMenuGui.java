@@ -407,7 +407,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       if (value != -1) {
         printMessage("Cost basis of " + portfolioName
                 + " on " + dateField.getText()
-                + " is: $" + value);
+                + " is: $" + String.format("%.2f", value));
       }
     });
 
@@ -715,7 +715,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       if (value != -1) {
         printMessage("Value of " + portfolioName
                 + " as of " + dateField.getText()
-                + " closing was: $" + value);
+                + " closing was: $" + String.format("%.2f", value));
       }
     });
 
