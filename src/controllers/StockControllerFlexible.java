@@ -513,7 +513,8 @@ public class StockControllerFlexible extends AbstractController {
       strategy = getWordVal();
       if (existingStrategies.containsKey(strategy)) {
         isValid = false;
-        menu.printMessage("\nStrategy xx already exists in this portfolio. Choose a different name.");
+        menu.errorMessage("\nStrategy xx already exists in this portfolio. "
+                + "Choose a different name.");
       }
     } while (!isValid);
     return strategy;

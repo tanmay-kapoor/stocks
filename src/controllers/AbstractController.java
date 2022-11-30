@@ -168,7 +168,7 @@ abstract class AbstractController implements SpecificController {
 
       if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
         shouldContinue = true;
-        menu.printMessage(String.format("\nPortfolio \"%s\" already exists. Portfolio names are "
+        menu.errorMessage(String.format("\nPortfolio \"%s\" already exists. Portfolio names are "
                 + "case insensitive! Please use a unique name.", portfolioName));
       }
 
@@ -214,7 +214,7 @@ abstract class AbstractController implements SpecificController {
           if (!extension.equals("csv")) {
             menu.printMessage("\nInvalid file. Please use a csv file.");
           } else if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
-            menu.printMessage(String.format("\n\"%s\" named portfolio already exists. "
+            menu.errorMessage(String.format("\n\"%s\" named portfolio already exists. "
                     + "Portfolio names are case insensitive! Please rename your file "
                     + "and try again!", portfolioName));
           } else {
@@ -543,7 +543,8 @@ abstract class AbstractController implements SpecificController {
       header = "Date, lastSellDate\n";
     } else if(type == FileType.DcaFile) {
       subFolder = "dca/";
-      header = "strategy name, investment amount, start date, end date, interval,commission, last purchase date";
+      header = "strategy_name,investment_amount,start_date,end_date,interval," +
+              "commission,last_purchase_date";
     } else {
       subFolder = "costbasis/";
       header = "Date, CostBasis\n";

@@ -464,7 +464,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
         features.saveDca(portfolioName, strategy.getText(), amount.getText(), fromDate.getText(),
-                toDate.getText(), interval.getText(), commission.getText());
+                toDate.getText(), interval.getText(), commission.getText(), stockWeightage);
         features.savePortfolio(portfolioName);
       }
     });
@@ -507,9 +507,15 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbc3.gridx = 1;
     panel3.add(toDate, gbc3);
 
+    JLabel warning = new JLabel("Please wait, generating performance report " +
+            "may take some time.");
+    warning.setForeground(Color.red);
+
     gbcNewline();
     JButton getBarChartBtn = new JButton("Get Bar Chart");
     getBarChartBtn.addActionListener(evt -> {
+      panel3.add(warning, gbc3);
+      panel3.revalidate();
       Report performanceReport = features.getPortfolioPerformance(portfolioName,
               fromDate.getText(), toDate.getText());
       if (performanceReport != null) {
@@ -520,6 +526,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton getLineChartBtn = new JButton("Get Line Chart");
     getLineChartBtn.addActionListener(evt -> {
+      panel3.add(warning, gbc3);
+      panel3.revalidate();
       Report performanceReport = features.getPortfolioPerformance(portfolioName,
               fromDate.getText(), toDate.getText());
       if (performanceReport != null) {
@@ -534,8 +542,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     gbcNewline();
     gbc3.gridwidth = 2;
-    panel3.add(new JLabel("Generating performance report may take some time. Please wait."),
-            gbc3);
 
     panel3.revalidate();
   }
