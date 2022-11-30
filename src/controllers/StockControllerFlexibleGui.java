@@ -1,5 +1,9 @@
 package controllers;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
@@ -247,5 +251,26 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         menu.errorMessage(e.getMessage());
       }
     }
+  }
+
+  @Override
+  public void createEmptyDcaLog(String pName) throws IOException {
+    String dcaPath = this.path + "dca/";
+    Files.createDirectories(Paths.get(dcaPath));
+    String fileName = String.format(dcaPath + "%s.csv", pName);
+    FileWriter csvWriter = new FileWriter(fileName);
+
+    StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,end_date,interval," +
+            "commission,last_purchase_date");
+    for(int i = 0; i < 20; i++) {
+      header.append(",stock,").append(i+1).append(",weightage,").append(i+1);
+    }
+
+    csvWriter.append(header.toString());
+
+    csvWriter.flush();
+    csvWriter.close();
+
+
   }
 }

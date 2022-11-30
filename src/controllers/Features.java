@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +46,6 @@ public interface Features {
                String interval, String commission, Map<String, Double> stockWeightage);
 
   double getWeightageLeft();
+
+  void createEmptyDcaLog(String pName) throws IOException;
 }

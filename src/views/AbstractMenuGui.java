@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -498,6 +499,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       } else {
         features.saveDca(portfolioName, strategy.getText(), amount.getText(), fromDate.getText(),
                 toDate.getText(), interval.getText(), commission.getText(), stockWeightage);
+        popupMsg("Dollar Cost Average Strategy Saved!");
         features.savePortfolio(portfolioName);
       }
     });
@@ -522,6 +524,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     panel3.revalidate();
 
+  }
+
+  private void popupMsg(String s) {
+    showMessageDialog(null, s);
   }
 
 
@@ -899,18 +905,26 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbc4.gridx = 1;
     panel4.add(backToP3Btn, gbc4);
 
-    addBtn.addActionListener(e ->
-            features.buyStock(
-                    portfolioName,
-                    ticker.getText(),
-                    quantity.getText(),
-                    dateTxtFiled.getText(),
-                    commission.getText()
-            )
-    );
+    addBtn.addActionListener(e -> {
+      features.buyStock(
+              portfolioName,
+              ticker.getText(),
+              quantity.getText(),
+              dateTxtFiled.getText(),
+              commission.getText()
+      );
+
+      try {
+        features.createEmptyDcaLog(portfolioName);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+    });
 
     panel4.revalidate();
   }
+
 
   private void goToPanel4() {
     cl.show(mainPanel, "panel 4");
@@ -923,4 +937,5 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       dateField.setText(LocalDate.now().toString());
     }
   }
+
 }
