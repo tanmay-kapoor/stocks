@@ -216,8 +216,10 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
       }
     } catch (NumberFormatException e) {
       menu.printMessage("Invalid format for 1 or more fields");
-    } catch (IllegalArgumentException e) {
+    } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
+    } catch (IllegalArgumentException e) {
+      menu.printMessage(e.getMessage());
     }
   }
 

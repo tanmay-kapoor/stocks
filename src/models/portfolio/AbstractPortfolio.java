@@ -79,6 +79,10 @@ abstract class AbstractPortfolio implements Portfolio {
 
   @Override
   public void buy(String ticker, Details details, double commissionFee) {
+    if (details.getQuantity() == 0) {
+      return;
+    }
+
     if (details.getPurchaseDate().compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot buy shares on future date.");
     }

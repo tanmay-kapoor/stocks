@@ -233,7 +233,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     LocalDate endDate = dca.getTimeLine().getEndDate();
 
     List<LocalDate> buyOnDates = new ArrayList<>();
-    for(LocalDate i = startDate; i.compareTo(endDate) <= 0 ; i = i.plusDays(dca.getInterval())) {
+    for (LocalDate i = startDate; i.compareTo(endDate) <= 0; i = i.plusDays(dca.getInterval())) {
       buyOnDates.add(i);
     }
 
@@ -244,8 +244,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     double totalAmount = dca.getTotalAmount();
     Map<String, Double> stockWeightage = dca.getStockWeightage();
 
-    for(LocalDate date : buyOnDates) {
-      for(String ticker: stockWeightage.keySet()) {
+    for (LocalDate date : buyOnDates) {
+      for (String ticker : stockWeightage.keySet()) {
         double stockPrice = api.getShareDetails(ticker, date).get("close");
         double stockBudget = totalAmount / stockWeightage.get(ticker);
         double quantityToBuy = stockBudget / stockPrice;
@@ -256,12 +256,39 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
   @Override
   protected void doDcaIfApplicable(String dcaName, Dca dca) {
+    if (dca.getTotalAmount() <= 0) {
+      throw new IllegalArgumentException("Investment amount must be > 0");
+    }
+
+    if (dca.getInterval() < 1) {
+      throw new IllegalArgumentException("Interval must be >= 1 day");
+    }
+
+    Map<String, Double> stocksWeightage = dca.getStockWeightage();
+    double w = 0.0;
+    for (String ticker : stocksWeightage.keySet()) {
+      double weight = stocksWeightage.get(ticker);
+      if (weight <= 0.0) {
+        throw new IllegalArgumentException("Weightage of each stock must be > 0");
+      }
+      w += weight;
+    }
+    if (w != 100.0) {
+      throw new IllegalArgumentException("Total weightage of all stocks should be 100%");
+    }
+
+    LocalDate startDate = dca.getTimeLine().getStartDate();
+    LocalDate endDate = dca.getTimeLine().getEndDate();
+    if (startDate.compareTo(endDate) >= 0) {
+      throw new IllegalArgumentException("Start date must be before end date");
+    }
+
     List<LocalDate> buyOnDates = getBuyDates(dca);
     buyOnDates(dca, buyOnDates);
   }
 
   @Override
   protected Map<String, Dca> getDcaStrategiesIfApplicable() {
-    return this.dcaMap;
+    return new HashMap<>(this.dcaMap);
   }
 }
