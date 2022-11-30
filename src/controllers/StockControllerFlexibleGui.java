@@ -118,7 +118,8 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
           performanceOnEachDate.put(date, new Performance(precisionAdjusted, stars));
         }
         Double scale_val = Double.isNaN(valueDiffSum / count) ? 0 : (valueDiffSum / count);
-        return new Report(performanceOnEachDate, String.format("%.02f", scale_val), String.format("%.02f", min));
+        return new Report(performanceOnEachDate, String.format("%.02f", scale_val), String.format("%.02f", min),
+                new TimeLine(LocalDate.parse(f), LocalDate.parse(t)));
       }
     } catch (DateTimeParseException e) {
       menu.printMessage("Invalid date format");
