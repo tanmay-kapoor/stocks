@@ -105,7 +105,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   public void getPortfolioName() {
     panel3.removeAll();
     resetGbc3();
-    System.out.println(gbc3.gridx + "  " + gbc3.gridy);
     panel3.add(new JLabel("Enter portfolio name"), gbc3);
     gbc3.gridx = 1;
     JTextField portfolioNameTextField = new JTextField(10);
@@ -499,7 +498,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         goToPanel4();
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
-        System.out.println(portfolioName);
         features.saveDca(portfolioName, strategy.getText(), amount.getText(), fromDate.getText(),
                 toDate.getText(), interval.getText(), commission.getText());
         features.savePortfolio(portfolioName);

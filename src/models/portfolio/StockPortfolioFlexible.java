@@ -250,7 +250,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
         DateDetails shareDetails = api.getShareDetails(ticker, date);
 
         while (shareDetails.getIsHoliday()) {
-          System.out.println(date);
           date = date.plusDays(1);
           shareDetails = api.getShareDetails(ticker, date);
         }
