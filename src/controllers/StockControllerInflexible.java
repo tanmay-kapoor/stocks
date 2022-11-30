@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 import models.Log;
 import models.api.ShareApi;
@@ -17,7 +16,6 @@ import models.portfolio.StockPortfolioInflexible;
 import views.Menu;
 
 /**
- /**
  * The StockControllerInflexible couples appropriate views and models that work specifically with
  * inflexible Portfolio.
  */
@@ -25,7 +23,6 @@ import views.Menu;
 public class StockControllerInflexible extends AbstractController {
   public StockControllerInflexible(InputStream in, Menu menu, ShareApi api, String path) {
     super(in, menu, api, path);
-    sc = new Scanner(this.in);
   }
 
   @Override

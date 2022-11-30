@@ -33,7 +33,6 @@ import views.Menu;
  * two or more types of controllers across the program.
  */
 abstract class AbstractController implements SpecificController {
-  protected final InputStream in;
   protected Scanner sc;
 
   protected final Menu menu;
@@ -73,10 +72,10 @@ abstract class AbstractController implements SpecificController {
                                                          String portfolioName);
 
   protected AbstractController(InputStream in, Menu menu, ShareApi api, String path) {
-    this.in = in;
     this.menu = menu;
     this.api = api;
     this.path = path;
+    sc = new Scanner(in);
 
     try {
       Files.createDirectories(Paths.get(this.path));
@@ -538,10 +537,10 @@ abstract class AbstractController implements SpecificController {
     String subFolder = "";
     String header = "";
 
-    if(type == FileType.LogFile) {
+    if (type == FileType.LogFile) {
       subFolder = "logs/";
       header = "Date, lastSellDate\n";
-    } else if(type == FileType.DcaFile) {
+    } else if (type == FileType.DcaFile) {
       subFolder = "dca/";
       header = "strategy_name,investment_amount,start_date,end_date,interval," +
               "commission,last_purchase_date";

@@ -32,6 +32,14 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
   }
 
   @Override
+  protected Portfolio createPortfolioObject(String portfolioName, Map<String, Log> stocks,
+                                            String path, ShareApi api,
+                                            Map<LocalDate, Double> costBasisHistory,
+                                            Map<String, Dca> dcaMap) {
+    return new StockPortfolioFlexible(portfolioName, stocks, path, api, costBasisHistory, dcaMap);
+  }
+
+  @Override
   protected LocalDate getDate(String d) {
     if (d.equals("")) {
       return LocalDate.now();

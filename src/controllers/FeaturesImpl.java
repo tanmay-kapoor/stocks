@@ -42,6 +42,10 @@ abstract class FeaturesImpl implements Features {
   protected Portfolio portfolio;
 
   protected abstract Portfolio createPortfolioObject(String portfolioName);
+  protected abstract Portfolio createPortfolioObject(String portfolioName, Map<String, Log> stocks,
+                                            String path, ShareApi api,
+                                            Map<LocalDate, Double> costBasisHistory,
+                                            Map<String, Dca> dcaMap);
 
   protected abstract LocalDate getDate(String d);
 
@@ -305,7 +309,7 @@ abstract class FeaturesImpl implements Features {
     Map<LocalDate, Double> costBasisHistory = readStockBasisHistoryFromCsv(costBasisFile);
     Map<String, Dca> dcaMap = readDcaFromCsv(dcaFile);
 
-    return new StockPortfolioFlexible(pName, stocks, path, api, costBasisHistory, dcaMap);
+    return createPortfolioObject(pName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
   private Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
@@ -378,7 +382,7 @@ abstract class FeaturesImpl implements Features {
 //    Scanner csvReader = new Scanner(dcaFile);
 //    csvReader.nextLine();
 
-    Map<String, Dca> dcaMap= new HashMap<>();
+    Map<String, Dca> dcaMap = new HashMap<>();
 
 //    while (csvReader.hasNext()) {
 //      String[] vals = csvReader.nextLine().split(",");
@@ -446,10 +450,10 @@ abstract class FeaturesImpl implements Features {
     String subFolder = "";
     String header = "";
 
-    if(type == FileType.LogFile) {
+    if (type == FileType.LogFile) {
       subFolder = "logs/";
       header = "Date, lastSellDate\n";
-    } else if(type == FileType.DcaFile) {
+    } else if (type == FileType.DcaFile) {
       subFolder = "dca/";
       header = "strategy_name,investment_amount,start_date,end_date,interval," +
               "commission,last_purchase_date";

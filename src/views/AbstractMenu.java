@@ -1,6 +1,5 @@
 package views;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 
 import models.Details;
@@ -11,11 +10,9 @@ import models.portfolio.Txn;
  * menu classes.
  */
 abstract class AbstractMenu implements Menu {
-  protected final InputStream in;
   protected final PrintStream out;
 
-  protected AbstractMenu(InputStream in, PrintStream out) {
-    this.in = in;
+  protected AbstractMenu(PrintStream out) {
     this.out = out;
   }
 

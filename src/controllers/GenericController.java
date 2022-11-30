@@ -64,11 +64,11 @@ public class GenericController implements Controller {
             choice = mainMenu.getPortfolioType();
             switch (choice) {
               case '1':
-                handleFlexibleSelected(new StockMenuFlexible(this.in, this.out));
+                handleFlexibleSelected(new StockMenuFlexible(this.out));
                 break;
 
               case '2':
-                handleInflexibleSelected(new StockMenuInflexible(this.in, this.out));
+                handleInflexibleSelected(new StockMenuInflexible(this.out));
                 break;
 
               default:
