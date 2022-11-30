@@ -1,5 +1,6 @@
 package models.portfolio;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import models.TimeLine;
@@ -10,8 +11,10 @@ public class Dca {
   private final TimeLine timeLine;
   private final int interval;
   private final double commission;
+  private LocalDate lastBought;
 
-  public Dca(double totalAmount, Map<String, Double> stocksWeightage, TimeLine timeLine, int interval, double commission) {
+  public Dca(double totalAmount, Map<String, Double> stocksWeightage,
+             TimeLine timeLine, int interval, double commission) {
     this.totalAmount = totalAmount;
     this.stocksWeightage = stocksWeightage;
     this.timeLine = timeLine;
@@ -37,5 +40,13 @@ public class Dca {
 
   public double getCommission() {
     return this.commission;
+  }
+
+  public LocalDate getLastBought() {
+    return this.lastBought;
+  }
+
+  public void setLastBought(LocalDate date) {
+    this.lastBought = date;
   }
 }
