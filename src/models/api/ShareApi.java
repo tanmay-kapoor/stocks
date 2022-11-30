@@ -1,7 +1,6 @@
 package models.api;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 /**
  * An interface to get details about any type of share as and when requested by the user.
@@ -34,5 +33,5 @@ public interface ShareApi {
    *                     and the value is the price of that share on the date requested by
    *                     the client.
    */
-  Map<String, Double> getShareDetails(String tickerSymbol, LocalDate dateAsked);
+  DateDetails getShareDetails(String tickerSymbol, LocalDate dateAsked);
 }

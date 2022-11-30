@@ -32,8 +32,8 @@ public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
     portfolio.buy("AMZN", 27);
     portfolio.buy("NFLX", 18);
     double val = portfolio.getValue(LocalDate.parse("2022-10-10"));
-    double expected = (27 * api.getShareDetails("AMZN", now).get("close"))
-            + (18 * api.getShareDetails("NFLX", now).get("close"));
+    double expected = (27 * api.getShareDetails("AMZN", now).getValues().get("close"))
+            + (18 * api.getShareDetails("NFLX", now).getValues().get("close"));
     assertEquals(expected, val, 0.1);
 
     try {
@@ -41,15 +41,15 @@ public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
       fail("Should be invalid date");
     } catch (DateTimeParseException e1) {
       val = portfolio.getValue(LocalDate.parse("1900-07-15"));
-      expected = (27 * api.getShareDetails("AMZN", now).get("close"))
-              + (18 * api.getShareDetails("NFLX", now).get("close"));
+      expected = (27 * api.getShareDetails("AMZN", now).getValues().get("close"))
+              + (18 * api.getShareDetails("NFLX", now).getValues().get("close"));
       assertEquals(expected, val, 0.1);
     }
   }
 
   protected void getValueSomeStocksDifferently(double val) {
-    double expected = (27 * api.getShareDetails("AMZN", now).get("close"))
-            + (18 * api.getShareDetails("NFLX", now).get("close"));
+    double expected = (27 * api.getShareDetails("AMZN", now).getValues().get("close"))
+            + (18 * api.getShareDetails("NFLX", now).getValues().get("close"));
     assertEquals(expected, val, 0.1);
   }
 

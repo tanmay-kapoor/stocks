@@ -25,7 +25,7 @@ public class AlphaVantageTest {
   @Test
   public void getShareDetails() {
     Map<String, Double> output = api.getShareDetails("aapl",
-            LocalDate.parse("2022-10-10"));
+            LocalDate.parse("2022-10-10")).getValues();
     assertNotEquals(null, output);
     Map<String, Double> expected = Map.ofEntries(
             entry("open", 140.4200),
@@ -39,12 +39,12 @@ public class AlphaVantageTest {
       assertEquals(expected.get(key), output.get(key));
     }
 
-    output = api.getShareDetails("aApL", LocalDate.parse("2022-10-10"));
+    output = api.getShareDetails("aApL", LocalDate.parse("2022-10-10")).getValues();
     for (String key : expected.keySet()) {
       assertEquals(expected.get(key), output.get(key));
     }
 
-    output = api.getShareDetails("AAPL", LocalDate.parse("2022-10-10"));
+    output = api.getShareDetails("AAPL", LocalDate.parse("2022-10-10")).getValues();
     for (String key : expected.keySet()) {
       assertEquals(expected.get(key), output.get(key));
     }
@@ -53,16 +53,16 @@ public class AlphaVantageTest {
   @Test
   public void testGetShareDetailsDateAbsent() {
     Map<String, Double> output = api.getShareDetails("meta",
-            LocalDate.parse("2021-11-07"));
+            LocalDate.parse("2021-11-07")).getValues();
     assertNotEquals(null, output);
     Map<String, Double> expected = api.getShareDetails("meta",
-            LocalDate.parse("2021-11-05"));
+            LocalDate.parse("2021-11-05")).getValues();
 
     output = api.getShareDetails("meta",
-            LocalDate.parse("2021-11-06"));
+            LocalDate.parse("2021-11-06")).getValues();
     assertNotEquals(null, output);
     expected = api.getShareDetails("meta",
-            LocalDate.parse("2021-11-05"));
+            LocalDate.parse("2021-11-05")).getValues();
 
     for (String key : expected.keySet()) {
       assertEquals(expected.get(key), output.get(key));
