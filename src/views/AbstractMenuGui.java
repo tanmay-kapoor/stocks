@@ -428,6 +428,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbcNewline();
     panel3.add(new JLabel("Enter DCA strategy name"), gbc3);
     JTextField strategy = new JTextField("");
+    strategy.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        strategy.setEditable(key.getKeyChar() != ',' || key.getKeyCode() == 8);
+      }
+    });
     gbc3.gridx = 1;
     panel3.add(strategy, gbc3);
 
@@ -446,18 +451,35 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbcNewline();
     panel3.add(new JLabel("Enter investment interval (days): "), gbc3);
     JTextField interval = new JTextField(10);
+    interval.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        interval.setEditable(key.getKeyChar() >= '0' && key.getKeyChar() <= '9' || key.getKeyCode() == 8);
+      }
+    });
     gbc3.gridx = 1;
     panel3.add(interval, gbc3);
 
     gbcNewline();
     panel3.add(new JLabel("Enter investment amount ($): "), gbc3);
     JTextField amount = new JTextField(10);
+    amount.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        amount.setEditable(key.getKeyChar() >= '0' && key.getKeyChar() <= '9' ||
+                key.getKeyChar() == '.' || key.getKeyCode() == 8);
+      }
+    });
     gbc3.gridx = 1;
     panel3.add(amount, gbc3);
 
     gbcNewline();
     panel3.add(new JLabel("Enter commission: "), gbc3);
     JTextField commission = new JTextField(10);
+    commission.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        commission.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
+                || key.getKeyCode() == 8 || key.getKeyChar() == '.');
+      }
+    });
     gbc3.gridx = 1;
     panel3.add(commission, gbc3);
 
@@ -840,6 +862,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel4.add(new JLabel("Choose Weightage: (" + features.getWeightageLeft()
             + "% left)"), gbc4);
     gbc4.gridx = 1;
+    weightage.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent key) {
+        weightage.setEditable((key.getKeyChar() >= '0' && key.getKeyChar() <= '9')
+                || key.getKeyCode() == 8 || key.getKeyChar() == '.');
+      }
+    });
     panel4.add(weightage, gbc4);
 
     gbc4Newline();
