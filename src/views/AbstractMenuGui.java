@@ -301,8 +301,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton getWeightageBtn = new JButton("Get Stock Weightage");
     gbc3.gridx = 1;
     panel3.add(getWeightageBtn, gbc3);
-    gbc3.gridx = 2;
+
+    gbcNewline();
     panel3.add(goBackButton, gbc3);
+
+    JScrollPane sp = new JScrollPane();
 
     getContentsBtn.addActionListener(e -> {
       setDateToNowIfEmpty(dateField);
@@ -319,7 +322,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
             count++;
           }
 
-          showTable(data);
+          showTable(data, sp);
+
+          gbcNewline();
+          gbc3.gridwidth = 1;
+          panel3.add(goBackButton);
         } else {
           printMessage("No stocks existed on this date");
         }
@@ -342,7 +349,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
           count++;
         }
 
-        showTable(data);
+        showTable(data, sp);
+
+        gbcNewline();
+        gbc3.gridwidth = 1;
+        panel3.add(goBackButton);
       }
     });
 
@@ -729,19 +740,17 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     return true;
   }
 
-  private void showTable(String[][] data) {
-    gbcNewline();
-    String[] colNames = {"Ticker", "Quantity"};
+  private void showTable(String[][] data, JScrollPane sp) {
     panel3.remove(6);
+    String[] colNames = {"Ticker", "Quantity"};
     JTable table = new JTable(data, colNames);
-    JScrollPane sp = new JScrollPane(table);
+    sp = new JScrollPane(table);
+
+    gbcNewline();
     gbc3.gridwidth = 2;
     gbc3.ipady = 250;
     panel3.add(sp, gbc3);
 
-//    gbcNewline();
-//    gbc3.ipady = 30;
-//    panel3.add(goBackButton, gbc3);
     panel3.revalidate();
   }
 

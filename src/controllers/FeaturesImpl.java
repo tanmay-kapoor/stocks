@@ -375,31 +375,31 @@ abstract class FeaturesImpl implements Features {
   }
 
   private Map<String, Dca> readDcaFromCsv(File dcaFile) throws FileNotFoundException {
-    Scanner csvReader = new Scanner(dcaFile);
-    csvReader.nextLine();
+//    Scanner csvReader = new Scanner(dcaFile);
+//    csvReader.nextLine();
 
     Map<String, Dca> dcaMap= new HashMap<>();
 
-    while (csvReader.hasNext()) {
-      String[] vals = csvReader.nextLine().split(",");
-
-      Map<String, Double> stockWeightage = new HashMap<>();
-      TimeLine timeLine;
-      if(Objects.equals(vals[3], "null")) {
-        timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
-      } else {
-        timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
-      }
-
-      dcaMap.put(vals[0], new Dca(
-              Double.parseDouble(vals[1]),
-              stockWeightage,
-              timeLine,
-              Integer.parseInt(vals[4]),
-              Double.parseDouble(vals[5]),
-              LocalDate.parse(vals[6])
-      ));
-    }
+//    while (csvReader.hasNext()) {
+//      String[] vals = csvReader.nextLine().split(",");
+//
+//      Map<String, Double> stockWeightage = new HashMap<>();
+//      TimeLine timeLine;
+//      if(Objects.equals(vals[3], "null")) {
+//        timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
+//      } else {
+//        timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
+//      }
+//
+//      dcaMap.put(vals[0], new Dca(
+//              Double.parseDouble(vals[1]),
+//              stockWeightage,
+//              timeLine,
+//              Integer.parseInt(vals[4]),
+//              Double.parseDouble(vals[5]),
+//              LocalDate.parse(vals[6])
+//      ));
+//    }
 
     return dcaMap;
   }
