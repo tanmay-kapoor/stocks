@@ -11,7 +11,7 @@ public class Dca {
   private final TimeLine timeLine;
   private final int interval;
   private final double commission;
-  private LocalDate lastBought;
+  private LocalDate lastBoughtDate;
 
   public Dca(double totalAmount, Map<String, Double> stocksWeightage,
              TimeLine timeLine, int interval, double commission) {
@@ -42,11 +42,11 @@ public class Dca {
     return this.commission;
   }
 
-  public LocalDate getLastBought() {
-    return this.lastBought;
+  public LocalDate getLastBoughtDate() {
+    return this.lastBoughtDate;
   }
 
   public void setLastBought(LocalDate date) {
-    this.lastBought = date;
+    this.lastBoughtDate = date;
   }
 }

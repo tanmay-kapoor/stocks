@@ -178,6 +178,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       String pathCostBasis = this.path + "costbasis/";
       Files.createDirectories(Paths.get(pathCostBasis));
       String fileName = String.format(pathCostBasis + "%s.csv", portfolioName);
+
       FileWriter csvWriter = new FileWriter(fileName);
       csvWriter.append("Date, CostBasis\n");
       for (LocalDate date : costBasisHistory.keySet()) {
@@ -258,6 +259,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
   @Override
   protected void doDcaIfApplicable(String dcaName, Dca dca) {
+    dcaMap.put(dcaName, dca);
+
     if (dca.getTotalAmount() <= 0) {
       throw new IllegalArgumentException("Investment amount must be > 0");
     }
@@ -287,6 +290,37 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     List<LocalDate> buyOnDates = getBuyDates(dca);
     buyOnDates(dca, buyOnDates);
+
+    saveDcaLog();
+  }
+
+  private void saveDcaLog() {
+    try {
+      String pathDca = this.path + "dca/";
+      Files.createDirectories(Paths.get(pathDca));
+      String fileName = String.format(pathDca + "%s.csv", portfolioName);
+
+      FileWriter csvWriter = new FileWriter(fileName);
+      csvWriter.append("strategy name, investment amount, " + "start date, end date, interval," +
+              "commission, last purchase date\n");
+
+      for (String strategy : dcaMap.keySet()) {
+        Dca dca = dcaMap.get(strategy);
+
+        csvWriter.append(strategy).append(",")
+                .append(String.valueOf(dca.getTotalAmount())).append(",")
+                .append(dca.getTimeLine().getStartDate().toString()).append(",")
+                .append(dca.getTimeLine().getEndDate().toString()).append(",")
+                .append(String.valueOf(dca.getInterval())).append(",")
+                .append(String.valueOf(dca.getCommission())).append(",")
+                .append(dca.getLastBoughtDate().toString()).append("\n");
+      }
+
+      csvWriter.flush();
+      csvWriter.close();
+    } catch (IOException e) {
+      throw new RuntimeException("Something went wrong in creating log!");
+    }
   }
 
   @Override

@@ -182,6 +182,8 @@ public class StockControllerFlexible extends AbstractController {
     return costBasisHistory;
   }
 
+  // HERE MAYBE READ DCA
+
   private void handleGetPortfolioPerformance(Portfolio portfolio) {
     LocalDate from;
     LocalDate to;
