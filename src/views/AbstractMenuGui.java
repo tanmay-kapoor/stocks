@@ -70,6 +70,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
       cl.show(mainPanel, "Portfolio Features");
+      portfolioName = "";
 
       if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
         features.savePortfolio(portfolioName);
@@ -118,6 +119,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(goBackButton, gbc3);
 
     enterBtn.addActionListener(evt -> {
+      panel3.removeAll();
       portfolioName = portfolioNameTextField.getText();
 
       if (portfolioName.equals("")) {
