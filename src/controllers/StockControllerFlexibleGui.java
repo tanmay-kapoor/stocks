@@ -230,9 +230,13 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
     if (this.totalWeightage != 0) {
       menu.printMessage("Total weightage is not 100%");
     } else {
-      Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
-      portfolio.doDca(strategyName, dca);
-      menu.printMessage("Success!!!!!!!");
+      try {
+        Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
+        portfolio.doDca(strategyName, dca);
+        menu.printMessage("Successfully created strategy.");
+      } catch (IllegalArgumentException e) {
+        menu.printMessage(e.getMessage());
+      }
     }
   }
 }

@@ -383,6 +383,70 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     TimeLine timeline;
 
     dcaName = "idk";
+    stocksWeightage.put("META", 17.3);
+    stocksWeightage.put("GOOG", 25.0);
+    stocksWeightage.put("AAPL", 57.7);
+    LocalDate startDate = LocalDate.parse("2019-10-10");
+    LocalDate endDate = LocalDate.parse("2020-10-10");
+    timeline = new TimeLine(startDate, endDate);
+    dca = new Dca(1000, stocksWeightage, timeline, 182, 25.4);
+
+    portfolio.doDca(dcaName, dca);
+
+    Map<String, Log> expected = new HashMap<>();
+
+    Set<Details> detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.32107686612282665, LocalDate.parse("2019-10-10")));
+    expected.put("META", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.03309422753936145, LocalDate.parse("2019-10-10")));
+    expected.put("GOOG", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.07532279773275366, LocalDate.parse("2019-10-10")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition(startDate));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.6510241702388863, LocalDate.parse("2020-04-09")));
+    expected.put("META", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.06611251141405705, LocalDate.parse("2020-04-09")));
+    expected.put("GOOG", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.13999320532381782, LocalDate.parse("2020-04-09")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(182)));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.8701759302028402, LocalDate.parse("2020-10-08")));
+    expected.put("META", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.0930316798809431, LocalDate.parse("2020-10-08")));
+    expected.put("GOOG", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.2907370735531758, LocalDate.parse("2020-10-08")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(364)));
+    checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(369)));
+  }
+
+  @Test
+  public void testDcaSkipHoliday() {
+    String dcaName;
+    Dca dca;
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    TimeLine timeline;
+
+    dcaName = "idk";
     stocksWeightage.put("META", 20.0);
     stocksWeightage.put("GOOG", 25.0);
     stocksWeightage.put("AAPL", 55.0);
@@ -395,44 +459,32 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     Map<String, Log> expected = new HashMap<>();
 
-    Set<Details> detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.18907165815844207, LocalDate.parse("2020-10-10")));
-    expected.put("META", newLog(detailsSet));
-
-    detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.026398806773933817, LocalDate.parse("2020-10-10")));
-    expected.put("GOOG", newLog(detailsSet));
-
-    detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.15544001181344091, LocalDate.parse("2020-10-10")));
-    expected.put("AAPL", newLog(detailsSet));
-
     checkHashMapEquality(expected, portfolio.getComposition(startDate));
 
-    detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.514773290593347, LocalDate.parse("2021-08-06")));
+    Set<Details> detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.3188714605977436, LocalDate.parse("2021-08-06")));
     expected.put("META", newLog(detailsSet));
 
     detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.06048004175112656, LocalDate.parse("2021-08-06")));
+    detailsSet.add(new Details(0.04008621318236153, LocalDate.parse("2021-08-06")));
     expected.put("GOOG", newLog(detailsSet));
 
     detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.43001118990482334, LocalDate.parse("2021-08-06")));
+    detailsSet.add(new Details(0.27056979514584145, LocalDate.parse("2021-08-06")));
     expected.put("AAPL", newLog(detailsSet));
 
     checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(300)));
 
     detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.9138994944534888, LocalDate.parse("2022-06-02")));
+    detailsSet.add(new Details(0.5703046296614065, LocalDate.parse("2022-06-02")));
     expected.put("META", newLog(detailsSet));
 
     detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.09125177705092892, LocalDate.parse("2022-06-02")));
+    detailsSet.add(new Details(0.05707192819603503, LocalDate.parse("2022-06-02")));
     expected.put("GOOG", newLog(detailsSet));
 
     detailsSet = newTreeSet();
-    detailsSet.add(new Details(0.6501479688158227, LocalDate.parse("2022-06-02")));
+    detailsSet.add(new Details(0.3908119628716412, LocalDate.parse("2022-06-02")));
     expected.put("AAPL", newLog(detailsSet));
 
     checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(600)));
@@ -517,6 +569,27 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
           }
         }
       }
+    }
+  }
+
+  @Test
+  public void testDcaZeroStocks() {
+    String dcaName;
+    Dca dca;
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    TimeLine timeline;
+
+    dcaName = "idk";
+    LocalDate startDate = LocalDate.parse("2019-10-10");
+    LocalDate endDate = LocalDate.parse("2020-10-10");
+    timeline = new TimeLine(startDate, endDate);
+    dca = new Dca(1000, stocksWeightage, timeline, 182, 25.4);
+
+    try {
+      portfolio.doDca(dcaName, dca);
+      fail("Should fail with 0 stocks but did not");
+    } catch (IllegalArgumentException e) {
+      // passes
     }
   }
 
