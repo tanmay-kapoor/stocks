@@ -2,9 +2,7 @@ package views;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
 
-import controllers.Features;
 import models.Details;
 import models.portfolio.Txn;
 
@@ -58,6 +56,11 @@ abstract class AbstractMenu implements Menu {
     String txn = txnType == Txn.Buy ? "bought" : "sold";
     this.print("\nSuccessfully " + txn + " " + details.getQuantity()
             + " shares of " + ticker.toUpperCase() + " on " + details.getPurchaseDate() + "\n");
+  }
+
+  @Override
+  public void errorMessage(String msg) {
+    this.print(msg + "\n");
   }
 
   @Override

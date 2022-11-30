@@ -29,7 +29,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   private JComboBox<String> portfolioListCb;
   protected String portfolioName;
   protected JTextField dateTxtFiled;
-  protected  JLabel text;
+  protected JLabel text;
   protected final Features features;
   private final JButton exitButton;
   private final JButton goBackButton;
@@ -146,7 +146,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
   @Override
-  public void errorMsg(String msg) {
+  public void errorMessage(String msg) {
     showMessageDialog(null, msg);
   }
 
@@ -314,19 +314,21 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     getContentsBtn.addActionListener(e -> {
       setDateToNowIfEmpty(dateField);
       Map<String, Double> composition = features.getPortfolioContents(portfolioName, dateField.getText());
-      if (!composition.isEmpty()) {
-        //data cleaning
-        String[][] data = new String[composition.size()][2];
-        int count = 0;
-        for (Map.Entry<String, Double> entry : composition.entrySet()) {
-          data[count][0] = entry.getKey();
-          data[count][1] = entry.getValue().toString();
-          count++;
-        }
+      if (composition != null) {
+        if (!composition.isEmpty()) {
+          //data cleaning
+          String[][] data = new String[composition.size()][2];
+          int count = 0;
+          for (Map.Entry<String, Double> entry : composition.entrySet()) {
+            data[count][0] = entry.getKey();
+            data[count][1] = entry.getValue().toString();
+            count++;
+          }
 
-        showTable(data);
-      } else {
-        printMessage("No stocks existed on this date");
+          showTable(data);
+        } else {
+          printMessage("No stocks existed on this date");
+        }
       }
     });
 
