@@ -115,7 +115,6 @@ abstract class FeaturesImpl implements Features {
 
   @Override
   public void createPortfolio(String portfolioName) {
-    System.out.println("trying to create: " + portfolioName);
     if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
       menu.errorMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
     } else {
@@ -464,14 +463,19 @@ abstract class FeaturesImpl implements Features {
 
     if (type == FileType.LogFile) {
       subFolder = "logs/";
-      header = "Date, lastSellDate\n";
+      header = "date,lastSellDate\n";
     } else if (type == FileType.DcaFile) {
       subFolder = "dca/";
-      header = "strategy_name,investment_amount,start_date,end_date,interval,"
-              + "commission,last_purchase_date";
+      StringBuilder str = new StringBuilder("strategy_name,investment_amount,start_date,end_date")
+              .append(",interval,commission,last_purchase_date");
+      for (int i = 0; i < 20; i++) {
+        str.append(",stock").append(i + 1).append(",weightage").append(i + 1);
+      }
+      str.append("\n");
+      header = str.toString();
     } else {
       subFolder = "costbasis/";
-      header = "Date, CostBasis\n";
+      header = "date,costBasis\n";
     }
     String creationPath = this.path + subFolder;
     Files.createDirectories(Paths.get(creationPath));
