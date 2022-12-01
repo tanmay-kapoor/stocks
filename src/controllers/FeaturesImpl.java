@@ -115,6 +115,7 @@ abstract class FeaturesImpl implements Features {
 
   @Override
   public void createPortfolio(String portfolioName) {
+    System.out.println("trying to create: " + portfolioName);
     if (allPortfolios.stream().anyMatch(portfolioName::equalsIgnoreCase)) {
       menu.errorMessage(String.format("\nPortfolio \"%s\" already exists.", portfolioName));
     } else {
