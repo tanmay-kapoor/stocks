@@ -174,7 +174,6 @@ public interface Features {
    * @return double value representing the percentage left for the rest of the tickers for the dca.
    */
   double getWeightageLeft();
-  // random
 
   void createEmptyDcaLog(String pName) throws IOException;
 }
