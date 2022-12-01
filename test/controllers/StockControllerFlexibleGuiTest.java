@@ -24,7 +24,11 @@ import views.StockMenuFlexible;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * test file for gui flexible controller.
+ */
 public class StockControllerFlexibleGuiTest {
+  private String portfolioName;
   private StringBuilder log;
   private Features controller;
 
@@ -184,6 +188,8 @@ public class StockControllerFlexibleGuiTest {
     controller = new MockStockControllerFlexibleGui(api, path);
     Menu menu = new StockMenuFlexible(out);
     controller.setView(menu);
+
+    portfolioName = "new";
   }
 
   @Test
@@ -195,42 +201,39 @@ public class StockControllerFlexibleGuiTest {
 
   @Test
   public void testBuyStock() {
-    controller.buyStock("hoopla", "GOOG", "10", "2022-10-10", "45.2");
+    controller.buyStock(portfolioName, "GOOG", "10", "2022-10-10", "45.2");
     String expected = "Inside constructor\n" +
             "Inside getShareDetails GOOG 2022-11-30\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : GOOG Quantity : 10.0 Purchase Date : 2022-10-10 Commission Fee : 45.2\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : GOOG Quantity : 10.0 " +
+            "Purchase Date : 2022-10-10 Commission Fee : 45.2\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testSellStock() {
-    controller.sellStock("hoopla", "GOOG", "10", "2022-10-10", "45.2");
+    controller.sellStock(portfolioName, "GOOG", "10", "2022-10-10", "45.2");
     String expected = "Inside constructor\n" +
             "Inside getComposition()\n" +
             "Inside getComposition(date) Received : 2022-11-30\n" +
-            "Inside sell(ticker, details), commissionFee. Symbol : GOOG Quantity : 10.0 Purchase Date : 2022-10-10 Commission Fee : 45.2\n" +
+            "Inside sell(ticker, details), commissionFee. Symbol : GOOG Quantity : 10.0 " +
+            "Purchase Date : 2022-10-10 Commission Fee : 45.2\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void savePortfolio() {
-    controller.savePortfolio("hoopla");
+    controller.savePortfolio(portfolioName);
     String expected = "Inside constructor\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
 
-//  @Test
-//  public void getAllPortfolios() {
-//    List<String> allPortfolios = controller.getAllPortfolios();
-//    System.out.println(allPortfolios);
-//  }
-
   @Test
   public void getPortfolioContents() {
-    Map<String, Double> contents = controller.getPortfolioContents("hoopla", LocalDate.now().toString());
+    Map<String, Double> contents = controller.getPortfolioContents(portfolioName,
+            LocalDate.now().toString());
     Map<String, Double> ex = new HashMap<>();
     ex.put("GOOG", 10.0);
     String expected = "Inside constructor\n" +
@@ -241,7 +244,8 @@ public class StockControllerFlexibleGuiTest {
 
   @Test
   public void getPortfolioWeightage() {
-    Map<String, Double> contents = controller.getPortfolioWeightage("hoopla", LocalDate.now().toString());
+    Map<String, Double> contents = controller.getPortfolioWeightage(portfolioName,
+            LocalDate.now().toString());
     Map<String, Double> ex = new HashMap<>();
     ex.put("GOOG", 100.0);
     String expected = "Inside constructor\n" +
@@ -252,7 +256,8 @@ public class StockControllerFlexibleGuiTest {
 
   @Test
   public void getPortfolioValue() {
-    double val = controller.getPortfolioValue("hoopla", LocalDate.parse("2022-10-10").toString());
+    double val = controller.getPortfolioValue(portfolioName, LocalDate.parse("2022-10-10")
+            .toString());
     String expected = "Inside constructor\n" +
             "Inside getValue(date) Received : 2022-10-10\n";
     assertEquals(expected, log.toString());
@@ -261,7 +266,8 @@ public class StockControllerFlexibleGuiTest {
 
   @Test
   public void getPortfolioPerformance() {
-    Report report = controller.getPortfolioPerformance("hoopla", "2020-10-10", "2022-10-10");
+    Report report = controller.getPortfolioPerformance(portfolioName, "2020-10-10",
+            "2022-10-10");
     String expected = "Inside constructor\n" +
             "Inside getPortfolioPerformance(from, to) From : 2020-10-10 To : 2022-10-10\n";
     assertEquals(expected, log.toString());
@@ -269,7 +275,7 @@ public class StockControllerFlexibleGuiTest {
 
   @Test
   public void getCostBasis() {
-    double c = controller.getCostBasis("hoopla", "2022-10-10");
+    double c = controller.getCostBasis(portfolioName, "2022-10-10");
     String expected = "Inside constructor\n" +
             "Inside getCostBasis(date) Date : 2022-10-10\n";
     assertEquals(expected, log.toString());
@@ -286,7 +292,8 @@ public class StockControllerFlexibleGuiTest {
   public void saveDca() {
     Map<String, Double> stockWeightage = new HashMap<>();
     stockWeightage.put("GOOG", 100.0);
-    controller.saveDca("hoopla", "idk", "1000", "2021-10-10", "2022-10-10", "60", "33", stockWeightage);
+    controller.saveDca(portfolioName, "idk", "1000", "2021-10-10",
+            "2022-10-10", "60", "33", stockWeightage);
     String expected = "Inside constructor\n" +
             "Inside doDca. idk\n";
     assertEquals(expected, log.toString());

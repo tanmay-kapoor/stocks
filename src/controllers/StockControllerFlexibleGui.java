@@ -20,6 +20,10 @@ import models.portfolio.Txn;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
+/**
+ * The StockControllerFlexibleGui couples appropriate views and models that work specifically with
+ * Flexible Portfolio.
+ */
 public class StockControllerFlexibleGui extends FeaturesImpl {
 
   public StockControllerFlexibleGui(ShareApi api, String path) {

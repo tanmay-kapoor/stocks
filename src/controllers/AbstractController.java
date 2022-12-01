@@ -488,8 +488,9 @@ abstract class AbstractController implements SpecificController {
     return createPortfolioFromCsv(pName, file, logFile, costBasisFile, dcaFile);
   }
 
-  private Portfolio createPortfolioFromCsv(String pName, File file, File logFile,
-                                           File costBasisFile, File dcaFile) throws FileNotFoundException {
+  private Portfolio createPortfolioFromCsv(String pName,
+                                           File file, File logFile, File costBasisFile,
+                                           File dcaFile) throws FileNotFoundException {
     //implement try catch here
     Map<String, LocalDate> lastSoldDateList = readLastSoldDateFromCsv(logFile);
     Map<String, Log> stocks = readStocksFromCsv(file, lastSoldDateList);

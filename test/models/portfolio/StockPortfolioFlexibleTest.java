@@ -377,6 +377,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
   @Test
   public void testDca() {
+    assertEquals(new HashMap<>(), portfolio.getComposition());
     String dcaName;
     Dca dca;
     Map<String, Double> stocksWeightage = new HashMap<>();
@@ -441,6 +442,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
   @Test
   public void testDcaSkipHoliday() {
+    assertEquals(new HashMap<>(), portfolio.getComposition());
     String dcaName;
     Dca dca;
     Map<String, Double> stocksWeightage = new HashMap<>();

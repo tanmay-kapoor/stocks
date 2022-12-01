@@ -40,7 +40,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     this.dcaMap = new HashMap<>();
   }
 
-  public StockPortfolioFlexible(String portfolioName, String path, ShareApi api, Map<String, Dca> dcaMap) {
+  public StockPortfolioFlexible(String portfolioName, String path, ShareApi api,
+                                Map<String, Dca> dcaMap) {
     super(portfolioName, path, api);
     this.dcaMap = dcaMap;
   }
@@ -195,7 +196,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   }
 
   private double getTxnCost(String ticker, Details details, double commissionFee) {
-    Map<String, Double> shareDetails = api.getShareDetails(ticker, details.getPurchaseDate()).getValues();
+    Map<String, Double> shareDetails =
+            api.getShareDetails(ticker, details.getPurchaseDate()).getValues();
     double price = shareDetails.get("close");
 
     return price * details.getQuantity() + commissionFee;
@@ -313,14 +315,14 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       String fileName = String.format(pathDca + "%s.csv", portfolioName);
 
       FileWriter csvWriter = new FileWriter(fileName);
-      StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,end_date,interval," +
-              "commission,last_purchase_date");
+      StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,"
+              + "end_date,interval,commission,last_purchase_date");
 
 
       int stocks = dcaMap.size();
 
-      for(int i = 0; i < 20; i++) {
-        header.append(",stock,").append(i+1).append(",weightage,").append(i+1);
+      for (int i = 0; i < 20; i++) {
+        header.append(",stock,").append(i + 1).append(",weightage,").append(i + 1);
       }
       header.append("\n");
 
@@ -350,7 +352,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private String getStockWeightageAsString(Dca dca) {
     StringBuilder res = new StringBuilder();
     Map<String, Double> stockWeightage = dca.getStockWeightage();
-    for(String ticker : stockWeightage.keySet()) {
+    for (String ticker : stockWeightage.keySet()) {
       res.append(ticker).append(",").append(stockWeightage.get(ticker)).append(",");
     }
 

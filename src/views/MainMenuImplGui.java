@@ -1,13 +1,20 @@
 package views;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JButton;
 
+/**
+ * Implementation class for Main Menu interface to interact with the user in GUI.
+ */
 public class MainMenuImplGui extends JFrame implements MainMenu {
-  private JButton flexibleButton;
-  private JButton inflexibleButton;
+
+  /**
+   * Constructor that initializes the caption of the JFrame
+   *
+   * @param caption Caption to display on the JFrame.
+   */
   public MainMenuImplGui(String caption) {
     super(caption);
     setSize(500, 500);
@@ -15,11 +22,11 @@ public class MainMenuImplGui extends JFrame implements MainMenu {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLayout(new FlowLayout());
 
-    flexibleButton = new JButton("Flexible");
+    JButton flexibleButton = new JButton("Flexible");
     flexibleButton.setActionCommand("1");
     this.add(flexibleButton);
 
-    inflexibleButton = new JButton("Inflexible");
+    JButton inflexibleButton = new JButton("Inflexible");
     flexibleButton.setActionCommand("2");
     this.add(inflexibleButton);
 

@@ -81,7 +81,8 @@ public class GenericController implements Controller {
         default:
           break;
       }
-    } while (ch >= '1' && ch <= '2');
+    }
+    while (ch >= '1' && ch <= '2');
   }
 
   private void handleFlexibleSelected(Menu menu) {

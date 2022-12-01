@@ -136,7 +136,7 @@ public class StockControllerInflexibleTest {
 
     @Override
     public void doDca(String dcaName, Dca dca) {
-
+      // later
     }
 
     @Override
@@ -159,7 +159,9 @@ public class StockControllerInflexibleTest {
     }
 
     @Override
-    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks, Map<LocalDate, Double> costBasisHistory, Map<String, Dca> dcaMap) {
+    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
+                                        Map<LocalDate, Double> costBasisHistory,
+                                        Map<String, Dca> dcaMap) {
       log = new StringBuilder("Portfolio name mult : " + portfolioName + "\n");
       return new MockStockPortfolio(log);
     }
@@ -238,7 +240,8 @@ public class StockControllerInflexibleTest {
     }
 
     @Override
-    protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio, String portfolioName) {
+    protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
+                                                  String portfolioName) {
       if (choice == '1') {
         displayAddStockStuff(portfolio);
       } else {

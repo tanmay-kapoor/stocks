@@ -22,12 +22,10 @@ import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
-import models.TimeLine;
 import models.api.ShareApi;
 import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import models.portfolio.Report;
-import models.portfolio.StockPortfolioFlexible;
 import models.portfolio.Txn;
 import views.Menu;
 
@@ -42,10 +40,11 @@ abstract class FeaturesImpl implements Features {
   protected Portfolio portfolio;
 
   protected abstract Portfolio createPortfolioObject(String portfolioName);
+
   protected abstract Portfolio createPortfolioObject(String portfolioName, Map<String, Log> stocks,
-                                            String path, ShareApi api,
-                                            Map<LocalDate, Double> costBasisHistory,
-                                            Map<String, Dca> dcaMap);
+                                                     String path, ShareApi api,
+                                                     Map<LocalDate, Double> costBasisHistory,
+                                                     Map<String, Dca> dcaMap);
 
   protected abstract LocalDate getDate(String d);
 
@@ -105,6 +104,7 @@ abstract class FeaturesImpl implements Features {
 
   @Override
   public void handleInflexibleSelected() {
+    // in case asked to implement later
   }
 
   @Override
@@ -123,7 +123,8 @@ abstract class FeaturesImpl implements Features {
   }
 
   @Override
-  public void buyStock(String portfolioName, String ticker, String quant, String d, String commission) {
+  public void buyStock(String portfolioName, String ticker, String quant, String d,
+                       String commission) {
     try {
       Portfolio portfolio;
       if (allPortfolios.contains(portfolioName)) {
@@ -158,7 +159,8 @@ abstract class FeaturesImpl implements Features {
   }
 
   @Override
-  public void sellStock(String portfolioName, String ticker, String quant, String d, String commission) {
+  public void sellStock(String portfolioName, String ticker, String quant, String d,
+                        String commission) {
     sellStockIfAllowed(portfolioName, ticker, quant, d, commission);
   }
 
@@ -170,6 +172,16 @@ abstract class FeaturesImpl implements Features {
     } else {
       portfolio = this.portfolio;
     }
+    boolean saved;
+    saved = portfolio.savePortfolio();
+    if (saved) {
+      menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
+      allPortfolios.add(portfolioName);
+      allPortfolioObjects.put(portfolioName, portfolio);
+    }
+  }
+
+  protected void savePortfolio(String portfolioName, Portfolio portfolio) {
     boolean saved;
     saved = portfolio.savePortfolio();
     if (saved) {
@@ -312,6 +324,18 @@ abstract class FeaturesImpl implements Features {
     return createPortfolioObject(pName, stocks, path, api, costBasisHistory, dcaMap);
   }
 
+  private Portfolio createPortfolioFromCsv(String pName, File file) throws IOException {
+    //creating log file
+    File logFile = createCsvFile(pName, FileType.LogFile);
+
+    //creating costBasis file
+    File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
+
+    File dcaFile = createCsvFile(pName, FileType.DcaFile);
+
+    return createPortfolioFromCsv(pName, file, logFile, costBasisFile, dcaFile);
+  }
+
   private Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
           throws FileNotFoundException {
     Scanner csvReader = new Scanner(logFile);
@@ -434,18 +458,6 @@ abstract class FeaturesImpl implements Features {
     }
   }
 
-  private Portfolio createPortfolioFromCsv(String pName, File file) throws IOException {
-    //creating log file
-    File logFile = createCsvFile(pName, FileType.LogFile);
-
-    //creating costBasis file
-    File costBasisFile = createCsvFile(pName, FileType.CostBasisFile);
-
-    File dcaFile = createCsvFile(pName, FileType.DcaFile);
-
-    return createPortfolioFromCsv(pName, file, logFile, costBasisFile, dcaFile);
-  }
-
   private File createCsvFile(String name, FileType type) throws IOException {
     String subFolder = "";
     String header = "";
@@ -455,8 +467,8 @@ abstract class FeaturesImpl implements Features {
       header = "Date, lastSellDate\n";
     } else if (type == FileType.DcaFile) {
       subFolder = "dca/";
-      header = "strategy_name,investment_amount,start_date,end_date,interval," +
-              "commission,last_purchase_date";
+      header = "strategy_name,investment_amount,start_date,end_date,interval,"
+              + "commission,last_purchase_date";
     } else {
       subFolder = "costbasis/";
       header = "Date, CostBasis\n";
@@ -471,15 +483,5 @@ abstract class FeaturesImpl implements Features {
     String createdFilePath = creationPath + name + ".csv";
 
     return new File(createdFilePath);
-  }
-
-  protected void savePortfolio(String portfolioName, Portfolio portfolio) {
-    boolean saved;
-    saved = portfolio.savePortfolio();
-    if (saved) {
-      menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
-      allPortfolios.add(portfolioName);
-      allPortfolioObjects.put(portfolioName, portfolio);
-    }
   }
 }

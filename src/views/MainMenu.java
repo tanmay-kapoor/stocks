@@ -5,5 +5,10 @@ package views;
  * this class.
  */
 public interface MainMenu {
+  /**
+   * Get the type of portfolio to work with.
+   *
+   * @return char representing choice of the user.
+   */
   char getPortfolioType();
 }

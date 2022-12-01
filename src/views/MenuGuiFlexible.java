@@ -1,11 +1,22 @@
 package views;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import controllers.Features;
 
+/**
+ * Class for user interaction through gui for flexible portfolio.
+ */
 public class MenuGuiFlexible extends AbstractMenuGui {
 
+  /**
+   * Supple controller features and caption for initial JFrame.
+   *
+   * @param features Controller features.
+   * @param caption  Caption for first JFrame.
+   */
   public MenuGuiFlexible(Features features, String caption) {
     super(features, caption);
   }
