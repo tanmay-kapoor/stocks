@@ -28,7 +28,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 abstract class AbstractMenuGui extends JFrame implements Menu {
   private JComboBox<String> portfolioListCb;
-  private final JButton enterBtn;
   protected String portfolioName;
   protected JTextField dateTxtFiled;
   protected JLabel text;
@@ -65,15 +64,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    enterBtn = new JButton("Enter");
-
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
       cl.show(mainPanel, "Portfolio Features");
 
       if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
         features.savePortfolio(portfolioName);
-//        portfolioName = null;
+        portfolioName = null;
       }
 
       this.setTitle("Flexible Portfolio");
@@ -121,20 +118,23 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(portfolioNameTextField, gbc3);
 
     gbcNewline();
+    JButton enterBtn = new JButton("Enter");
     panel3.add(enterBtn, gbc3);
     gbc3.gridx = 1;
     panel3.add(goBackButton, gbc3);
 
     enterBtn.addActionListener(evt -> {
-      portfolioName = portfolioNameTextField.getText();
-      System.out.println(portfolioName);
-      //creatig problem
+      this.portfolioName = portfolioNameTextField.getText();
+      portfolioNameTextField.setText("");
+      System.out.println("sending: " + portfolioName);
+      //creating problem
       panel3.removeAll();
+//      panel3.remove(enterBtn);
       if (portfolioName.equals("")) {
         printMessage("Name cannot be empty");
       }
 
-      features.createPortfolio(portfolioName);
+      features.createPortfolio(this.portfolioName);
     });
 
     panel3.revalidate();
@@ -207,8 +207,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getAddToPortfolioChoice() {
-    panel3.remove(enterBtn);
-
     gbcNewline();
     JButton addShareBtn = new JButton("Add share");
     addShareBtn.addActionListener(evt -> displayBuyPanel());
