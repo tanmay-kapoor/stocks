@@ -354,7 +354,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       res.append(ticker).append(",").append(stockWeightage.get(ticker)).append(",");
     }
 
-    return res.substring(0, res.length() - 1);
+    return res.length() == 0 ? "" : res.substring(0, res.length() - 1);
   }
 
   @Override
