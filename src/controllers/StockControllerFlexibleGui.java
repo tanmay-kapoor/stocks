@@ -171,7 +171,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
   }
 
   @Override
-  protected void addTickerToStrategyIfAllowed(String ticker, String weightage) {
+  protected boolean addTickerToStrategyIfAllowed(String ticker, String weightage) {
     try {
       ticker = ticker.toUpperCase();
       if (!api.isTickerPresent(ticker)) {
@@ -195,12 +195,14 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         } else {
           menu.printMessage("100% weightage completed");
         }
+        return true;
       }
     } catch (NumberFormatException e) {
       menu.errorMessage("Invalid format for 1 or more fields");
     } catch (IllegalArgumentException e) {
       menu.errorMessage("Invalid ticker");
     }
+    return false;
   }
 
   @Override
