@@ -1,5 +1,11 @@
 #  Project setup guide
 
+drive link: https://drive.google.com/drive/folders/1G9TxuIn4zU6YGdgk4RzeVmpG36JfWsuE?usp=sharing
+
+
+- Download the two jar files from the external_libs folder from the above Google Drive link. 
+- Also watch the vide in the drive that shows how to add these downloaded libraries onto your project.
+
 Please follow the steps below to run the program:
 
 1. Open the project root directory in the terminal. 
@@ -21,6 +27,7 @@ in the `src` folder._
 
 For further issues, view the videos in the link below for additional help. 
 link: https://drive.google.com/drive/folders/1G9TxuIn4zU6YGdgk4RzeVmpG36JfWsuE?usp=sharing
+
 
 
 ## _Initial inputs for the program [If using txt based interface]._

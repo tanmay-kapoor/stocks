@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -81,6 +82,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
       cl.show(mainPanel, "Portfolio Features");
+      portfolioName = "";
 
       if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
         features.savePortfolio(portfolioName);
@@ -129,6 +131,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(goBackButton, gbc3);
 
     enterBtn.addActionListener(evt -> {
+      panel3.removeAll();
       portfolioName = portfolioNameTextField.getText();
 
       if (portfolioName.equals("")) {
@@ -519,6 +522,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       } else {
         features.saveDca(portfolioName, strategy.getText(), amount.getText(), fromDate.getText(),
                 toDate.getText(), interval.getText(), commission.getText(), stockWeightage);
+        popupMsg("Dollar Cost Average Strategy Saved!");
         features.savePortfolio(portfolioName);
       }
     });
@@ -543,6 +547,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     panel3.revalidate();
 
+  }
+
+  private void popupMsg(String s) {
+    showMessageDialog(null, s);
   }
 
 
@@ -923,18 +931,26 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbc4.gridx = 1;
     panel4.add(backToP3Btn, gbc4);
 
-    addBtn.addActionListener(e ->
-            features.buyStock(
-                    portfolioName,
-                    ticker.getText(),
-                    quantity.getText(),
-                    dateTxtFiled.getText(),
-                    commission.getText()
-            )
-    );
+    addBtn.addActionListener(e -> {
+      features.buyStock(
+              portfolioName,
+              ticker.getText(),
+              quantity.getText(),
+              dateTxtFiled.getText(),
+              commission.getText()
+      );
+
+      try {
+        features.createEmptyDcaLog(portfolioName);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+    });
 
     panel4.revalidate();
   }
+
 
   private void goToPanel4() {
     cl.show(mainPanel, "panel 4");
@@ -947,4 +963,5 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       dateField.setText(LocalDate.now().toString());
     }
   }
+
 }

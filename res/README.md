@@ -70,6 +70,11 @@ stored in the cost basis of the portfolio if the transaction goes through succes
   represent $50,000 and the second row represents 50,000 + (100 \* 2) = $50,200. 
 
 
+- **Create DCA**: User can create a Dollar Cost Average (DCA) strategy. They can assign a name to the strategy, choose investment amount to be 
+invested every time at a specific interval between dates chosen by them. User can create multiple strategies in a single portfolio. In case they choose the same name, 
+the new strategy would override the old strategy. Furthermore, for each strategy use can choose a maximum of 20 stocks to be a part of a strategy.
+
+
 ## Features specific to Inflexible Portfolio
 
 This type of portfolio is immutable. 

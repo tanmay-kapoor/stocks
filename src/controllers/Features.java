@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -171,4 +172,6 @@ public interface Features {
    * @return double value representing the percentage left for the rest of the tickers for the dca.
    */
   double getWeightageLeft();
+
+  void createEmptyDcaLog(String pName) throws IOException;
 }
