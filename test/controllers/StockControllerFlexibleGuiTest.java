@@ -189,7 +189,7 @@ public class StockControllerFlexibleGuiTest {
     Menu menu = new StockMenuFlexible(out);
     controller.setView(menu);
 
-    portfolioName = "new";
+    portfolioName = "bussin";
   }
 
   @Test
@@ -203,7 +203,7 @@ public class StockControllerFlexibleGuiTest {
   public void testBuyStock() {
     controller.buyStock(portfolioName, "GOOG", "10", "2022-10-10", "45.2");
     String expected = "Inside constructor\n" +
-            "Inside getShareDetails GOOG 2022-11-30\n" +
+            "Inside getShareDetails GOOG " + LocalDate.now() + "\n" +
             "Inside buy(ticker, details, commissionFee). Symbol : GOOG Quantity : 10.0 " +
             "Purchase Date : 2022-10-10 Commission Fee : 45.2\n" +
             "Inside savePortfolio\n";
@@ -215,7 +215,7 @@ public class StockControllerFlexibleGuiTest {
     controller.sellStock(portfolioName, "GOOG", "10", "2022-10-10", "45.2");
     String expected = "Inside constructor\n" +
             "Inside getComposition()\n" +
-            "Inside getComposition(date) Received : 2022-11-30\n" +
+            "Inside getComposition(date) Received : " + LocalDate.now() + "\n" +
             "Inside sell(ticker, details), commissionFee. Symbol : GOOG Quantity : 10.0 " +
             "Purchase Date : 2022-10-10 Commission Fee : 45.2\n" +
             "Inside savePortfolio\n";
@@ -237,7 +237,7 @@ public class StockControllerFlexibleGuiTest {
     Map<String, Double> ex = new HashMap<>();
     ex.put("GOOG", 10.0);
     String expected = "Inside constructor\n" +
-            "Inside getComposition(date) Received : 2022-11-30\n";
+            "Inside getComposition(date) Received : " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
     assertEquals(ex, contents);
   }
@@ -249,7 +249,7 @@ public class StockControllerFlexibleGuiTest {
     Map<String, Double> ex = new HashMap<>();
     ex.put("GOOG", 100.0);
     String expected = "Inside constructor\n" +
-            "Inside getComposition(date) Received : 2022-11-30\n";
+            "Inside getComposition(date) Received : " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
     assertEquals(ex, contents);
   }
@@ -284,7 +284,7 @@ public class StockControllerFlexibleGuiTest {
   @Test
   public void addTickerToStrategy() {
     controller.addTickerToStrategy("GOOG", "45.5");
-    String expected = "Inside getShareDetails GOOG 2022-11-30\n";
+    String expected = "Inside getShareDetails GOOG " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
   }
 

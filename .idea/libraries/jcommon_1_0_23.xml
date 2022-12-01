@@ -3,8 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../external_libs/jcommon-1.0.23.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../external_libs/jfreechart-1.0.19.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../../../external_libs/jcommon-1.0.23.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../../../external_libs/jfreechart-1.0.19.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
