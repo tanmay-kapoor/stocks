@@ -221,14 +221,14 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
       LocalDate to = t.equals("") ? null : LocalDate.parse(t);
 
       if (from.compareTo(LocalDate.now()) > 0) {
-        menu.printMessage("Start date cannot be in the future");
+        menu.errorMessage("Start date cannot be in the future");
       } else if (to != null && from.compareTo(to) > 0) {
-        menu.printMessage("Start date should be before end date");
+        menu.errorMessage("Start date should be before end date");
       } else {
         TimeLine timeline = new TimeLine(from, to);
         int intervalVal = Integer.parseInt(interval);
         if (intervalVal < 1) {
-          menu.printMessage("Interval should be at least 1 day");
+          menu.errorMessage("Interval should be at least 1 day");
         } else {
           double commissionFee = Double.parseDouble(commission);
           return doDca(portfolio, strategyName, amount, stocksWeightage,

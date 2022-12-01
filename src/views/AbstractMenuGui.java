@@ -193,7 +193,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(interfaceButton, gbc3);
     interfaceButton.addActionListener(evt -> getPortfolioName());
 
-    JButton uploadButton = new JButton("Create through  file upload");
+    JButton uploadButton = new JButton("Create through file upload");
     gbc3.gridx = 1;
     panel3.add(uploadButton, gbc3);
     uploadButton.addActionListener(evt -> getFiles());
@@ -820,31 +820,34 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV only", "csv");
-
-    panel3.add(new JLabel("Add Portfolio file"));
+//    UIManager.put("FileChooser.readOnly", Boolean.TRUE);
     JFileChooser portfolioJfc = new JFileChooser(FileSystemView.getFileSystemView());
     portfolioJfc.setFileFilter(filter);
-    panel3.add(portfolioJfc);
+    panel3.add(portfolioJfc, gbc3);
     portfolioJfc.addActionListener(evt -> {
+      portfolioJfc.cancelSelection();
+
+      portfolioJfc.setControlButtonsAreShown(false);
       System.out.println(portfolioJfc.getSelectedFile());
       features.handleCreatePortfolioThroughUpload(portfolioJfc.getSelectedFile().toString());
     });
 
 
-    panel3.add(new JLabel("Add Dollar Cost Average file [Optional]"));
-    JFileChooser dcaFfc = new JFileChooser(FileSystemView.getFileSystemView());
-    dcaFfc.setFileFilter(filter);
-    panel3.add(dcaFfc);
-    dcaFfc.addActionListener(evt -> {
-      int result = dcaFfc.showOpenDialog(this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File selectedFile = dcaFfc.getSelectedFile();
-        System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-      }
-    });
+//    panel3.add(new JLabel("Add Dollar Cost Average file [Optional]"), gbc3);
+//    JFileChooser dcaFfc = new JFileChooser(FileSystemView.getFileSystemView());
+//    dcaFfc.setFileFilter(filter);
+//    panel3.add(dcaFfc, gbc3);
+//    dcaFfc.addActionListener(evt -> {
+//      int result = dcaFfc.showOpenDialog(this);
+//      if (result == JFileChooser.APPROVE_OPTION) {
+//        File selectedFile = dcaFfc.getSelectedFile();
+//        System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+//      }
+//    });
 
+    gbcNewline();
     JButton createPortfolioBtn = new JButton("Create Portfolio");
-    panel3.add(createPortfolioBtn);
+    panel3.add(createPortfolioBtn, gbc3);
 
     panel3.revalidate();
   }
