@@ -60,7 +60,8 @@ public interface Features {
    * @param purchaseDate  Date on which to purchase the stock.
    * @param commission    Commission fee for this transaction.
    */
-  void buyStock(String portfolioName, String ticker, String quant, String purchaseDate, String commission);
+  void buyStock(String portfolioName, String ticker, String quant, String purchaseDate,
+                String commission);
 
 
   /**
@@ -143,9 +144,9 @@ public interface Features {
   void resetTotalWeightage();
 
   /**
-   * Feature to add ticker and weightage to a particular dca strategy
+   * Feature to add ticker and weightage to a particular dca strategy.
    *
-   * @param ticker    Ticker symbol to add to the dca strategy
+   * @param ticker    Ticker symbol to add to the dca strategy.
    * @param weightage Percentage of the amount to add.
    */
   void addTickerToStrategy(String ticker, String weightage);

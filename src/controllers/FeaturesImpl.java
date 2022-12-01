@@ -22,6 +22,7 @@ import java.util.TreeSet;
 
 import models.Details;
 import models.Log;
+import models.TimeLine;
 import models.api.ShareApi;
 import models.portfolio.Dca;
 import models.portfolio.Portfolio;
@@ -413,7 +414,7 @@ abstract class FeaturesImpl implements Features {
 
       Map<String, Double> stockWeightage = new HashMap<>();
       TimeLine timeLine;
-      if(Objects.equals(vals[3], "null")) {
+      if (Objects.equals(vals[3], "null")) {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
       } else {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));

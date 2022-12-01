@@ -227,7 +227,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
           menu.printMessage("Interval should be at least 1 day");
         } else {
           double commissionFee = Double.parseDouble(commission);
-          System.out.println("size = " +  stockWeightage.size());
+          System.out.println("size = " + stockWeightage.size());
           doDca(portfolio, strategyName, amount, stocksWeightage,
                   timeline, intervalVal, commissionFee);
         }
@@ -265,10 +265,11 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
     String fileName = String.format(dcaPath + "%s.csv", pName);
     FileWriter csvWriter = new FileWriter(fileName);
 
-    StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,end_date,interval," +
+    StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date," +
+            "end_date,interval," +
             "commission,last_purchase_date");
-    for(int i = 0; i < 20; i++) {
-      header.append(",stock,").append(i+1).append(",weightage,").append(i+1);
+    for (int i = 0; i < 20; i++) {
+      header.append(",stock,").append(i + 1).append(",weightage,").append(i + 1);
     }
 
     csvWriter.append(header.toString());

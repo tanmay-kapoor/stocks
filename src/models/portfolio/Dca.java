@@ -36,7 +36,7 @@ public class Dca {
   }
 
   /**
-   * Constructor to initialize everything in the previous constructor along with lastBoughtDate
+   * Constructor to initialize everything in the previous constructor along with lastBoughtDate.
    *
    * @param totalAmount     Total amount to invest for this strategy.
    * @param stocksWeightage Weightage of each individual ticker in the dca strategy.
@@ -88,9 +88,9 @@ public class Dca {
   }
 
   /**
-   * Get the commission fee for dca transaction
+   * Get the commission fee for dca transaction.
    *
-   * @return double value which is the commission
+   * @return double value which is the commission.
    */
   public double getCommission() {
     return this.commission;

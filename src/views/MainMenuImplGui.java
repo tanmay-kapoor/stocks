@@ -11,7 +11,7 @@ import javax.swing.JButton;
 public class MainMenuImplGui extends JFrame implements MainMenu {
 
   /**
-   * Constructor that initializes the caption of the JFrame
+   * Constructor that initializes the caption of the JFrame.
    *
    * @param caption Caption to display on the JFrame.
    */

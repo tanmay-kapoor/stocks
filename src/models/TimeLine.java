@@ -3,7 +3,7 @@ package models;
 import java.time.LocalDate;
 
 /**
- * Class to store start date and end date of the dca in once place
+ * Class to store start date and end date of the dca in once place.
  */
 public class TimeLine {
   private final LocalDate startDate;
