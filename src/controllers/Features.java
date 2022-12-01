@@ -82,6 +82,7 @@ public interface Features {
    * call the model method tp persist the portfolio.
    *
    * @param portfolioName Name of the portfolio to save.
+   * @return boolean value indicating whether the portfolio was saved or not.
    */
   boolean savePortfolio(String portfolioName);
 
