@@ -823,11 +823,23 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     portfolioJfc.setFileFilter(filter);
     panel3.add(portfolioJfc, gbc3);
     portfolioJfc.addActionListener(evt -> {
-      portfolioJfc.cancelSelection();
+      if(evt.getActionCommand().equals("CancelSelection")) {
+        cl.show(mainPanel, "Portfolio Features");
 
-      portfolioJfc.setControlButtonsAreShown(false);
-      System.out.println(portfolioJfc.getSelectedFile());
-      features.handleCreatePortfolioThroughUpload(portfolioJfc.getSelectedFile().toString());
+        if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
+          features.savePortfolio(portfolioName);
+//        portfolioName = null;
+        }
+
+        this.setTitle("Flexible Portfolio");
+      } else {
+        boolean saved = features.handleCreatePortfolioThroughUpload(portfolioJfc.getSelectedFile().toString());
+        cl.show(mainPanel, "Portfolio Features");
+
+        if(saved) {
+          popupMsg("Saved portfolio");
+        }
+      }
     });
 
 

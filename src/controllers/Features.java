@@ -39,8 +39,9 @@ public interface Features {
    * existing portfolio to the project.
    *
    * @param filePath File path of the portfolio the user wants to add to the project.
+   * @return boolean indicating whether portfolio was saved to system or not.
    */
-  void handleCreatePortfolioThroughUpload(String filePath);
+  boolean handleCreatePortfolioThroughUpload(String filePath);
 
   /**
    * Feature to create portfolio using the portfolioName obtained from the view and calls the
@@ -82,7 +83,7 @@ public interface Features {
    *
    * @param portfolioName Name of the portfolio to save.
    */
-  void savePortfolio(String portfolioName);
+  boolean savePortfolio(String portfolioName);
 
   /**
    * Feature to get all the portfolio names created.
