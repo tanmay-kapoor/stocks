@@ -69,6 +69,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       cl.show(mainPanel, "Portfolio Features");
 
       if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
+        System.out.println("porfolio: " + portfolioName);
         features.savePortfolio(portfolioName);
         portfolioName = null;
       }
@@ -126,14 +127,18 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     enterBtn.addActionListener(evt -> {
       this.portfolioName = portfolioNameTextField.getText();
       portfolioNameTextField.setText("");
-      //creating problem
       panel3.removeAll();
-//      panel3.remove(enterBtn);
       if (portfolioName.equals("")) {
+        panel3.removeAll();
         printMessage("Name cannot be empty");
+        gbcNewline();
+        gbc3.gridx = 1;
+        panel3.add(goBackButton, gbc3);
+        panel3.revalidate();
+      } else {
+        features.createPortfolio(this.portfolioName);
       }
 
-      features.createPortfolio(this.portfolioName);
     });
 
     panel3.revalidate();
@@ -434,7 +439,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected void getDcaOptions(boolean creating) {
     features.resetTotalWeightage();
 
-    if(!creating) { // only show portfolio comboBox when not creating portfolio with DCA
+    if (!creating) { // only show portfolio comboBox when not creating portfolio with DCA
       if (showP3()) {
         return;
       }
@@ -508,7 +513,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     addBtn.addActionListener(evt -> {
 
       boolean added = features.addTickerToStrategy(tickerChosen.getText(), weightage.getText());
-      if(added) {
+      if (added) {
         String chosenTicker = tickerChosen.getText();
         if (stockWeightage.containsKey(chosenTicker)) {
           Double newWeight = stockWeightage.get(chosenTicker) +
@@ -822,7 +827,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     portfolioJfc.setFileFilter(filter);
     panel3.add(portfolioJfc, gbc3);
     portfolioJfc.addActionListener(evt -> {
-      if(evt.getActionCommand().equals("CancelSelection")) {
+      if (evt.getActionCommand().equals("CancelSelection")) {
         cl.show(mainPanel, "Portfolio Features");
 
         if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
@@ -835,27 +840,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         boolean saved = features.handleCreatePortfolioThroughUpload(portfolioJfc.getSelectedFile().toString());
         cl.show(mainPanel, "Portfolio Features");
 
-        if(saved) {
+        if (saved) {
           popupMsg("Saved portfolio");
         }
       }
     });
-
-
-//    panel3.add(new JLabel("Add Dollar Cost Average file [Optional]"), gbc3);
-//    JFileChooser dcaFfc = new JFileChooser(FileSystemView.getFileSystemView());
-//    dcaFfc.setFileFilter(filter);
-//    panel3.add(dcaFfc, gbc3);
-//    dcaFfc.addActionListener(evt -> {
-//      int result = dcaFfc.showOpenDialog(this);
-//      if (result == JFileChooser.APPROVE_OPTION) {
-//        File selectedFile = dcaFfc.getSelectedFile();
-//      }
-//    });
-
-    gbcNewline();
-    JButton createPortfolioBtn = new JButton("Create Portfolio");
-    panel3.add(createPortfolioBtn, gbc3);
 
     panel3.revalidate();
   }
