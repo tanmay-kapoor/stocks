@@ -166,30 +166,24 @@ abstract class FeaturesImpl implements Features {
   }
 
   @Override
-  public void savePortfolio(String portfolioName) {
+  public boolean savePortfolio(String portfolioName) {
     Portfolio portfolio;
     if (allPortfolios.contains(portfolioName)) {
       portfolio = findPortfolio(portfolioName);
     } else {
       portfolio = this.portfolio;
     }
-    boolean saved;
-    saved = portfolio.savePortfolio();
-    if (saved) {
-      menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
-      allPortfolios.add(portfolioName);
-      allPortfolioObjects.put(portfolioName, portfolio);
-    }
+    return savePortfolio(portfolioName, portfolio);
   }
 
-  protected void savePortfolio(String portfolioName, Portfolio portfolio) {
-    boolean saved;
-    saved = portfolio.savePortfolio();
+  protected boolean savePortfolio(String portfolioName, Portfolio portfolio) {
+    boolean saved = portfolio.savePortfolio();
     if (saved) {
       menu.printMessage(String.format("\nSaved portfolio \"%s\"!", portfolioName));
       allPortfolios.add(portfolioName);
       allPortfolioObjects.put(portfolioName, portfolio);
     }
+    return saved;
   }
 
   @Override
@@ -439,7 +433,7 @@ abstract class FeaturesImpl implements Features {
 
 
   @Override
-  public void handleCreatePortfolioThroughUpload(String filePath) {
+  public boolean handleCreatePortfolioThroughUpload(String filePath) {
     try {
       Paths.get(filePath);
       File file = new File(filePath);
@@ -451,8 +445,7 @@ abstract class FeaturesImpl implements Features {
                 + "and try again!", portfolioName));
       } else {
         Portfolio portfolio = createPortfolioFromCsv(portfolioName, file);
-        savePortfolio(portfolioName, portfolio);
-        menu.printMessage("");
+        return savePortfolio(portfolioName, portfolio);
       }
     } catch (InvalidPathException e) {
       menu.errorMessage("Invalid file path");
@@ -461,6 +454,7 @@ abstract class FeaturesImpl implements Features {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    return false;
   }
 
   private File createCsvFile(String name, FileType type) throws IOException {
