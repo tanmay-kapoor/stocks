@@ -69,7 +69,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       cl.show(mainPanel, "Portfolio Features");
 
       if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
-        System.out.println("porfolio: " + portfolioName);
         features.savePortfolio(portfolioName);
         portfolioName = null;
       }
