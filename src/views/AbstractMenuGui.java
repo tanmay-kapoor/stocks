@@ -2,7 +2,11 @@ package views;
 
 import org.jfree.chart.ChartPanel;
 
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Color;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -14,7 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JComboBox;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JFileChooser;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -225,7 +237,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getFilePath() {
-
+    // in case later required.
   }
 
   @Override
@@ -289,7 +301,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getPortfolioCompositionOption() {
-    if (showP3()) return;
+    if (showP3()) {
+      return;
+    }
 
     gbcNewline();
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
@@ -325,7 +339,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
             count++;
           }
 
-          showTable(data, sp);
+          showTable(data);
 
           gbcNewline();
           gbc3.gridwidth = 1;
@@ -352,7 +366,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
           count++;
         }
 
-        showTable(data, sp);
+        showTable(data);
 
         gbcNewline();
         gbc3.gridwidth = 1;
@@ -365,7 +379,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   @Override
   public void getBuySellChoice() {
-    if (showP3()) return;
+    if (showP3()) {
+      return;
+    }
 
     JButton buyOptionBtn = new JButton("Buy Shares");
     JButton sellOptionBtn = new JButton("Sell Shares");
@@ -392,7 +408,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
 
   protected void getPortfolioCostBasisOptions() {
-    if (showP3()) return;
+    if (showP3()) {
+      return;
+    }
 
     gbcNewline();
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
@@ -424,7 +442,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   protected void getDcaOptions() {
     features.resetTotalWeightage();
 
-    if (showP3()) return;
+    if (showP3()) {
+      return;
+    }
 
     Map<String, Double> stockWeightage = new HashMap<>();
 
@@ -456,7 +476,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JTextField interval = new JTextField(10);
     interval.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
-        interval.setEditable(key.getKeyChar() >= '0' && key.getKeyChar() <= '9' || key.getKeyCode() == 8);
+        interval.setEditable(key.getKeyChar() >= '0' && key.getKeyChar() <= '9'
+                || key.getKeyCode() == 8);
       }
     });
     gbc3.gridx = 1;
@@ -467,8 +488,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JTextField amount = new JTextField(10);
     amount.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent key) {
-        amount.setEditable(key.getKeyChar() >= '0' && key.getKeyChar() <= '9' ||
-                key.getKeyChar() == '.' || key.getKeyCode() == 8);
+        amount.setEditable(key.getKeyChar() >= '0' && key.getKeyChar() <= '9'
+                || key.getKeyChar() == '.' || key.getKeyCode() == 8);
       }
     });
     gbc3.gridx = 1;
@@ -534,7 +555,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
 
   protected void getPortfolioPerformanceOption() {
-    if (showP3()) return;
+    if (showP3()) {
+      return;
+    }
 
     gbcNewline();
     panel3.add(new JLabel("Start Date (YYYY-MM-DD) : "), gbc3);
@@ -548,8 +571,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     gbc3.gridx = 1;
     panel3.add(toDate, gbc3);
 
-    JLabel warning = new JLabel("Please wait, generating performance report " +
-            "may take some time.");
+    JLabel warning = new JLabel("Please wait, generating performance report "
+            + "may take some time.");
     warning.setForeground(Color.red);
 
     gbcNewline();
@@ -694,7 +717,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     return panel2;
   }
 
-
   private void resetFields() {
     ticker.setText("");
     quantity.setText("");
@@ -705,7 +727,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
 
   private void getPortfolioValueOptions() {
-    if (showP3()) return;
+    if (showP3()) {
+      return;
+    }
 
     gbcNewline();
     panel3.add(new JLabel("Enter Date (YYYY-MM-DD) : "), gbc3);
@@ -747,7 +771,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     List<String> portfolios = features.getAllPortfolios();
 
     if (portfolios.size() == 0) {
-      printMessage("No Portfolios. Please Create atleast one and come back again.");
+      printMessage("No Portfolios. Please Create at least one and come back again.");
       gbcNewline();
       panel3.add(goBackButton, gbc3);
       panel3.revalidate();
@@ -770,11 +794,11 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     return true;
   }
 
-  private void showTable(String[][] data, JScrollPane sp) {
+  private void showTable(String[][] data) {
     panel3.remove(6);
     String[] colNames = {"Ticker", "Quantity"};
     JTable table = new JTable(data, colNames);
-    sp = new JScrollPane(table);
+    JScrollPane sp = new JScrollPane(table);
 
     gbcNewline();
     gbc3.gridwidth = 2;

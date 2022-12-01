@@ -27,7 +27,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
 /**
- * The StockControllerInflexible couples appropriate views and models that work specifically with
+ * The StockControllerFlexible couples appropriate views and models that work specifically with
  * Flexible Portfolio.
  */
 public class StockControllerFlexible extends AbstractController {
@@ -508,14 +508,15 @@ public class StockControllerFlexible extends AbstractController {
     String strategy;
     do {
       isValid = true;
-//      menu.getStrategyName();
+      // menu.getStrategyName();
       strategy = getWordVal();
       if (existingStrategies.containsKey(strategy)) {
         isValid = false;
         menu.errorMessage("\nStrategy xx already exists in this portfolio. "
                 + "Choose a different name.");
       }
-    } while (!isValid);
+    }
+    while (!isValid);
     return strategy;
   }
 
@@ -536,19 +537,21 @@ public class StockControllerFlexible extends AbstractController {
         isValid = false;
         menu.printMessage("\nStart date cannot be later than end date\n");
       }
-    } while (!isValid);
+    }
+    while (!isValid);
     return new TimeLine(start, end);
   }
 
   private double getAmount() {
     double amount;
     do {
-//      menu.getStrategyAmount();
+      // menu.getStrategyAmount();
       amount = getDoubleVal();
       if (amount < 0.0) {
         menu.printMessage("\nAmount cannot be negative.\n");
       }
-    } while (amount < 0.0);
+    }
+    while (amount < 0.0);
     return amount;
   }
 
@@ -573,19 +576,21 @@ public class StockControllerFlexible extends AbstractController {
           isValidTicker = false;
           menu.printMessage("\nThis ticker is not associated with any company");
         }
-      } while (!isValidTicker);
+      }
+      while (!isValidTicker);
 
       boolean isValidWeightage;
       do {
         isValidWeightage = true;
-//        menu.getWeightage();
+        // menu.getWeightage();
         weightage = getDoubleVal();
         if (total - weightage < 0.0) {
           isValidWeightage = false;
-          menu.printMessage("\n" + weightage + "% makes the total weightage of all stocks > 100. " +
-                  "Enter a weightage <= " + total + "\n");
+          menu.printMessage("\n" + weightage + "% makes the total weightage of all stocks > 100. "
+                  + "Enter a weightage <= " + total + "\n");
         }
-      } while (!isValidWeightage);
+      }
+      while (!isValidWeightage);
 
       if (stocksWeightage.containsKey(ticker)) {
         stocksWeightage.put(ticker, stocksWeightage.get(ticker) + weightage);
@@ -601,14 +606,15 @@ public class StockControllerFlexible extends AbstractController {
     int interval;
 
     do {
-//      menu.getInterval();
+      //  menu.getInterval();
       interval = getIntVal();
       if (interval < 0) {
         menu.printMessage("\nInterval cannot be negative.");
       } else if (interval < 1) {
         menu.printMessage("\nInterval should be at least 1 day");
       }
-    } while (interval < 1);
+    }
+    while (interval < 1);
 
     return interval;
   }

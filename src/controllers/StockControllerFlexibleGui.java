@@ -24,6 +24,10 @@ import models.portfolio.Txn;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
+/**
+ * The StockControllerFlexibleGui couples appropriate views and models that work specifically with
+ * Flexible Portfolio.
+ */
 public class StockControllerFlexibleGui extends FeaturesImpl {
 
   public StockControllerFlexibleGui(ShareApi api, String path) {
@@ -260,10 +264,11 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
     String fileName = String.format(dcaPath + "%s.csv", pName);
     FileWriter csvWriter = new FileWriter(fileName);
 
-    StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,end_date,interval," +
+    StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date," +
+            "end_date,interval," +
             "commission,last_purchase_date");
-    for(int i = 0; i < 20; i++) {
-      header.append(",stock,").append(i+1).append(",weightage,").append(i+1);
+    for (int i = 0; i < 20; i++) {
+      header.append(",stock,").append(i + 1).append(",weightage,").append(i + 1);
     }
 
     csvWriter.append(header.toString());
