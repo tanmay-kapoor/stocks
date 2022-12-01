@@ -61,8 +61,9 @@ abstract class FeaturesImpl implements Features {
 
   protected abstract boolean addTickerToStrategyIfAllowed(String ticker, String weightage);
 
-  protected abstract boolean saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
-                                              String f, String t, String interval, String commission,
+  protected abstract boolean saveDcaIfAllowed(String pName, String strategyName, String amt,
+                                              String f, String t, String interval,
+                                              String commission,
                                               Map<String, Double> stockWeightage);
 
   public FeaturesImpl(ShareApi api, String path) {
@@ -282,7 +283,8 @@ abstract class FeaturesImpl implements Features {
   @Override
   public boolean saveDca(String portfolioName, String strategyName, String amt, String f, String t,
                          String interval, String commission, Map<String, Double> stockWeightage) {
-    return saveDcaIfAllowed(portfolioName, strategyName, amt, f, t, interval, commission, stockWeightage);
+    return saveDcaIfAllowed(portfolioName, strategyName, amt, f, t, interval,
+            commission, stockWeightage);
   }
 
   protected Portfolio findPortfolio(String name) {

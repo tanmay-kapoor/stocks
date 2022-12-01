@@ -545,8 +545,8 @@ abstract class AbstractController implements SpecificController {
       subFolder = "dca/";
       StringBuilder str = new StringBuilder("strategy_name,investment_amount,start_date,end_date")
               .append(",interval,commission,last_purchase_date");
-      for(int i = 0; i<20; i++) {
-        str.append(",stock").append(i+1).append(",weightage").append(i+1);
+      for (int i = 0; i < 20; i++) {
+        str.append(",stock").append(i + 1).append(",weightage").append(i + 1);
       }
       str.append("\n");
       header = str.toString();
