@@ -27,7 +27,7 @@ public class MenuGuiFlexible extends AbstractMenuGui {
     panel2.add(dcaButton);
     dcaButton.addActionListener(evt -> {
       this.setTitle("Create DCA");
-      getDcaOptions();
+      getDcaOptions(false);
     });
 
     JButton buySellButton = new JButton("Buy/Sell shares");

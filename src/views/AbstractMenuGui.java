@@ -70,11 +70,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     goBackButton = new JButton("Go back");
     goBackButton.addActionListener(evt -> {
       cl.show(mainPanel, "Portfolio Features");
-      portfolioName = "";
 
       if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
         features.savePortfolio(portfolioName);
+//        portfolioName = null;
       }
+
       this.setTitle("Flexible Portfolio");
     });
 
@@ -82,6 +83,12 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     backToP3Btn.addActionListener(evt -> {
       this.setSize(1000, 600);
       cl.show(mainPanel, "panel 3");
+
+      List<String> portfolios = features.getAllPortfolios();
+      String[] portfolioList = Arrays.copyOf(portfolios.toArray(),
+              portfolios.size(), String[].class);
+
+      portfolioListCb = new JComboBox<>(portfolioList);
     });
 
     exitButton = new JButton("Exit");
@@ -119,9 +126,10 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.add(goBackButton, gbc3);
 
     enterBtn.addActionListener(evt -> {
-      panel3.removeAll();
       portfolioName = portfolioNameTextField.getText();
-
+      System.out.println(portfolioName);
+      //creatig problem
+      panel3.removeAll();
       if (portfolioName.equals("")) {
         printMessage("Name cannot be empty");
       }
@@ -210,9 +218,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JButton createStrategyBtn = new JButton("Create DCA strategy");
     createStrategyBtn.addActionListener(evt -> {
       String chosenName = portfolioName;
-      getDcaOptions();
-      panel3.remove(0);
-      panel3.remove(portfolioListCb);
+      panel3.removeAll();
+      getDcaOptions(true);
       portfolioName = chosenName;
     });
     panel3.add(createStrategyBtn, gbc3);
@@ -427,11 +434,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
   }
 
 
-  protected void getDcaOptions() {
+  protected void getDcaOptions(boolean creating) {
     features.resetTotalWeightage();
 
-    if (showP3()) {
-      return;
+    if(!creating) { // only show portfolio comboBox when not creating portfolio with DCA
+      if (showP3()) {
+        return;
+      }
     }
 
     Map<String, Double> stockWeightage = new HashMap<>();
