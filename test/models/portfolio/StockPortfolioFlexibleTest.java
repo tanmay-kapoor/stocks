@@ -438,6 +438,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(364)));
     checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(369)));
+    deleteFiles();
   }
 
   @Test
@@ -471,6 +472,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     expected.put("AAPL", newLog(detailsSet));
 
     checkHashMapEquality(expected, portfolio.getComposition());
+    deleteFiles();
   }
 
   @Test
@@ -504,6 +506,7 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     expected.put("AAPL", newLog(detailsSet));
 
     checkHashMapEquality(expected, portfolio.getComposition());
+    deleteFiles();
   }
 
   @Test
@@ -525,8 +528,13 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     portfolio.doDca(dcaName, dca);
 
-    Map<String, Log> expected = new HashMap<>();
+    assertEquals(0, portfolio.getValue(LocalDate.parse("2020-10-10")), 0);
+    assertEquals(0, portfolio.getValue(LocalDate.parse("2020-10-11")), 0);
+    assertEquals(108.18181818181819,
+            portfolio.getValue(LocalDate.parse("2020-10-12")), 0);
+    assertEquals(0, portfolio.getValue(LocalDate.parse("2019-10-10")), 0);
 
+    Map<String, Log> expected = new HashMap<>();
     checkHashMapEquality(expected, portfolio.getComposition(startDate));
 
     Set<Details> detailsSet = newTreeSet();
@@ -557,6 +565,13 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(600)));
     checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(605)));
+
+    assertEquals(0, portfolio.getCostBasis(LocalDate.parse("2020-10-10")), 0);
+    assertEquals(0, portfolio.getCostBasis(LocalDate.parse("2020-10-11")), 0);
+    assertEquals(184.38181818181818,
+            portfolio.getCostBasis(LocalDate.parse("2020-10-12")), 0);
+    assertEquals(0, portfolio.getCostBasis(LocalDate.parse("2019-10-10")), 0);
+    deleteFiles();
   }
 
   @Test
@@ -753,6 +768,37 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
           }
         }
       }
+    }
+  }
+
+  private void deleteFiles() {
+    File file = new File(this.directory + "logs/" + this.portfolioName + ".csv");
+    if (!file.delete()) {
+      fail("should have delete file but did not");
+    }
+    file = new File(this.directory + "logs/");
+    if (!file.delete()) {
+      fail("should deleted directory but did not");
+    }
+    file = new File(this.directory + "costbasis/" + this.portfolioName + ".csv");
+    if (!file.delete()) {
+      fail("should have deleted file but did not");
+    }
+    file = new File(this.directory + "costbasis/");
+    if (!file.delete()) {
+      fail("should delete directory but did not");
+    }
+    file = new File(this.directory + "dca/" + this.portfolioName + ".csv");
+    if (!file.delete()) {
+      fail("should have delete file but did not");
+    }
+    file = new File(this.directory + "dca/");
+    if (!file.delete()) {
+      fail("should delete directory but did not");
+    }
+    file = new File(this.directory + this.portfolioName + ".csv");
+    if (!file.delete()) {
+      fail("should delete directory but did not");
     }
   }
 }
