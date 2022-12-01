@@ -175,5 +175,11 @@ public interface Features {
    */
   double getWeightageLeft();
 
+  /**
+   * Feature to create empty dca file when we save portfolio with no dca strategies.
+   *
+   * @param pName Name of portfolio create the empty dca file for.
+   * @throws IOException in case reading the file fails.
+   */
   void createEmptyDcaLog(String pName) throws IOException;
 }
