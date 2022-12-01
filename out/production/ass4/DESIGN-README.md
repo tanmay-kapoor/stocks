@@ -4,28 +4,17 @@
 
 **No changes in the existing package structure.**
 
-Added `MainMenu`, `MainMenuImpl` and `StockPortfolioFelxible` to accommodate the workings of both
-flexible and inflexible portfolio. Find more details about these classes below.
-
-### Model Changes
-
-1. In `AbstractPortfolio`, Instead of storing a map of `Details` object of each stock, we now
-   store `Log` object of each stock.
-
-2. Added `StockPortfolioFlexible`, `Log` and `Txn` to better streamline the features of different
-   type of portfolio.
-   Find more details about these classes below.
-
 ### Controller Changes
 
-1. Added ```GenericController``` whose ```start()``` method is called by the ```ProgramRunner```.
-   This controller is sued to accept from the user the portfolio he/she wants to work with and calls
-   that controller's ```start()``` method.
-
-2. Added ```SpecificController``` interface that is implemented by ```StockControllerInflexible```
-   and ```StockControllerFlexible``` classes. These classes are used to perform different actions
-   for the same options depending on whether the user wants to work with Flexible/Inflexible
-   portfolio.
+1. Added ```Features``` interface that mentions all the features of the controller used by the GUI
+   view. After processing of data in each of the Controller classes, the data is passed to methods
+   of the Features interface that basically do the data pre processing common to all classes and
+   then calls the model methods as per requirement.
+2. Added ```FeaturesImpl``` abstract class which implements the methods of the ```Features```
+   interface, does data pre processing and then calls the corresponding model methods as per
+   requirement.
+3. Added ```StockControllerFlexibleGui``` concrete class that implements methods that are to be
+   performed differently for Flexible and Inflexible portfolios when working with the GUI.
 
 # Design of the current project
 
@@ -91,7 +80,7 @@ The structure of the model in the project folder is as follows:
     - `StockAPI` A class that checks if a ticker symbol is supported by our program.
       If yes, then fetch the necessary data as per the users request.
 
-    - `supported_stocs` directory, that contains all the stocks that are supported by the program.
+    - `supported_stocks` directory, that contains all the stocks that are supported by the program.
       This directory stores the csv files of individual stock's data. This is done to make the
       application independent of any third party api. These are the only stocks accessible by
       the `StockAPI`
@@ -120,6 +109,12 @@ The structure of the model in the project folder is as follows:
 
     - `Composition` (Enum) Lists the type of compositions that can be requested by the client.
       For now, we only allow getting composition based on contents or percent weightage of stocks.
+    - `AbstractPortfolio` (Class) That implements the Portfolio interface and contains the methods
+      that are common to both the Flexible and Inflexible portfolios.
+    - `Dca`(Class) That acts as a wrapper to all the details of the dollar cost averaging strategy
+      and stores all information required to create a dca strategy in one place.
+    - `Performance` (Class) That is a helper class for the portfolio performance in case of the GUI.
+    - `Report` (Class)
 
 
 3. `Details` (Class) that stores the quantity and the date of purchase of a particular share.
@@ -127,7 +122,7 @@ The structure of the model in the project folder is as follows:
 
 4. `Log` (Class) that stores the `Details` and `lastSoldDate` of a particular share in the
    portfolio.
-
+5. TimeLine (Class)
 
 ### Controller
 
@@ -179,6 +174,15 @@ The structure of the controller in the project folder is as follows:
 
 
 8. `FileType` (enum) states the purpose of the file being worked on.
+9. `Features` (Interface) An interface that states all the methods that the controller handling the
+   Gui view can perform.
+10. `FeaturesImpl` (abstract class) The FeaturesImpl abstract class implements the Features
+    interface and has the methods that are common to the Flexible and Inflexible portfolios. It
+    takes the data directly from the view, processes it and then calls the model methods as per
+    requirement.
+11. `StockControllerFlexibleGui` (concrete class) The StockControllerFlexibleGui class contains
+    methods of the Features interface that are not implemented in the FeaturesImpl class and that
+    are supposed to behave differently for the Flexible and Inflexible portfolios.
 
 
 
