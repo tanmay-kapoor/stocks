@@ -126,7 +126,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     enterBtn.addActionListener(evt -> {
       this.portfolioName = portfolioNameTextField.getText();
       portfolioNameTextField.setText("");
-      System.out.println("sending: " + portfolioName);
       //creating problem
       panel3.removeAll();
 //      panel3.remove(enterBtn);
@@ -851,7 +850,6 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 //      int result = dcaFfc.showOpenDialog(this);
 //      if (result == JFileChooser.APPROVE_OPTION) {
 //        File selectedFile = dcaFfc.getSelectedFile();
-//        System.out.println("Selected file: " + selectedFile.getAbsolutePath());
 //      }
 //    });
 
