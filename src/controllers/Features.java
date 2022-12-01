@@ -148,7 +148,7 @@ public interface Features {
    *
    * @param ticker    Ticker symbol to add to the dca strategy.
    * @param weightage Percentage of the amount to add.
-   * @return boolean value indicating whwther ticker was added to strategy or not.
+   * @return boolean value indicating whether ticker was added to strategy or not.
    */
   boolean addTickerToStrategy(String ticker, String weightage);
 
