@@ -227,7 +227,6 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
           menu.printMessage("Interval should be at least 1 day");
         } else {
           double commissionFee = Double.parseDouble(commission);
-          System.out.println("size = " + stockWeightage.size());
           doDca(portfolio, strategyName, amount, stocksWeightage,
                   timeline, intervalVal, commissionFee);
         }
