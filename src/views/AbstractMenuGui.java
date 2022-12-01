@@ -677,6 +677,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
     JButton inflexibleButton = new JButton("Inflexible Portfolio");
     panel1.add(inflexibleButton);
+    inflexibleButton.addActionListener(evt -> popupMsg("Support for Inflexible portfolio " +
+            "coming soon!"));
 
     JButton backToTextUi = new JButton("Back To Text UI");
     panel1.add(backToTextUi);
