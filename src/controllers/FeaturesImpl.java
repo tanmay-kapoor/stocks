@@ -59,7 +59,7 @@ abstract class FeaturesImpl implements Features {
 
   protected abstract double getCostBasisIfAllowed(String portfolioName, String date);
 
-  protected abstract void addTickerToStrategyIfAllowed(String ticker, String weightage);
+  protected abstract boolean addTickerToStrategyIfAllowed(String ticker, String weightage);
 
   protected abstract boolean saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
                                               String f, String t, String interval, String commission,
@@ -281,8 +281,8 @@ abstract class FeaturesImpl implements Features {
   }
 
   @Override
-  public void addTickerToStrategy(String ticker, String weightage) {
-    addTickerToStrategyIfAllowed(ticker, weightage);
+  public boolean addTickerToStrategy(String ticker, String weightage) {
+    return addTickerToStrategyIfAllowed(ticker, weightage);
   }
 
   @Override
