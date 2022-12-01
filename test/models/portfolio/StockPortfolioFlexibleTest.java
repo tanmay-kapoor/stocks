@@ -458,6 +458,19 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
 
     portfolio.doDca(dcaName, dca);
     Map<String, Log> composition = portfolio.getComposition();
+
+    Map<String, Log> expected = new HashMap<>();
+    Set<Details> detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.43204625314367656, LocalDate.parse("2022-10-10")));
+    expected.put("META", newLog(detailsSet));
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.4052274338972749, LocalDate.parse("2022-10-10")));
+    expected.put("GOOG", newLog(detailsSet));
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.12342274982430772, LocalDate.parse("2022-10-10")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition());
   }
 
   @Test
@@ -478,134 +491,146 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
     dca = new Dca(1000, stocksWeightage, timeline, 182, 25.4);
 
     portfolio.doDca(dcaName, dca);
+
+    Map<String, Log> expected = new HashMap<>();
+    Set<Details> detailsSet = newTreeSet();
+    detailsSet.add(new Details(1.9053262547712806, LocalDate.parse("2022-10-06")));
+    expected.put("META", newLog(detailsSet));
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.5309496862156655, LocalDate.parse("2022-10-06")));
+    expected.put("GOOG", newLog(detailsSet));
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.7644858468180911, LocalDate.parse("2022-10-06")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition());
   }
 
-    @Test
-    public void testDcaSkipHoliday () {
-      assertEquals(new HashMap<>(), portfolio.getComposition());
-      String dcaName;
-      Dca dca;
-      Map<String, Double> stocksWeightage = new HashMap<>();
-      TimeLine timeline;
+  @Test
+  public void testDcaSkipHoliday() {
+    assertEquals(new HashMap<>(), portfolio.getComposition());
+    String dcaName;
+    Dca dca;
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    TimeLine timeline;
 
-      dcaName = "idk";
-      stocksWeightage.put("META", 20.0);
-      stocksWeightage.put("GOOG", 25.0);
-      stocksWeightage.put("AAPL", 55.0);
-      LocalDate startDate = LocalDate.parse("2020-10-10");
-      LocalDate endDate = LocalDate.parse("2022-10-10");
-      timeline = new TimeLine(startDate, endDate);
-      dca = new Dca(1000, stocksWeightage, timeline, 300, 25.4);
+    dcaName = "idk";
+    stocksWeightage.put("META", 20.0);
+    stocksWeightage.put("GOOG", 25.0);
+    stocksWeightage.put("AAPL", 55.0);
+    LocalDate startDate = LocalDate.parse("2020-10-10");
+    LocalDate endDate = LocalDate.parse("2022-10-10");
+    timeline = new TimeLine(startDate, endDate);
+    dca = new Dca(1000, stocksWeightage, timeline, 300, 25.4);
 
+    portfolio.doDca(dcaName, dca);
+
+    Map<String, Log> expected = new HashMap<>();
+
+    checkHashMapEquality(expected, portfolio.getComposition(startDate));
+
+    Set<Details> detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.3188714605977436, LocalDate.parse("2021-08-06")));
+    expected.put("META", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.04008621318236153, LocalDate.parse("2021-08-06")));
+    expected.put("GOOG", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.27056979514584145, LocalDate.parse("2021-08-06")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(300)));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.5703046296614065, LocalDate.parse("2022-06-02")));
+    expected.put("META", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.05707192819603503, LocalDate.parse("2022-06-02")));
+    expected.put("GOOG", newLog(detailsSet));
+
+    detailsSet = newTreeSet();
+    detailsSet.add(new Details(0.3908119628716412, LocalDate.parse("2022-06-02")));
+    expected.put("AAPL", newLog(detailsSet));
+
+    checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(600)));
+    checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(605)));
+  }
+
+  @Test
+  public void testDcaInvalid() {
+    String dcaName;
+    Dca dca;
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    TimeLine timeline;
+    double totalAmount;
+    int interval;
+    double commission;
+
+    dcaName = "idk";
+    stocksWeightage.put("META", 20.0);
+    stocksWeightage.put("GOOG", 25.0);
+    stocksWeightage.put("AAPL", 55.0);
+
+    LocalDate startDate = LocalDate.parse("2022-10-10");
+    LocalDate endDate = LocalDate.parse("2020-10-10");
+    timeline = new TimeLine(startDate, endDate);
+
+    totalAmount = 1000;
+    interval = 300;
+    commission = 25.4;
+
+    dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
+
+    try {
       portfolio.doDca(dcaName, dca);
-
-      Map<String, Log> expected = new HashMap<>();
-
-      checkHashMapEquality(expected, portfolio.getComposition(startDate));
-
-      Set<Details> detailsSet = newTreeSet();
-      detailsSet.add(new Details(0.3188714605977436, LocalDate.parse("2021-08-06")));
-      expected.put("META", newLog(detailsSet));
-
-      detailsSet = newTreeSet();
-      detailsSet.add(new Details(0.04008621318236153, LocalDate.parse("2021-08-06")));
-      expected.put("GOOG", newLog(detailsSet));
-
-      detailsSet = newTreeSet();
-      detailsSet.add(new Details(0.27056979514584145, LocalDate.parse("2021-08-06")));
-      expected.put("AAPL", newLog(detailsSet));
-
-      checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(300)));
-
-      detailsSet = newTreeSet();
-      detailsSet.add(new Details(0.5703046296614065, LocalDate.parse("2022-06-02")));
-      expected.put("META", newLog(detailsSet));
-
-      detailsSet = newTreeSet();
-      detailsSet.add(new Details(0.05707192819603503, LocalDate.parse("2022-06-02")));
-      expected.put("GOOG", newLog(detailsSet));
-
-      detailsSet = newTreeSet();
-      detailsSet.add(new Details(0.3908119628716412, LocalDate.parse("2022-06-02")));
-      expected.put("AAPL", newLog(detailsSet));
-
-      checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(600)));
-      checkHashMapEquality(expected, portfolio.getComposition(startDate.plusDays(605)));
-    }
-
-    @Test
-    public void testDcaInvalid () {
-      String dcaName;
-      Dca dca;
-      Map<String, Double> stocksWeightage = new HashMap<>();
-      TimeLine timeline;
-      double totalAmount;
-      int interval;
-      double commission;
-
-      dcaName = "idk";
-      stocksWeightage.put("META", 20.0);
-      stocksWeightage.put("GOOG", 25.0);
-      stocksWeightage.put("AAPL", 55.0);
-
-      LocalDate startDate = LocalDate.parse("2022-10-10");
-      LocalDate endDate = LocalDate.parse("2020-10-10");
+      fail("Should fail for invalid timeline but did not");
+    } catch (IllegalArgumentException e1) {
+      startDate = LocalDate.parse("2020-10-10");
+      endDate = LocalDate.parse("2022-10-10");
       timeline = new TimeLine(startDate, endDate);
-
-      totalAmount = 1000;
-      interval = 300;
-      commission = 25.4;
-
+      stocksWeightage.put("AAPL", 35.3);
       dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
-
       try {
         portfolio.doDca(dcaName, dca);
-        fail("Should fail for invalid timeline but did not");
-      } catch (IllegalArgumentException e1) {
-        startDate = LocalDate.parse("2020-10-10");
-        endDate = LocalDate.parse("2022-10-10");
-        timeline = new TimeLine(startDate, endDate);
-        stocksWeightage.put("AAPL", 35.3);
+        fail("Should fail for incomplete weightage but did not");
+      } catch (IllegalArgumentException e2) {
+        stocksWeightage.put("AAPL", 55.0);
+        interval = -100;
         dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
         try {
           portfolio.doDca(dcaName, dca);
-          fail("Should fail for incomplete weightage but did not");
-        } catch (IllegalArgumentException e2) {
-          stocksWeightage.put("AAPL", 55.0);
-          interval = -100;
+          fail("Should fail for negative interval but did not");
+        } catch (IllegalArgumentException e3) {
+          interval = 0;
           dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
           try {
             portfolio.doDca(dcaName, dca);
-            fail("Should fail for negative interval but did not");
-          } catch (IllegalArgumentException e3) {
-            interval = 0;
+            fail("Should fail for 0 interval but did not");
+          } catch (IllegalArgumentException e4) {
+            interval = 300;
+            commission = -90;
             dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
             try {
               portfolio.doDca(dcaName, dca);
-              fail("Should fail for 0 interval but did not");
-            } catch (IllegalArgumentException e4) {
-              interval = 300;
-              commission = -90;
+              fail("Should fail for negative commission but did not");
+            } catch (IllegalArgumentException e5) {
+              commission = 70;
+              totalAmount = -100;
               dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
               try {
                 portfolio.doDca(dcaName, dca);
-                fail("Should fail for negative commission but did not");
-              } catch (IllegalArgumentException e5) {
-                commission = 70;
-                totalAmount = -100;
+                fail("Should fail for negative amt but did not");
+              } catch (IllegalArgumentException e6) {
+                totalAmount = 0;
                 dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
                 try {
                   portfolio.doDca(dcaName, dca);
-                  fail("Should fail for negative amt but did not");
-                } catch (IllegalArgumentException e6) {
-                  totalAmount = 0;
-                  dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
-                  try {
-                    portfolio.doDca(dcaName, dca);
-                    fail("Should fail for 0 amt but did not");
-                  } catch (IllegalArgumentException e7) {
-                    // passes
-                  }
+                  fail("Should fail for 0 amt but did not");
+                } catch (IllegalArgumentException e7) {
+                  // passes
                 }
               }
             }
@@ -613,113 +638,113 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
         }
       }
     }
+  }
 
-    @Test
-    public void testDcaZeroStocks () {
-      String dcaName;
-      Dca dca;
-      Map<String, Double> stocksWeightage = new HashMap<>();
-      TimeLine timeline;
+  @Test
+  public void testDcaZeroStocks() {
+    String dcaName;
+    Dca dca;
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    TimeLine timeline;
 
-      dcaName = "idk";
-      LocalDate startDate = LocalDate.parse("2019-10-10");
-      LocalDate endDate = LocalDate.parse("2020-10-10");
-      timeline = new TimeLine(startDate, endDate);
-      dca = new Dca(1000, stocksWeightage, timeline, 182, 25.4);
+    dcaName = "idk";
+    LocalDate startDate = LocalDate.parse("2019-10-10");
+    LocalDate endDate = LocalDate.parse("2020-10-10");
+    timeline = new TimeLine(startDate, endDate);
+    dca = new Dca(1000, stocksWeightage, timeline, 182, 25.4);
 
-      try {
-        portfolio.doDca(dcaName, dca);
-        fail("Should fail with 0 stocks but did not");
-      } catch (IllegalArgumentException e) {
-        // passes
-      }
+    try {
+      portfolio.doDca(dcaName, dca);
+      fail("Should fail with 0 stocks but did not");
+    } catch (IllegalArgumentException e) {
+      // passes
     }
+  }
 
-    @Test
-    public void testDcaInvalidVals () {
-      String dcaName;
-      Dca dca;
-      Map<String, Double> stocksWeightage = new HashMap<>();
-      TimeLine timeline;
-      double totalAmount;
-      int interval;
-      double commission;
+  @Test
+  public void testDcaInvalidVals() {
+    String dcaName;
+    Dca dca;
+    Map<String, Double> stocksWeightage = new HashMap<>();
+    TimeLine timeline;
+    double totalAmount;
+    int interval;
+    double commission;
 
-      dcaName = "idk";
-      stocksWeightage.put("META", 20.0);
-      stocksWeightage.put("GOOG", 25.0);
-      stocksWeightage.put("AAPL", 55.0);
+    dcaName = "idk";
+    stocksWeightage.put("META", 20.0);
+    stocksWeightage.put("GOOG", 25.0);
+    stocksWeightage.put("AAPL", 55.0);
 
-      LocalDate startDate = LocalDate.parse("2020-10-10");
-      LocalDate endDate = LocalDate.parse("2022-10-10");
-      timeline = new TimeLine(startDate, endDate);
+    LocalDate startDate = LocalDate.parse("2020-10-10");
+    LocalDate endDate = LocalDate.parse("2022-10-10");
+    timeline = new TimeLine(startDate, endDate);
 
-      totalAmount = -1000;
-      interval = 300;
-      commission = 25.4;
+    totalAmount = -1000;
+    interval = 300;
+    commission = 25.4;
+    dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
+    try {
+      portfolio.doDca(dcaName, dca);
+      fail("Should fail for -ve amt");
+    } catch (IllegalArgumentException e1) {
+      totalAmount = 0;
       dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
       try {
         portfolio.doDca(dcaName, dca);
-        fail("Should fail for -ve amt");
-      } catch (IllegalArgumentException e1) {
-        totalAmount = 0;
+        fail("Should fail for 0 amt");
+      } catch (IllegalArgumentException e2) {
+        totalAmount = 1000;
+        interval = -1;
         dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
         try {
           portfolio.doDca(dcaName, dca);
-          fail("Should fail for 0 amt");
-        } catch (IllegalArgumentException e2) {
-          totalAmount = 1000;
-          interval = -1;
+          fail("Should fail for -ve interval");
+        } catch (IllegalArgumentException e3) {
+          interval = 0;
           dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
           try {
             portfolio.doDca(dcaName, dca);
-            fail("Should fail for -ve interval");
-          } catch (IllegalArgumentException e3) {
-            interval = 0;
+            fail("Should fail 0 interval");
+          } catch (IllegalArgumentException e4) {
+            interval = 100;
+            commission = -100;
             dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
             try {
               portfolio.doDca(dcaName, dca);
-              fail("Should fail 0 interval");
-            } catch (IllegalArgumentException e4) {
-              interval = 100;
-              commission = -100;
+              fail("Should fail for -ve commission");
+            } catch (IllegalArgumentException e5) {
+              commission = 100;
+              stocksWeightage.put("AAPL", 30.3);
               dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
               try {
                 portfolio.doDca(dcaName, dca);
-                fail("Should fail for -ve commission");
-              } catch (IllegalArgumentException e5) {
-                commission = 100;
-                stocksWeightage.put("AAPL", 30.3);
+                fail("Should fail for weightage < 100");
+              } catch (IllegalArgumentException e6) {
+                stocksWeightage.put("AAPL", 500.0);
                 dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
                 try {
                   portfolio.doDca(dcaName, dca);
-                  fail("Should fail for weightage < 100");
-                } catch (IllegalArgumentException e6) {
-                  stocksWeightage.put("AAPL", 500.0);
+                  fail("Should fail for weightage > 100");
+                } catch (IllegalArgumentException e7) {
+                  stocksWeightage.put("AAPL", -56.4);
                   dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
                   try {
                     portfolio.doDca(dcaName, dca);
-                    fail("Should fail for weightage > 100");
-                  } catch (IllegalArgumentException e7) {
-                    stocksWeightage.put("AAPL", -56.4);
+                    fail("Should fail for -ve weightage");
+                  } catch (IllegalArgumentException e8) {
+                    stocksWeightage.put("AAPL", 55.0);
+                    startDate = LocalDate.parse("2022-10-10");
+                    endDate = LocalDate.parse("2020-10-10");
+                    timeline = new TimeLine(startDate, endDate);
                     dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
                     try {
                       portfolio.doDca(dcaName, dca);
-                      fail("Should fail for -ve weightage");
-                    } catch (IllegalArgumentException e8) {
-                      stocksWeightage.put("AAPL", 55.0);
-                      startDate = LocalDate.parse("2022-10-10");
-                      endDate = LocalDate.parse("2020-10-10");
+                      fail("Should fail for invalid timeline");
+                    } catch (IllegalArgumentException e9) {
+                      startDate = LocalDate.parse("2020-10-10");
+                      endDate = LocalDate.parse("2022-10-10");
                       timeline = new TimeLine(startDate, endDate);
-                      dca = new Dca(totalAmount, stocksWeightage, timeline, interval, commission);
-                      try {
-                        portfolio.doDca(dcaName, dca);
-                        fail("Should fail for invalid timeline");
-                      } catch (IllegalArgumentException e9) {
-                        startDate = LocalDate.parse("2020-10-10");
-                        endDate = LocalDate.parse("2022-10-10");
-                        timeline = new TimeLine(startDate, endDate);
-                      }
                     }
                   }
                 }
@@ -730,3 +755,4 @@ public class StockPortfolioFlexibleTest extends AbstractStockPortfolioTest {
       }
     }
   }
+}
