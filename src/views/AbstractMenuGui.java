@@ -509,9 +509,20 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     JTextField weightage = new JTextField(10);
     JButton addBtn = new JButton("Add to strategy");
     addBtn.addActionListener(evt -> {
-      //might throw error
-      features.addTickerToStrategy(tickerChosen.getText(), weightage.getText());
-      stockWeightage.put(tickerChosen.getText(), Double.parseDouble(weightage.getText()));
+
+      boolean added = features.addTickerToStrategy(tickerChosen.getText(), weightage.getText());
+      if(added) {
+        String chosenTicker = tickerChosen.getText();
+        if (stockWeightage.containsKey(chosenTicker)) {
+          Double newWeight = stockWeightage.get(chosenTicker) +
+                  Double.parseDouble(weightage.getText());
+          stockWeightage.put(tickerChosen.getText(), newWeight);
+        } else {
+          stockWeightage.put(chosenTicker, Double.parseDouble(weightage.getText()));
+        }
+      } else {
+        popupMsg("Please enter correct ticker and quantity.");
+      }
 
       if (features.getWeightageLeft() > 0) {
         goToPanel4();
