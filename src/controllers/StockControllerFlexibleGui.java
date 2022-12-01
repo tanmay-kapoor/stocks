@@ -204,9 +204,9 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
   }
 
   @Override
-  protected void saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
-                                  String f, String t, String interval, String commission,
-                                  Map<String, Double> stockWeightage) {
+  protected boolean saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
+                                     String f, String t, String interval, String commission,
+                                     Map<String, Double> stockWeightage) {
     try {
       Portfolio portfolio;
       if (allPortfolios.contains(portfolioName)) {
@@ -216,9 +216,11 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
       }
       double amount = Double.parseDouble(amt);
       LocalDate from = LocalDate.parse(f);
-      LocalDate to = !t.equals("") ? LocalDate.parse(t) : LocalDate.parse("2100-12-31");
+      LocalDate to = t.equals("") ? null : LocalDate.parse(t);
 
-      if (from.compareTo(to) > 0) {
+      if (from.compareTo(LocalDate.now()) > 0) {
+        menu.printMessage("Start date cannot be in the future");
+      } else if (to != null && from.compareTo(to) > 0) {
         menu.printMessage("Start date should be before end date");
       } else {
         TimeLine timeline = new TimeLine(from, to);
@@ -227,7 +229,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
           menu.printMessage("Interval should be at least 1 day");
         } else {
           double commissionFee = Double.parseDouble(commission);
-          doDca(portfolio, strategyName, amount, stocksWeightage,
+          return doDca(portfolio, strategyName, amount, stocksWeightage,
                   timeline, intervalVal, commissionFee);
         }
       }
@@ -238,11 +240,12 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
     } catch (IllegalArgumentException e) {
       menu.errorMessage(e.getMessage());
     }
+    return false;
   }
 
-  private void doDca(Portfolio portfolio, String strategyName, double amount,
-                     Map<String, Double> stocksWeightage, TimeLine timeline,
-                     int interval, double commission) {
+  private boolean doDca(Portfolio portfolio, String strategyName, double amount,
+                        Map<String, Double> stocksWeightage, TimeLine timeline,
+                        int interval, double commission) {
 
     if (this.totalWeightage != 0) {
       menu.printMessage("Total weightage is not 100%");
@@ -251,10 +254,12 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
         Dca dca = new Dca(amount, stocksWeightage, timeline, interval, commission);
         portfolio.doDca(strategyName, dca);
         menu.printMessage("Successfully created strategy.");
+        return true;
       } catch (IllegalArgumentException e) {
         menu.errorMessage(e.getMessage());
       }
     }
+    return false;
   }
 
   @Override
@@ -268,7 +273,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
             "end_date,interval," +
             "commission,last_purchase_date");
     for (int i = 0; i < 20; i++) {
-      header.append(",stock,").append(i + 1).append(",weightage,").append(i + 1);
+      header.append(",stock").append(i + 1).append(",weightage").append(i + 1);
     }
 
     csvWriter.append(header.toString());

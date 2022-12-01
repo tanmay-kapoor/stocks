@@ -61,9 +61,9 @@ abstract class FeaturesImpl implements Features {
 
   protected abstract void addTickerToStrategyIfAllowed(String ticker, String weightage);
 
-  protected abstract void saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
-                                           String f, String t, String interval, String commission,
-                                           Map<String, Double> stockWeightage);
+  protected abstract boolean saveDcaIfAllowed(String portfolioName, String strategyName, String amt,
+                                              String f, String t, String interval, String commission,
+                                              Map<String, Double> stockWeightage);
 
   public FeaturesImpl(ShareApi api, String path) {
     this.api = api;
@@ -286,9 +286,9 @@ abstract class FeaturesImpl implements Features {
   }
 
   @Override
-  public void saveDca(String portfolioName, String strategyName, String amt, String f, String t,
-                      String interval, String commission, Map<String, Double> stockWeightage) {
-    saveDcaIfAllowed(portfolioName, strategyName, amt, f, t, interval, commission, stockWeightage);
+  public boolean saveDca(String portfolioName, String strategyName, String amt, String f, String t,
+                         String interval, String commission, Map<String, Double> stockWeightage) {
+    return saveDcaIfAllowed(portfolioName, strategyName, amt, f, t, interval, commission, stockWeightage);
   }
 
   protected Portfolio findPortfolio(String name) {
@@ -418,6 +418,10 @@ abstract class FeaturesImpl implements Features {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), null);
       } else {
         timeLine = new TimeLine(LocalDate.parse(vals[2]), LocalDate.parse(vals[3]));
+      }
+
+      for (int i = 7; i < vals.length; i += 2) {
+        stockWeightage.put(vals[i], Double.parseDouble(vals[i + 1]));
       }
 
       dcaMap.put(vals[0], new Dca(

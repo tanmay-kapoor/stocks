@@ -234,10 +234,15 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
   private List<LocalDate> getBuyDates(Dca dca) {
     LocalDate startDate = dca.getTimeLine().getStartDate();
     LocalDate endDate = dca.getTimeLine().getEndDate();
+    if (endDate == null) {
+      endDate = LocalDate.now();
+    }
 
     List<LocalDate> buyOnDates = new ArrayList<>();
     for (LocalDate i = startDate; i.compareTo(endDate) <= 0; i = i.plusDays(dca.getInterval())) {
-      buyOnDates.add(i);
+      if (i.compareTo(LocalDate.now()) <= 0) {
+        buyOnDates.add(i);
+      }
     }
 
     return buyOnDates;
@@ -298,7 +303,9 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
     LocalDate startDate = dca.getTimeLine().getStartDate();
     LocalDate endDate = dca.getTimeLine().getEndDate();
-    if (startDate.compareTo(endDate) >= 0) {
+    if (startDate.compareTo(LocalDate.now()) > 0) {
+      throw new IllegalArgumentException("Start Date cannot be in the future");
+    } else if (endDate != null && startDate.compareTo(endDate) >= 0) {
       throw new IllegalArgumentException("Start date must be before end date");
     }
 
@@ -318,11 +325,8 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       StringBuilder header = new StringBuilder("strategy_name,investment_amount,start_date,"
               + "end_date,interval,commission,last_purchase_date");
 
-
-      int stocks = dcaMap.size();
-
       for (int i = 0; i < 20; i++) {
-        header.append(",stock,").append(i + 1).append(",weightage,").append(i + 1);
+        header.append(",stock").append(i + 1).append(",weightage").append(i + 1);
       }
       header.append("\n");
 
@@ -332,10 +336,11 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
         Dca dca = dcaMap.get(strategy);
         String stockWeightageAsString = getStockWeightageAsString(dca);
 
+        LocalDate endDate = dca.getTimeLine().getEndDate();
         csvWriter.append(strategy).append(",")
                 .append(String.valueOf(dca.getTotalAmount())).append(",")
                 .append(dca.getTimeLine().getStartDate().toString()).append(",")
-                .append(dca.getTimeLine().getEndDate().toString()).append(",")
+                .append(endDate == null ? null : endDate.toString()).append(",")
                 .append(String.valueOf(dca.getInterval())).append(",")
                 .append(String.valueOf(dca.getCommission())).append(",")
                 .append(dca.getLastBoughtDate().toString()).append(",")
@@ -344,6 +349,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
 
       csvWriter.flush();
       csvWriter.close();
+      this.savePortfolio();
     } catch (IOException e) {
       throw new RuntimeException("Something went wrong in creating DCA log!");
     }

@@ -162,10 +162,11 @@ public interface Features {
    * @param interval       Time interval in days for each investment in the strategy.
    * @param commission     Commission fee for the transaction.
    * @param stockWeightage Map representing the weightage of each ticker in the strategy.
-   *                       All weightages should add up to 100%..
+   *                       All weightages should add up to 100%.
+   * @return boolean value indicating whether dca was saved or not.
    */
-  void saveDca(String portfolioName, String strategyName, String amt, String f, String t,
-               String interval, String commission, Map<String, Double> stockWeightage);
+  boolean saveDca(String portfolioName, String strategyName, String amt, String f, String t,
+                  String interval, String commission, Map<String, Double> stockWeightage);
 
   /**
    * Feature to get the percentage of weightage left for the dca being created currently.
