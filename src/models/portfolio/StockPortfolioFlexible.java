@@ -305,7 +305,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     LocalDate endDate = dca.getTimeLine().getEndDate();
     if (startDate.compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Start Date cannot be in the future");
-    } else if (endDate != null && startDate.compareTo(endDate) >= 0) {
+    } else if (endDate != null && startDate.compareTo(endDate) > 0) {
       throw new IllegalArgumentException("Start date must be before end date");
     }
 

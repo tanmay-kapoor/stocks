@@ -222,7 +222,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
 
       if (from.compareTo(LocalDate.now()) > 0) {
         menu.errorMessage("Start date cannot be in the future");
-      } else if (to != null && from.compareTo(to) >= 0) {
+      } else if (to != null && from.compareTo(to) > 0) {
         menu.errorMessage("Start date should be before end date");
       } else {
         TimeLine timeline = new TimeLine(from, to);
