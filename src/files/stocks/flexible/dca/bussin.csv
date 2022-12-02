@@ -1,2 +1,4 @@
 strategy_name,investment_amount,start_date,end_date,interval,commission,last_purchase_date,stock1,weightage1,stock2,weightage2,stock3,weightage3,stock4,weightage4,stock5,weightage5,stock6,weightage6,stock7,weightage7,stock8,weightage8,stock9,weightage9,stock10,weightage10,stock11,weightage11,stock12,weightage12,stock13,weightage13,stock14,weightage14,stock15,weightage15,stock16,weightage16,stock17,weightage17,stock18,weightage18,stock19,weightage19,stock20,weightage20
 for_real,1000000.0,2015-10-10,2019-10-10,365,5.0,2019-10-09,GOOG,20.0,KO,65.0,V,15.0
+idk,1000.0,2020-10-10,2020-10-10,1,100.0,2020-10-12,MSFT,50.0,AAPL,50.0
+really,1000.0,2022-10-10,2022-10-10,1,0.0,2022-10-10,GOOG,100.0
