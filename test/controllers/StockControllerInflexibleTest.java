@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
@@ -17,7 +15,6 @@ import models.Details;
 import models.Log;
 import models.api.DateDetails;
 import models.api.ShareApi;
-import models.portfolio.Composition;
 import models.portfolio.Dca;
 import models.portfolio.Portfolio;
 import views.Menu;
@@ -34,6 +31,7 @@ public class StockControllerInflexibleTest {
   private ShareApi api;
   private PrintStream out;
   private StringBuilder log;
+  private String portfolioName;
 
   private class MockApi implements ShareApi {
 
@@ -145,114 +143,25 @@ public class StockControllerInflexibleTest {
     }
   }
 
-  private class MockStockControllerInflexible extends AbstractController {
+  private class MockStockControllerInflexible extends StockControllerInflexible {
 
-    private MockStockControllerInflexible(InputStream in, Menu menu, ShareApi api, String path) {
+    public MockStockControllerInflexible(InputStream in, Menu menu, ShareApi api, String path) {
       super(in, menu, api, path);
       log = new StringBuilder();
     }
 
     @Override
     protected Portfolio createPortfolio(String portfolioName) {
-      log = new StringBuilder("Portfolio name : " + portfolioName + "\n");
+      log.append("Inside createPortfolio(portfolioName)\n");
       return new MockStockPortfolio(log);
     }
 
     @Override
-    protected Portfolio createPortfolio(String portfolioName, Map<String, Log> stocks,
+    protected Portfolio createPortfolio(String pName, Map<String, Log> stocks,
                                         Map<LocalDate, Double> costBasisHistory,
                                         Map<String, Dca> dcaMap) {
-      log = new StringBuilder("Portfolio name mult : " + portfolioName + "\n");
+      log.append("Inside createPortfolio(a lot of values)\n");
       return new MockStockPortfolio(log);
-    }
-
-    @Override
-    protected Map<String, LocalDate> readLastSoldDateFromCsv(File logFile)
-            throws FileNotFoundException {
-      return new HashMap<>();
-    }
-
-    @Override
-    protected Map<LocalDate, Double> readStockBasisHistoryFromCsv(File costBasisFile)
-            throws FileNotFoundException {
-      return new HashMap<>();
-    }
-
-    @Override
-    protected Map<String, Dca> readDcaFromCsv(File dcaFile) throws FileNotFoundException {
-      return null;
-    }
-
-    @Override
-    protected LocalDate getPurchaseDate() {
-      return LocalDate.now();
-    }
-
-    @Override
-    protected char getLastOption() {
-      return '3';
-    }
-
-    @Override
-    protected double getCommissionFee() {
-      log.append("wont be calling model from getCommissionFee\n");
-      return 0.0;
-    }
-
-    @Override
-    protected void filterBasedOnFunction(Function function) {
-      log.append("Inside filterBasedOnFunction(Function function) Received : ")
-              .append(function).append("\n");
-      switch (function) {
-        case BuySell:
-        case SeePerformance:
-        case CostBasis:
-          log.append("wont be calling commonStuff(function)\n");
-          break;
-
-        default:
-          commonStuff(function);
-      }
-    }
-
-    @Override
-    protected void handleMenuOptions(Portfolio portfolio, Function function) {
-      log.append("Inside handleMenuOptions(p, f) function = ").append(function).append("\n");
-      switch (function) {
-        case Composition:
-          handleGetPortfolioComposition(portfolio);
-          break;
-
-        case GetValue:
-          handleGetPortfolioValue(portfolio);
-          break;
-
-        default:
-          throw new IllegalArgumentException("Illegal Value");
-      }
-    }
-
-    @Override
-    protected boolean giveDateOptionsIfApplicable(Portfolio portfolio, Composition option) {
-      log.append("Inside giveDateOptionsIfApplicable(p, o) option = ").append(option).append("\n");
-      getCompositionForToday(portfolio, option);
-      return true;
-    }
-
-    @Override
-    protected boolean handleCreatePortfolioOption(char choice, Portfolio portfolio,
-                                                  String portfolioName) {
-      if (choice == '1') {
-        displayAddStockStuff(portfolio);
-      } else {
-        try {
-          savePortfolio(portfolioName, portfolio);
-          return true;
-        } catch (RuntimeException e) {
-          menu.printMessage("\n" + e.getMessage());
-        }
-      }
-      return false;
     }
   }
 
@@ -260,6 +169,7 @@ public class StockControllerInflexibleTest {
   public void setUp() {
     this.path = System.getProperty("user.dir") + "/src/files/stocks/inflexible/";
     api = new MockApi();
+    portfolioName = "bussin";
 
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     out = new PrintStream(bytes);
@@ -268,12 +178,10 @@ public class StockControllerInflexibleTest {
   @Test
   public void testStart() {
     generateStream("1\n1\nidk\n1\nAAPL\n38\nx\nx\n");
-    String expected = "Portfolio name : idk\n" +
+    String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
-            "38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -281,7 +189,7 @@ public class StockControllerInflexibleTest {
   @Test
   public void testStart2() {
     try {
-      generateStream("1\n1\nrandom\nx\nx\n");
+      generateStream("1\n1\n" + portfolioName + "\nx\nx\n");
       fail("Should throw exception if portfolio already exists");
     } catch (Exception e) {
       // passes
@@ -290,13 +198,11 @@ public class StockControllerInflexibleTest {
 
   @Test
   public void testStart3() {
-    generateStream("1\n1\nrandom\nxyz\n1\nAAPL\n22\nx\nx\n");
-    String expected = "Portfolio name : xyz\n" +
+    generateStream("1\n1\n" + portfolioName + "\nxyz\n1\nAAPL\n22\nx\nx\n");
+    String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
-            "22.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -304,22 +210,18 @@ public class StockControllerInflexibleTest {
   @Test
   public void testStart4() {
     generateStream("1\n1\nxx\n1\nAAPL\n-38\nx\nx\n");
-    String expected = "Portfolio name : xx\n" +
+    String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "wont be calling model from getCommissionFee\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : " +
-            "-38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetComposition() {
-    generateStream("2\nrandom\n1\nx\n");
-    String expected = "Portfolio name mult : random\n" +
-            "Inside handleMenuOptions(p, f) function = Composition\n" +
-            "Inside giveDateOptionsIfApplicable(p, o) option = Contents\n" +
+    generateStream("2\n" + portfolioName + "\n1\nx\n");
+    String expected = "Inside createPortfolio(a lot of values)\n" +
             "Inside getComposition(date) Received : " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
   }
@@ -327,50 +229,45 @@ public class StockControllerInflexibleTest {
   @Test
   public void testGetComposition2() {
     generateStream("2\nsfgweew\nq\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : Composition\n";
+    String expected = "";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetComposition3() {
-    generateStream("2\nrandom\n2\nx\n");
-    String expected = "Portfolio name mult : random\n" +
-            "Inside handleMenuOptions(p, f) function = Composition\n" +
-            "Inside giveDateOptionsIfApplicable(p, o) option = Weightage\n" +
+    generateStream("2\n" + portfolioName + "\n2\nx\n");
+    String expected = "Inside createPortfolio(a lot of values)\n" +
             "Inside getComposition(date) Received : " + LocalDate.now() + "\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetValue() {
-    generateStream("3\nrandom\n2\n2022-10-10\nq\n");
-    String expected = "Portfolio name mult : random\n"
-            + "Inside handleMenuOptions(p, f) function = GetValue\n"
-            + "Inside getValue(date) Received : 2022-10-10\n";
+    generateStream("3\n" + portfolioName + "\n2\n2022-10-10\nq\n");
+    String expected = "Inside createPortfolio(a lot of values)\n" +
+            "Inside getValue(date) Received : 2022-10-10\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetValue2() {
     generateStream("3\nwfw\nx\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : GetValue\n";
+    String expected = "";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetValue3() {
-    generateStream("3\nwfw\n3\nrandom\n2\n2022-10-10\nx\n");
-    String expected = "Portfolio name mult : random\n" +
-            "Inside handleMenuOptions(p, f) function = GetValue\n" +
+    generateStream("3\nwfw\n3\n" + portfolioName + "\n2\n2022-10-10\nx\n");
+    String expected = "Inside createPortfolio(a lot of values)\n" +
             "Inside getValue(date) Received : 2022-10-10\n";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetValue4() {
-    generateStream("3\nrandom\n1\nx\n");
-    String expected = "Portfolio name mult : random\n" +
-            "Inside handleMenuOptions(p, f) function = GetValue\n" +
+    generateStream("3\n" + portfolioName + "\n1\nx\n");
+    String expected = "Inside createPortfolio(a lot of values)\n" +
             "Inside getValue\n";
     assertEquals(expected, log.toString());
   }
@@ -378,24 +275,21 @@ public class StockControllerInflexibleTest {
   @Test
   public void testBuySell() {
     generateStream("4\nx\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : BuySell\n" +
-            "wont be calling commonStuff(function)\n";
+    String expected = "";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetPerformance() {
     generateStream("5\nx\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : SeePerformance\n"
-            + "wont be calling commonStuff(function)\n";
+    String expected = "";
     assertEquals(expected, log.toString());
   }
 
   @Test
   public void testGetCostBasis() {
     generateStream("6\n");
-    String expected = "Inside filterBasedOnFunction(Function function) Received : CostBasis\n" +
-            "wont be calling commonStuff(function)\n";
+    String expected = "";
     assertEquals(expected, log.toString());
   }
 

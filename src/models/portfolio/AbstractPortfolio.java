@@ -66,7 +66,7 @@ abstract class AbstractPortfolio implements Portfolio {
   }
 
   protected AbstractPortfolio(String portfolioName, Map<String, Log> stocks, String path,
-                              ShareApi api, Map<LocalDate, Double> costBasisHistory ,
+                              ShareApi api, Map<LocalDate, Double> costBasisHistory,
                               Map<String, Dca> dcaMap) {
     this.portfolioName = portfolioName;
     this.api = api;
