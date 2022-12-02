@@ -26,7 +26,7 @@ public class MainMenuImplTest {
     str = "\nWork with:\n"
             + "1. Flexible Portfolio\n"
             + "2. Inflexible Portfolio\n"
-            + "Press any other key to exit.\n"
+            + "Press any other key to go back.\n"
             + "\nEnter your choice : ";
   }
 

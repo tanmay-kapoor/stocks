@@ -51,7 +51,7 @@ public class StockControllerInflexible extends AbstractController {
 
   @Override
   protected Map<String, Dca> readDcaFromCsv(File dcaFile) {
-    return null;
+    return new HashMap<>();
   }
 
   @Override
