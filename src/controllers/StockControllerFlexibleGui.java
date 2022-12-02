@@ -74,7 +74,7 @@ public class StockControllerFlexibleGui extends FeaturesImpl {
       LocalDate date = LocalDate.parse(d);
       Map<String, Log> portfolioComposition = portfolio.getComposition();
       if (!portfolioComposition.containsKey(ticker)) {
-        menu.printMessage(ticker + " is not in this portfolio");
+        menu.popupMsg(ticker + " is not in this portfolio");
       } else {
         Details details = new Details(quantity, date);
         portfolio.sell(ticker, details, commissionFee);

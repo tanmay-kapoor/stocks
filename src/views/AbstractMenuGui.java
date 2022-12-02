@@ -2,7 +2,11 @@ package views;
 
 import org.jfree.chart.ChartPanel;
 
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -13,7 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JComboBox;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -340,7 +353,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
           gbc3.gridwidth = 1;
           panel3.add(goBackButton);
         } else {
-          printMessage("No stocks existed on this date");
+          errorMessage("No stocks existed on this date");
         }
       }
     });
@@ -350,7 +363,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
       Map<String, Double> weightage = features.getPortfolioWeightage(portfolioName,
               dateField.getText());
       if (weightage.isEmpty()) {
-        printMessage("No stocks existed on this date");
+        errorMessage("No stocks existed on this date");
       } else {
         //data cleaning
         String[][] data = new String[weightage.size()][2];
@@ -528,8 +541,9 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
         goToPanel4();
         addTickerPanel(stockWeightage, tickerChosen, weightage, addBtn);
       } else {
-        boolean saved = features.saveDca(portfolioName, strategy.getText(), amount.getText(), fromDate.getText(),
-                toDate.getText(), interval.getText(), commission.getText(), stockWeightage);
+        boolean saved = features.saveDca(portfolioName, strategy.getText(), amount.getText(),
+                fromDate.getText(), toDate.getText(), interval.getText(),
+                commission.getText(), stockWeightage);
         if (saved) {
           popupMsg("Dollar Cost Average Strategy Saved!");
         }
@@ -558,7 +572,8 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
   }
 
-  private void popupMsg(String s) {
+  @Override
+  public void popupMsg(String s) {
     showMessageDialog(null, s);
   }
 
@@ -822,7 +837,7 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
     panel3.removeAll();
 
     FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV only", "csv");
-//    UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+    // UIManager.put("FileChooser.readOnly", Boolean.TRUE);
     JFileChooser portfolioJfc = new JFileChooser(FileSystemView.getFileSystemView());
     portfolioJfc.setFileFilter(filter);
     panel3.add(portfolioJfc, gbc3);
@@ -832,12 +847,13 @@ abstract class AbstractMenuGui extends JFrame implements Menu {
 
         if (Objects.equals(this.getTitle(), "Create Portfolio") && portfolioName != null) {
           features.savePortfolio(portfolioName);
-//        portfolioName = null;
+          // portfolioName = null;
         }
 
         this.setTitle("Flexible Portfolio");
       } else {
-        boolean saved = features.handleCreatePortfolioThroughUpload(portfolioJfc.getSelectedFile().toString());
+        boolean saved = features.handleCreatePortfolioThroughUpload(portfolioJfc.
+                getSelectedFile().toString());
         cl.show(mainPanel, "Portfolio Features");
 
         if (saved) {

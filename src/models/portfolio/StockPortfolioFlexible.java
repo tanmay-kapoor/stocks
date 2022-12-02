@@ -181,7 +181,7 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
       String fileName = String.format(pathCostBasis + "%s.csv", portfolioName);
 
       FileWriter csvWriter = new FileWriter(fileName);
-      csvWriter.append("Date, CostBasis\n");
+      csvWriter.append("date,dostBasis\n");
       for (LocalDate date : costBasisHistory.keySet()) {
         csvWriter.append(date.toString()).append(",")
                 .append(costBasisHistory.get(date).toString())

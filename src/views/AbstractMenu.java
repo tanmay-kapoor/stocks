@@ -118,6 +118,10 @@ abstract class AbstractMenu implements Menu {
     getCommissionFeeIfApplicable();
   }
 
+  @Override
+  public void popupMsg(String msg) {
+    return;
+  }
 
   protected void print(String msg) {
     this.out.print(msg);

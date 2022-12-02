@@ -93,4 +93,10 @@ public interface Menu {
    */
   void getCommissionFee();
 
+  /**
+   * displays a popup message in the interface.
+   *
+   * @param msg message to be displayed.
+   */
+  void popupMsg(String msg);
 }
