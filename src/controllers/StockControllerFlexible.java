@@ -472,8 +472,6 @@ public class StockControllerFlexible extends AbstractController {
                                                 String portfolioName) {
     if (choice == '1') {
       displayAddStockStuff(portfolio);
-    } else if (choice == '2') {
-      displayDcaStuff(portfolio);
     } else {
       try {
         savePortfolio(portfolioName, portfolio);
@@ -482,6 +480,10 @@ public class StockControllerFlexible extends AbstractController {
         menu.printMessage("\n" + e.getMessage());
       }
     }
+
+    // else if (choice == '2') {
+    // displayDcaStuff(portfolio);
+    // }
     return false;
   }
 

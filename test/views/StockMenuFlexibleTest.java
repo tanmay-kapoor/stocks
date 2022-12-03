@@ -29,7 +29,6 @@ public class StockMenuFlexibleTest extends AbstractStockMenuTest {
   @Override
   protected String getAddToPortfolioChoiceExpected() {
     return "\n1. Add a share to your portfolio.\n" +
-            "2. Create Dollar Cost Average Strategy.\n" +
             "Press any other key to go back.\n" +
             "\n" +
             "Enter your choice : ";
