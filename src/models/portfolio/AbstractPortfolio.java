@@ -41,8 +41,6 @@ abstract class AbstractPortfolio implements Portfolio {
 
   protected abstract double changeCommissionFeeIfApplicable(double commissionFee);
 
-  protected abstract LocalDate getSpecificDate(LocalDate date);
-
   protected abstract Map<LocalDate, Double> getPortfolioPerformanceIfApplicable(LocalDate from,
                                                                                 LocalDate to);
 
@@ -196,8 +194,6 @@ abstract class AbstractPortfolio implements Portfolio {
       throw new IllegalArgumentException("Cannot get value for a future date.");
     }
 
-    date = getSpecificDate(date);
-
     double totalValue = 0.0;
     for (String tickerSymbol : stocks.keySet()) {
       Log log = stocks.get(tickerSymbol);
@@ -235,8 +231,6 @@ abstract class AbstractPortfolio implements Portfolio {
     if (date.compareTo(LocalDate.now()) > 0) {
       throw new IllegalArgumentException("Cannot get composition of future dates.");
     }
-
-    date = getSpecificDate(date);
 
     Map<String, Log> filteredStocks = new HashMap<>();
     for (String stock : stocks.keySet()) {

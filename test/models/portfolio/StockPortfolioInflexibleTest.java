@@ -32,8 +32,7 @@ public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
     portfolio.buy("AMZN", 27);
     portfolio.buy("NFLX", 18);
     double val = portfolio.getValue(LocalDate.parse("2022-10-10"));
-    double expected = (27 * api.getShareDetails("AMZN", now).getValues().get("close"))
-            + (18 * api.getShareDetails("NFLX", now).getValues().get("close"));
+    double expected = 0.0;
     assertEquals(expected, val, 0.1);
 
     try {
@@ -41,8 +40,7 @@ public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
       fail("Should be invalid date");
     } catch (DateTimeParseException e1) {
       val = portfolio.getValue(LocalDate.parse("1900-07-15"));
-      expected = (27 * api.getShareDetails("AMZN", now).getValues().get("close"))
-              + (18 * api.getShareDetails("NFLX", now).getValues().get("close"));
+      expected = 0.0;
       assertEquals(expected, val, 0.1);
     }
   }
@@ -68,10 +66,8 @@ public class StockPortfolioInflexibleTest extends AbstractStockPortfolioTest {
 
     portfolio.buy("META", 22.0);
     shareDetails = portfolio.getComposition(LocalDate.parse("2020-10-10"));
-    detailsSet = newTreeSet();
-    detailsSet.add(new Details(22.0, now));
-    expected.put("META", newLog(detailsSet));
-    checkHashMapEquality(expected, shareDetails);
+    expected = new HashMap<>();
+    assertEquals(expected, shareDetails);
   }
 
   protected void addValueToDetailsSet(Map<String, Log> expected) {

@@ -212,7 +212,7 @@ abstract class AbstractStockPortfolioTest {
     portfolio.buy("AMZN", 27);
     portfolio.buy("NFLX", 18);
     double val = portfolio.getValue(LocalDate.parse("2001-07-15"));
-    getValueSomeStocksDifferently(val);
+    assertEquals(0.0, val, 0);
   }
 
   @Test

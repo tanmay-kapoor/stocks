@@ -169,10 +169,6 @@ public class StockPortfolioFlexible extends AbstractPortfolio {
     return commissionFee;
   }
 
-  protected LocalDate getSpecificDate(LocalDate date) {
-    return date;
-  }
-
 
   private void saveCostBasisLog() {
     try {
