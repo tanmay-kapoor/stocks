@@ -1,6 +1,6 @@
 # Stocks
 
-### This project provides the following main functionalities:
+### This project provides the following functionalities:
 
 - Gives user the option to either work with a flexible or inflexible portfolio.
 
@@ -75,6 +75,10 @@ invested every time at a specific interval between dates chosen by them. User ca
 the new strategy would override the old strategy. Furthermore, for each strategy use can choose a maximum of 20 stocks to be a part of a strategy.
 
 
+- **Equal Weightage Investment**: In case the client wants to invest equally in a bucket of stocks for just a single day, they can 
+create a DCA strategy and put start day the same as end date, and put equal weightage for all the stocks that you wish to invest in.
+
+
 ## Features specific to Inflexible Portfolio
 
 This type of portfolio is immutable. 
@@ -89,6 +93,6 @@ performance of the portfolio over time for now.
 
 The client is given the option to choose between two UI options, namely: 
 
-1. Command line interface: in which they interact with the command line to give inputs and see results produced by the program, Or,
+1. Command line interface: in which they interact with the command line to give inputs and see results produced by the program, or,
 
 2. Java Swing GUI: in which they can interact with a gui with buttons and input fields to send inputs, and view results from the program on the same frame.

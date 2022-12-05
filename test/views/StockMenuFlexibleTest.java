@@ -2,8 +2,6 @@ package views;
 
 import java.io.PrintStream;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * A test class to check the methods view shared by different portfolios of the program.
  */

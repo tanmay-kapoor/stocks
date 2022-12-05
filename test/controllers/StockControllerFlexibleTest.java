@@ -5,12 +5,9 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,10 +15,8 @@ import models.Details;
 import models.Log;
 import models.api.DateDetails;
 import models.api.ShareApi;
-import models.portfolio.Composition;
 import models.portfolio.Dca;
 import models.portfolio.Portfolio;
-import models.portfolio.StockPortfolioFlexible;
 import views.Menu;
 import views.StockMenuFlexible;
 
@@ -188,7 +183,8 @@ public class StockControllerFlexibleTest {
     String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL 2022-12-02\n" +
             "Inside get share details AAPL 2022-10-10\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 Purchase Date : 2022-10-10 Commission Fee : 34.5\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 " +
+            "Purchase Date : 2022-10-10 Commission Fee : 34.5\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -209,7 +205,8 @@ public class StockControllerFlexibleTest {
     String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL 2022-12-02\n" +
             "Inside get share details AAPL 2022-10-10\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 Purchase Date : 2022-10-10 Commission Fee : 22.3\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 " +
+            "Purchase Date : 2022-10-10 Commission Fee : 22.3\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -220,7 +217,8 @@ public class StockControllerFlexibleTest {
     String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL 2022-12-02\n" +
             "Inside get share details AAPL 2022-10-10\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 Purchase Date : 2022-10-10 Commission Fee : 20.3\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 " +
+            "Purchase Date : 2022-10-10 Commission Fee : 20.3\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }

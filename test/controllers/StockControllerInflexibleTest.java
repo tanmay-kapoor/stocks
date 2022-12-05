@@ -181,7 +181,8 @@ public class StockControllerInflexibleTest {
     String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 38.0 " +
+            "Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -202,7 +203,8 @@ public class StockControllerInflexibleTest {
     String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : 22.0 " +
+            "Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }
@@ -213,7 +215,8 @@ public class StockControllerInflexibleTest {
     String expected = "Inside createPortfolio(portfolioName)\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
             "Inside get share details AAPL " + LocalDate.now() + "\n" +
-            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
+            "Inside buy(ticker, details, commissionFee). Symbol : AAPL Quantity : -38.0 " +
+            "Purchase Date : " + LocalDate.now() + " Commission Fee : 0.0\n" +
             "Inside savePortfolio\n";
     assertEquals(expected, log.toString());
   }

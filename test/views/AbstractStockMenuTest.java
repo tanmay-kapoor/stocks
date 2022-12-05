@@ -15,6 +15,7 @@ abstract class AbstractStockMenuTest {
   protected abstract String getMainMenuExpected();
 
   protected abstract String getAddToPortfolioChoiceExpected();
+
   protected abstract String getBuySellChoiceExpected();
 
   protected abstract String getCommissionFeeExpected();
@@ -115,7 +116,7 @@ abstract class AbstractStockMenuTest {
 
   @Test
   public void getCommissionFee() {
-     menu.getCommissionFee();
+    menu.getCommissionFee();
     String expected = getCommissionFeeExpected();
     assertEquals(expected, bytes.toString());
   }
